@@ -1,0 +1,1182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>METEORIUM — Climate Risk Intelligence Platform</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@300;400;500;600;700;800&family=IBM+Plex+Mono:wght@300;400;500;600&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+:root {
+  --bg:       #02050E;
+  --bg1:      #05091A;
+  --bg2:      #080F24;
+  --bg3:      #0C1630;
+  --border:   rgba(24,50,100,0.55);
+  --borderb:  rgba(40,80,160,0.65);
+  --blue:     #2563EB;
+  --blue-lo:  rgba(37,99,235,0.12);
+  --cyan:     #06B6D4;
+  --green:    #10B981;
+  --amber:    #F59E0B;
+  --red:      #EF4444;
+  --orange:   #F97316;
+  --text:     #C8D5E8;
+  --textd:    #6B85A8;
+  --textx:    #334466;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body, #root { height: 100%; overflow: hidden; }
+body { background: var(--bg); color: var(--text); font-family: 'IBM Plex Sans', sans-serif; font-size: 13px; line-height: 1.5; }
+.f-display { font-family: 'Barlow Condensed', sans-serif; }
+.f-mono    { font-family: 'IBM Plex Mono', monospace; }
+
+/* ── Classification banner ── */
+.cls { background: linear-gradient(90deg,#14532d,#166534,#14532d); color:#bbf7d0; font-family:'IBM Plex Mono',monospace; font-size:9.5px; font-weight:600; letter-spacing:.28em; text-align:center; padding:3px 0; text-transform:uppercase; border-bottom:1px solid rgba(16,185,129,.25); flex-shrink:0; }
+
+/* ── Sidebar ── */
+.sidebar { width:222px; min-width:222px; background:var(--bg1); border-right:1px solid var(--border); display:flex; flex-direction:column; overflow:hidden; }
+
+/* ── Panel ── */
+.panel { position:relative; background:var(--bg1); border:1px solid var(--border); }
+.panel::before,.panel::after { content:''; position:absolute; width:9px; height:9px; border-color:rgba(37,99,235,.45); border-style:solid; pointer-events:none; z-index:2; }
+.panel::before { top:-1px; left:-1px; border-width:1.5px 0 0 1.5px; }
+.panel::after  { bottom:-1px; right:-1px; border-width:0 1.5px 1.5px 0; }
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width:3px; height:3px; }
+::-webkit-scrollbar-track { background:transparent; }
+::-webkit-scrollbar-thumb { background:rgba(37,99,235,.25); border-radius:2px; }
+
+/* ── Nav ── */
+.nav-item { display:flex; align-items:center; gap:9px; padding:7px 16px; color:var(--textd); font-family:'Barlow Condensed',sans-serif; font-size:13.5px; font-weight:500; letter-spacing:.07em; text-transform:uppercase; cursor:pointer; border-left:2px solid transparent; transition:all .18s; user-select:none; }
+.nav-item:hover { color:var(--text); background:rgba(37,99,235,.05); }
+.nav-item.active { color:#60a5fa; border-left-color:var(--blue); background:rgba(37,99,235,.09); }
+.nav-item .ico { width:14px; text-align:center; font-size:11px; flex-shrink:0; }
+
+/* ── Buttons ── */
+.btn-p { background:var(--blue); color:#fff; font-family:'Barlow Condensed',sans-serif; font-size:12px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; border:none; cursor:pointer; padding:7px 18px; border-radius:4px; transition:all .2s; display:inline-flex; align-items:center; gap:6px; }
+.btn-p:hover { background:#1d4ed8; box-shadow:0 0 22px rgba(37,99,235,.42); }
+.btn-p:disabled { opacity:.4; cursor:not-allowed; }
+.btn-g { background:transparent; border:1px solid var(--border); color:var(--textd); font-family:'IBM Plex Mono',monospace; font-size:10px; cursor:pointer; padding:5px 11px; border-radius:3px; transition:all .2s; display:inline-flex; align-items:center; gap:5px; }
+.btn-g:hover { border-color:var(--borderb); color:var(--text); }
+
+/* ── Risk colors ── */
+.rc  { color:#EF4444; } .rh  { color:#F97316; } .re  { color:#F59E0B; } .rm  { color:#3B82F6; } .rl  { color:#10B981; }
+.rbc { background:rgba(239,68,68,.1); border-color:rgba(239,68,68,.28); }
+.rbh { background:rgba(249,115,22,.1); border-color:rgba(249,115,22,.28); }
+.rbe { background:rgba(245,158,11,.1); border-color:rgba(245,158,11,.28); }
+.rbm { background:rgba(59,130,246,.1); border-color:rgba(59,130,246,.28); }
+.rbl { background:rgba(16,185,129,.1); border-color:rgba(16,185,129,.28); }
+
+/* ── Status dots ── */
+.sdot { width:6px; height:6px; border-radius:50%; display:inline-block; flex-shrink:0; }
+.snom { background:#10B981; box-shadow:0 0 6px #10B981; }
+.sdeg { background:#F59E0B; box-shadow:0 0 6px #F59E0B; }
+.soff { background:#EF4444; box-shadow:0 0 6px #EF4444; }
+
+/* ── Table ── */
+.dtbl { width:100%; border-collapse:collapse; }
+.dtbl th { background:var(--bg2); color:var(--textx); font-family:'IBM Plex Mono',monospace; font-size:8.5px; font-weight:500; letter-spacing:.15em; text-transform:uppercase; padding:7px 11px; border-bottom:1px solid var(--border); text-align:left; white-space:nowrap; }
+.dtbl td { padding:8px 11px; border-bottom:1px solid rgba(24,50,100,.25); vertical-align:middle; font-size:12px; }
+.dtbl tr:hover td { background:rgba(37,99,235,.04); }
+.dtbl tr.sel td { background:rgba(37,99,235,.09); }
+.dtbl tr { cursor:pointer; }
+
+/* ── Input ── */
+.minp { background:rgba(0,0,0,.55); border:1px solid var(--border); color:var(--text); padding:7px 10px; border-radius:4px; font-family:'IBM Plex Mono',monospace; font-size:11px; width:100%; outline:none; transition:border-color .2s,box-shadow .2s; }
+.minp:focus { border-color:var(--blue); box-shadow:0 0 0 2px rgba(37,99,235,.14); }
+.minp::placeholder { color:var(--textx); }
+select.minp option { background:#080f24; }
+input[type=range] { -webkit-appearance:none; appearance:none; width:100%; height:3px; border-radius:2px; outline:none; cursor:pointer; }
+input[type=range]::-webkit-slider-thumb { -webkit-appearance:none; width:11px; height:11px; border-radius:50%; background:#fff; box-shadow:0 0 6px rgba(37,99,235,.6); transition:transform .15s,box-shadow .15s; }
+input[type=range]:hover::-webkit-slider-thumb { transform:scale(1.3); box-shadow:0 0 12px rgba(37,99,235,.8); }
+
+/* ── Animations ── */
+@keyframes pdot  { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.45;transform:scale(.6)} }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+@keyframes fadeU { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
+@keyframes scan  { 0%{transform:translateY(-100%)} 100%{transform:translateY(200%)} }
+@keyframes shimr { 0%{background-position:-200% 0} 100%{background-position:200% 0} }
+@keyframes alertin { from{opacity:0;transform:translateX(-6px)} to{opacity:1;transform:translateX(0)} }
+
+.ppulse { animation:pdot 2s ease-in-out infinite; }
+.blink  { animation:blink 1s step-end infinite; }
+.fadeup { animation:fadeU .4s ease forwards; }
+
+/* ── Scanline overlay on panels ── */
+.scan-ov { position:relative; overflow:hidden; }
+.scan-ov::before { content:''; position:absolute; left:0; right:0; height:80px; background:linear-gradient(transparent,rgba(37,99,235,.025),transparent); pointer-events:none; animation:scan 5s linear infinite; z-index:1; }
+
+/* ── Noise ── */
+body::after { content:''; position:fixed; inset:0; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E"); opacity:.02; pointer-events:none; z-index:9999; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState, useEffect, useRef, useCallback } = React;
+
+/* ═══════════════════════════════════════════════════════
+   DATA
+═══════════════════════════════════════════════════════ */
+const ASSETS = [
+  { id:'MTR-001', name:'Rhine Valley Power Complex',      type:'Energy',         lat:51.2,  lon:6.7,    cc:'DEU', country:'Germany',       valueMm:340, pr:0.71, tr:0.58, cr:0.74, alerts:2, lastRun:'04:12 UTC' },
+  { id:'MTR-002', name:'Jakarta Coastal Infrastructure',  type:'Infrastructure', lat:-6.2,  lon:106.8,  cc:'IDN', country:'Indonesia',      valueMm:210, pr:0.92, tr:0.64, cr:0.89, alerts:5, lastRun:'04:08 UTC' },
+  { id:'MTR-003', name:'Houston Petrochem Terminal',      type:'Industrial',     lat:29.8,  lon:-95.4,  cc:'USA', country:'United States',  valueMm:580, pr:0.78, tr:0.86, cr:0.81, alerts:3, lastRun:'03:55 UTC' },
+  { id:'MTR-004', name:'Mumbai Financial District',       type:'Commercial',     lat:19.0,  lon:72.9,   cc:'IND', country:'India',          valueMm:290, pr:0.69, tr:0.55, cr:0.67, alerts:1, lastRun:'04:15 UTC' },
+  { id:'MTR-005', name:'Copenhagen Offshore Wind Array',  type:'Energy',         lat:55.7,  lon:12.5,   cc:'DNK', country:'Denmark',        valueMm:125, pr:0.18, tr:0.14, cr:0.22, alerts:0, lastRun:'04:10 UTC' },
+  { id:'MTR-006', name:'Miami Port Authority Complex',    type:'Infrastructure', lat:25.8,  lon:-80.2,  cc:'USA', country:'United States',  valueMm:475, pr:0.87, tr:0.72, cr:0.85, alerts:4, lastRun:'03:48 UTC' },
+  { id:'MTR-007', name:'Shanghai Bonded Logistics Hub',   type:'Industrial',     lat:31.2,  lon:121.5,  cc:'CHN', country:'China',          valueMm:320, pr:0.74, tr:0.61, cr:0.71, alerts:2, lastRun:'04:05 UTC' },
+  { id:'MTR-008', name:'Nairobi Agricultural Basin',      type:'Agriculture',    lat:-1.3,  lon:36.8,   cc:'KEN', country:'Kenya',          valueMm:85,  pr:0.94, tr:0.78, cr:0.91, alerts:6, lastRun:'03:41 UTC' },
+  { id:'MTR-009', name:'Rotterdam Deep Sea Terminal',     type:'Infrastructure', lat:51.9,  lon:4.5,    cc:'NLD', country:'Netherlands',    valueMm:680, pr:0.62, tr:0.49, cr:0.58, alerts:1, lastRun:'04:18 UTC' },
+  { id:'MTR-010', name:'Sydney CBD Commercial Portfolio', type:'Commercial',     lat:-33.9, lon:151.2,  cc:'AUS', country:'Australia',      valueMm:220, pr:0.38, tr:0.35, cr:0.41, alerts:0, lastRun:'04:02 UTC' },
+];
+
+const ALERTS_DATA = [
+  { id:'ALT-4821', sev:'CRITICAL', assetId:'MTR-008', assetShort:'Nairobi Agricultural Basin',   rtype:'PHYSICAL',   msg:'Severe drought probability 94% within 90-day window. NDVI anomaly −2.3σ vs seasonal baseline.', src:'Sentinel-2 NDVI / CHIRPS v2.0',    ts:'04:17:33' },
+  { id:'ALT-4820', sev:'CRITICAL', assetId:'MTR-002', assetShort:'Jakarta Coastal Infrastructure',rtype:'PHYSICAL',   msg:'Storm surge probability elevated 89% under SSP3-7.0. Sea level anomaly +34 cm at gauge.', src:'ECMWF ENS / Copernicus Marine',    ts:'04:15:11' },
+  { id:'ALT-4819', sev:'HIGH',     assetId:'MTR-006', assetShort:'Miami Port Authority Complex',  rtype:'PHYSICAL',   msg:'Atlantic hurricane track intersects asset boundary. Category 3+ probability 67%.', src:'NOAA NHC / ECMWF ENS',             ts:'04:12:44' },
+  { id:'ALT-4818', sev:'HIGH',     assetId:'MTR-003', assetShort:'Houston Petrochem Terminal',    rtype:'TRANSITION', msg:'Carbon pricing delta +$18/tCO₂ under EPA-IL-2025-04. Stranded asset probability 71%.', src:'Bloomberg Terminal / EPA RegFeed', ts:'04:08:22' },
+  { id:'ALT-4817', sev:'ELEVATED', assetId:'MTR-001', assetShort:'Rhine Valley Power Complex',    rtype:'PHYSICAL',   msg:'Rhine discharge 38% below Q2 climatological mean. Cooling water availability degraded.', src:'Sentinel-1 SAR / Copernicus Land', ts:'04:05:01' },
+  { id:'ALT-4816', sev:'ELEVATED', assetId:'MTR-007', assetShort:'Shanghai Bonded Logistics Hub', rtype:'PHYSICAL',   msg:'Typhoon season onset 14 days early. ECMWF ensemble wind speed anomaly track approaching.', src:'ECMWF ENS / CMA',                  ts:'03:58:44' },
+  { id:'ALT-4815', sev:'ELEVATED', assetId:'MTR-004', assetShort:'Mumbai Financial District',     rtype:'PHYSICAL',   msg:'Monsoon intensification above seasonal norm. Urban flooding index +1.8σ above baseline.', src:'IMD / Copernicus GloFAS',          ts:'03:45:22' },
+  { id:'ALT-4814', sev:'MODERATE', assetId:'MTR-009', assetShort:'Rotterdam Deep Sea Terminal',   rtype:'TRANSITION', msg:'EU ETS carbon credit cost +€8/tCO₂. Logistics cost basis impact under actuarial review.', src:'Bloomberg Terminal / EU ETS API',  ts:'03:32:09' },
+];
+
+const TELEMETRY = [
+  { id:'TEL-01', name:'Sentinel-1 SAR',         provider:'ESA',            type:'SAR Imagery',       status:'NOMINAL',  revisit:'6-Day',    latencyMs:34,  coverage:100.0, lastSync:'04:11:07' },
+  { id:'TEL-02', name:'Sentinel-2 MSI',         provider:'ESA',            type:'Optical Imagery',   status:'NOMINAL',  revisit:'5-Day',    latencyMs:41,  coverage:98.4,  lastSync:'04:09:44' },
+  { id:'TEL-03', name:'ECMWF ENS (51-Member)',  provider:'ECMWF',          type:'Numerical Weather', status:'NOMINAL',  revisit:'6-Hour',   latencyMs:12,  coverage:100.0, lastSync:'04:00:00' },
+  { id:'TEL-04', name:'IPCC AR6 / CMIP6',       provider:'IPCC',           type:'Climate Scenarios', status:'NOMINAL',  revisit:'Static',   latencyMs:null,coverage:100.0, lastSync:'2025-03-01' },
+  { id:'TEL-05', name:'Bloomberg Terminal API', provider:'Bloomberg L.P.', type:'Financial Intel',   status:'NOMINAL',  revisit:'Real-time',latencyMs:8,   coverage:100.0, lastSync:'04:19:22' },
+  { id:'TEL-06', name:'NOAA NHC Track Data',    provider:'NOAA',           type:'Storm Intelligence',status:'NOMINAL',  revisit:'6-Hour',   latencyMs:28,  coverage:100.0, lastSync:'04:00:00' },
+  { id:'TEL-07', name:'Copernicus Land Monitor',provider:'EU Copernicus',  type:'Land Cover Change', status:'DEGRADED', revisit:'10-Day',   latencyMs:210, coverage:84.1,  lastSync:'03:22:11' },
+  { id:'TEL-08', name:'CHIRPS Precipitation',   provider:'UCSB / USAID',   type:'Precipitation',     status:'NOMINAL',  revisit:'Daily',    latencyMs:55,  coverage:100.0, lastSync:'04:14:52' },
+  { id:'TEL-09', name:'EPA Regulatory Feed',    provider:'US EPA',         type:'Regulatory Intel',  status:'NOMINAL',  revisit:'Real-time',latencyMs:5,   coverage:100.0, lastSync:'04:19:01' },
+  { id:'TEL-10', name:'GloFAS River Discharge', provider:'EU Copernicus',  type:'Hydrological',      status:'NOMINAL',  revisit:'Daily',    latencyMs:67,  coverage:97.2,  lastSync:'04:06:33' },
+];
+
+/* ═══════════════════════════════════════════════════════
+   HELPERS
+═══════════════════════════════════════════════════════ */
+const riskMeta = s => {
+  if (s >= .85) return { label:'CRITICAL', cls:'rc', bgc:'rbc', hex:'#EF4444' };
+  if (s >= .70) return { label:'HIGH',     cls:'rh', bgc:'rbh', hex:'#F97316' };
+  if (s >= .55) return { label:'ELEVATED', cls:'re', bgc:'rbe', hex:'#F59E0B' };
+  if (s >= .35) return { label:'MODERATE', cls:'rm', bgc:'rbm', hex:'#3B82F6' };
+  return               { label:'LOW',      cls:'rl', bgc:'rbl', hex:'#10B981' };
+};
+const fUsd  = mm => mm >= 1000 ? `$${(mm/1000).toFixed(1)}B` : `$${mm}M`;
+const fPct  = v  => `${(v*100).toFixed(1)}%`;
+const sevMeta = sev => ({
+  CRITICAL:{ c:'#EF4444', bg:'rgba(239,68,68,.07)' },
+  HIGH:    { c:'#F97316', bg:'rgba(249,115,22,.07)' },
+  ELEVATED:{ c:'#F59E0B', bg:'rgba(245,158,11,.07)' },
+  MODERATE:{ c:'#3B82F6', bg:'rgba(59,130,246,.07)' },
+}[sev] || { c:'#94A3B8', bg:'transparent' });
+
+/* ═══════════════════════════════════════════════════════
+   CLAUDE AI — Backend Integration
+   Points to your Go API at localhost:8080
+═══════════════════════════════════════════════════════ */
+const API_BASE = 'http://localhost:8080'; // ← change to your deployed URL when live
+
+async function claudeAnalyze(prompt) {
+  const res = await fetch(`${API_BASE}/analyze`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ prompt })
+  });
+  const data = await res.json();
+  if (data.error) throw new Error(data.error);
+  return data.result;
+}
+
+async function claudeChat(messages) {
+  const res = await fetch(`${API_BASE}/chat`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ messages })
+  });
+  const data = await res.json();
+  if (data.error) throw new Error(data.error);
+  return data.result;
+}
+
+/* ═══════════════════════════════════════════════════════
+   SHARED COMPONENTS
+═══════════════════════════════════════════════════════ */
+const UTCClock = () => {
+  const [t, setT] = useState('');
+  useEffect(() => {
+    const tick = () => setT(new Date().toISOString().slice(0,19).replace('T',' ') + ' Z');
+    tick(); const id = setInterval(tick, 1000); return () => clearInterval(id);
+  }, []);
+  return <span className="f-mono" style={{fontSize:'10.5px',color:'var(--textx)'}}>{t}</span>;
+};
+
+const RiskBadge = ({ score }) => {
+  const m = riskMeta(score);
+  return (
+    <span className={`f-mono ${m.bgc}`} style={{display:'inline-flex',alignItems:'center',gap:'4px',border:'1px solid',borderRadius:'3px',padding:'1px 6px',fontSize:'8.5px',fontWeight:600}}>
+      <span style={{width:'5px',height:'5px',borderRadius:'50%',background:m.hex,boxShadow:`0 0 4px ${m.hex}`,flexShrink:0,display:'inline-block'}}></span>
+      {m.label}
+    </span>
+  );
+};
+
+const RBar = ({ val, w = 80 }) => {
+  const m = riskMeta(val);
+  return (
+    <div style={{display:'flex',alignItems:'center',gap:'6px'}}>
+      <div style={{height:'3px',width:`${w}px`,background:'rgba(255,255,255,.06)',borderRadius:'2px',overflow:'hidden',flexShrink:0}}>
+        <div style={{height:'100%',background:m.hex,width:`${val*100}%`,transition:'width .8s cubic-bezier(.16,1,.3,1)'}}></div>
+      </div>
+      <span className="f-mono" style={{fontSize:'10px',color:m.hex,minWidth:'34px'}}>{fPct(val)}</span>
+    </div>
+  );
+};
+
+const ArcGauge = ({ score }) => {
+  const m = riskMeta(score);
+  const R = 48; const C = 2*Math.PI*R; const half = C/2;
+  return (
+    <div style={{position:'relative',width:'110px',height:'60px',margin:'0 auto',flexShrink:0}}>
+      <svg viewBox="0 0 110 62" style={{overflow:'visible',width:'110px',height:'62px'}}>
+        <path d={`M 8 58 A ${R} ${R} 0 0 1 102 58`} fill="none" stroke="rgba(255,255,255,.06)" strokeWidth="5.5" strokeLinecap="butt"/>
+        <path d={`M 8 58 A ${R} ${R} 0 0 1 102 58`} fill="none" stroke={m.hex} strokeWidth="5.5" strokeLinecap="butt"
+          strokeDasharray={`${half}`} strokeDashoffset={`${half - half*score}`}
+          style={{transition:'stroke-dashoffset 1s cubic-bezier(.16,1,.3,1),stroke .5s'}}/>
+        <text x="55" y="49" textAnchor="middle" fill="white" style={{fontFamily:'Barlow Condensed',fontWeight:700,fontSize:'21px'}}>{fPct(score)}</text>
+        <text x="55" y="60" textAnchor="middle" fill={m.hex} style={{fontFamily:'IBM Plex Mono',fontSize:'7.5px',letterSpacing:'.14em'}}>{m.label}</text>
+      </svg>
+    </div>
+  );
+};
+
+const KpiCard = ({ label, value, sub, accent, icon }) => (
+  <div className="panel scan-ov" style={{borderRadius:'5px',padding:'14px 18px',flex:1,minWidth:0}}>
+    <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',marginBottom:'7px'}}>
+      <span className="f-mono" style={{fontSize:'8.5px',color:'var(--textx)',textTransform:'uppercase',letterSpacing:'.15em'}}>{label}</span>
+      <i className={`fa-solid ${icon}`} style={{fontSize:'10px',color:accent,opacity:.55}}></i>
+    </div>
+    <div className="f-display" style={{fontSize:'26px',fontWeight:700,color:'white',lineHeight:1}}>{value}</div>
+    {sub && <div className="f-mono" style={{fontSize:'9px',color:accent,marginTop:'4px'}}>{sub}</div>}
+  </div>
+);
+
+/* ═══════════════════════════════════════════════════════
+   ASSET MAP (Canvas)
+═══════════════════════════════════════════════════════ */
+const AssetMap = ({ assets, selId, onSelect }) => {
+  const cvRef = useRef(null);
+  const [hov, setHov] = useState(null);
+  const lon2x = (lon, W) => ((lon + 180) / 360) * W;
+  const lat2y = (lat, H) => ((90 - lat) / 180) * H;
+
+  useEffect(() => {
+    const cv = cvRef.current; if (!cv) return;
+    const ctx = cv.getContext('2d');
+    const W = cv.width, H = cv.height;
+    ctx.fillStyle = '#030912'; ctx.fillRect(0, 0, W, H);
+
+    // Grid
+    ctx.strokeStyle = 'rgba(16,40,80,.6)'; ctx.lineWidth = .5;
+    for (let lon = -180; lon <= 180; lon += 30) { const x = lon2x(lon,W); ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,H); ctx.stroke(); }
+    for (let lat = -90; lat <= 90; lat += 30)   { const y = lat2y(lat,H); ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W,y); ctx.stroke(); }
+
+    // Equator brighter
+    ctx.strokeStyle = 'rgba(37,99,235,.22)'; ctx.lineWidth = 1;
+    const eqY = lat2y(0,H); ctx.beginPath(); ctx.moveTo(0,eqY); ctx.lineTo(W,eqY); ctx.stroke();
+
+    // Tropics dashed
+    ctx.strokeStyle = 'rgba(245,158,11,.1)'; ctx.lineWidth = .5; ctx.setLineDash([4,7]);
+    [23.5,-23.5].forEach(lat => { const y = lat2y(lat,H); ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W,y); ctx.stroke(); });
+    ctx.setLineDash([]);
+
+    // Lat/Lon labels
+    ctx.fillStyle = 'rgba(50,80,130,.65)'; ctx.font = '7.5px IBM Plex Mono'; ctx.textAlign = 'center';
+    [-120,-60,0,60,120].forEach(lon => ctx.fillText(`${lon>=0?lon+'°E':Math.abs(lon)+'°W'}`, lon2x(lon,W), H-3));
+    ctx.textAlign = 'right';
+    [60,30,-30,-60].forEach(lat => ctx.fillText(`${lat>0?lat+'°N':Math.abs(lat)+'°S'}`, 28, lat2y(lat,H)+3));
+
+    // Assets
+    assets.forEach(a => {
+      const x = lon2x(a.lon,W), y = lat2y(a.lat,H);
+      const m = riskMeta(a.cr);
+      const isSel = a.id === selId, isHov = a.id === hov;
+
+      if (isSel || isHov) {
+        ctx.beginPath(); ctx.arc(x,y,14,0,Math.PI*2);
+        ctx.fillStyle = m.hex + '14'; ctx.fill();
+        ctx.beginPath(); ctx.arc(x,y,14,0,Math.PI*2);
+        ctx.strokeStyle = m.hex + '55'; ctx.lineWidth = 1; ctx.stroke();
+      }
+      // Pulse ring
+      ctx.beginPath(); ctx.arc(x,y,8,0,Math.PI*2);
+      ctx.strokeStyle = m.hex + '45'; ctx.lineWidth = 1.2; ctx.stroke();
+      // Core dot
+      ctx.beginPath(); ctx.arc(x,y,5,0,Math.PI*2);
+      ctx.fillStyle = m.hex; ctx.fill();
+      // Alert dot
+      if (a.alerts > 0) {
+        ctx.beginPath(); ctx.arc(x+4,y-4,2.5,0,Math.PI*2);
+        ctx.fillStyle = '#EF4444'; ctx.fill();
+      }
+      if (isSel || isHov) {
+        ctx.fillStyle = 'rgba(255,255,255,.9)'; ctx.font = '8.5px IBM Plex Mono'; ctx.textAlign = 'left';
+        ctx.fillText(a.id, x+10, y+3);
+      }
+    });
+  }, [assets, selId, hov]);
+
+  const coords = (e) => {
+    const cv = cvRef.current; const rect = cv.getBoundingClientRect();
+    const sx = cv.width/rect.width, sy = cv.height/rect.height;
+    return [(e.clientX-rect.left)*sx, (e.clientY-rect.top)*sy];
+  };
+  const findNear = ([mx,my]) => {
+    const W = cvRef.current?.width||900, H = cvRef.current?.height||380;
+    for (const a of assets) { const x = lon2x(a.lon,W), y = lat2y(a.lat,H); if (Math.hypot(mx-x,my-y)<16) return a; }
+    return null;
+  };
+
+  const hovA = assets.find(a => a.id === hov);
+  return (
+    <div style={{position:'relative',width:'100%',height:'100%'}}>
+      <canvas ref={cvRef} width={920} height={380}
+        onClick={e => { const a = findNear(coords(e)); onSelect(a||null); }}
+        onMouseMove={e => { const a = findNear(coords(e)); setHov(a?.id||null); }}
+        onMouseLeave={() => setHov(null)}
+        style={{width:'100%',height:'100%',cursor:'crosshair',display:'block'}}/>
+      {hovA && (
+        <div style={{position:'absolute',bottom:'8px',left:'8px',background:'rgba(5,10,26,.97)',border:'1px solid rgba(37,99,235,.4)',borderRadius:'4px',padding:'8px 12px',pointerEvents:'none',backdropFilter:'blur(8px)',zIndex:10}}>
+          <div className="f-mono" style={{fontSize:'8.5px',color:'var(--textx)',marginBottom:'3px'}}>{hovA.id} · {hovA.country} · {hovA.type.toUpperCase()}</div>
+          <div className="f-display" style={{fontSize:'13px',fontWeight:600,color:'white',marginBottom:'5px'}}>{hovA.name}</div>
+          <div style={{display:'flex',gap:'10px',alignItems:'center'}}>
+            <RiskBadge score={hovA.cr}/>
+            <span className="f-mono" style={{fontSize:'10px',color:'var(--textd)'}}>Value: {fUsd(hovA.valueMm)}</span>
+            {hovA.alerts>0 && <span className="f-mono" style={{fontSize:'9.5px',color:'#EF4444'}}>{hovA.alerts} alert{hovA.alerts>1?'s':''}</span>}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+/* ═══════════════════════════════════════════════════════
+   VIEWS
+═══════════════════════════════════════════════════════ */
+
+/* ── DASHBOARD ── */
+const DashboardView = ({ assets, alerts, selA, onSel }) => {
+  const tot = assets.reduce((s,a)=>s+a.valueMm,0);
+  const avgR = assets.reduce((s,a)=>s+a.cr,0)/assets.length;
+  const crit = assets.filter(a=>a.cr>=.85).length;
+  const totA = assets.reduce((s,a)=>s+a.alerts,0);
+
+  return (
+    <div style={{display:'flex',flexDirection:'column',gap:'10px',padding:'14px',height:'100%',overflow:'hidden'}}>
+      {/* KPIs */}
+      <div style={{display:'flex',gap:'8px',flexShrink:0}}>
+        <KpiCard label="Portfolio Value"        value={fUsd(tot)}         sub={`${assets.length} assets · 7 jurisdictions`} accent="#3B82F6" icon="fa-building"/>
+        <KpiCard label="Composite Risk Index"   value={fPct(avgR)}        sub="Weighted · IPCC AR6 aligned"                 accent={riskMeta(avgR).hex} icon="fa-triangle-exclamation"/>
+        <KpiCard label="Critical Assets"        value={crit}              sub={`of ${assets.length} monitored`}             accent="#EF4444" icon="fa-circle-radiation"/>
+        <KpiCard label="Active Alerts"          value={totA}              sub={`${alerts.filter(a=>a.sev==='CRITICAL'||a.sev==='HIGH').length} HIGH/CRITICAL outstanding`} accent="#F59E0B" icon="fa-bell"/>
+      </div>
+
+      {/* Map + Rankings */}
+      <div style={{display:'flex',gap:'8px',flex:'1',minHeight:0}}>
+        <div className="panel" style={{borderRadius:'5px',flex:1,minWidth:0,overflow:'hidden',display:'flex',flexDirection:'column'}}>
+          <div style={{padding:'8px 12px',borderBottom:'1px solid var(--border)',display:'flex',alignItems:'center',gap:'8px',flexShrink:0}}>
+            <i className="fa-solid fa-globe" style={{fontSize:'10px',color:'var(--textx)'}}></i>
+            <span className="f-mono" style={{fontSize:'8.5px',color:'var(--textx)',textTransform:'uppercase',letterSpacing:'.15em'}}>Geospatial Risk Distribution · WGS84 · Equirectangular</span>
+            <div style={{marginLeft:'auto',display:'flex',gap:'10px'}}>
+              {[['#EF4444','Critical'],['#F97316','High'],['#F59E0B','Elevated'],['#3B82F6','Moderate'],['#10B981','Low']].map(([c,l])=>(
+                <div key={l} style={{display:'flex',alignItems:'center',gap:'3px'}}>
+                  <span style={{width:'5px',height:'5px',borderRadius:'50%',background:c,display:'inline-block'}}></span>
+                  <span className="f-mono" style={{fontSize:'7.5px',color:'var(--textx)'}}>{l}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div style={{flex:1,minHeight:0}}>
+            <AssetMap assets={assets} selId={selA?.id} onSelect={onSel}/>
+          </div>
+        </div>
+
+        <div style={{width:'228px',flexShrink:0,display:'flex',flexDirection:'column'}}>
+          <div className="panel" style={{borderRadius:'5px',flex:1,overflow:'hidden',display:'flex',flexDirection:'column'}}>
+            <div style={{padding:'8px 12px',borderBottom:'1px solid var(--border)',flexShrink:0}}>
+              <span className="f-mono" style={{fontSize:'8.5px',color:'var(--textx)',textTransform:'uppercase',letterSpacing:'.15em'}}>Asset Risk Ranking</span>
+            </div>
+            <div style={{overflow:'auto',flex:1}}>
+              {[...assets].sort((a,b)=>b.cr-a.cr).map(a => {
+                const m = riskMeta(a.cr);
+                return (
+                  <div key={a.id} onClick={()=>onSel(a)}
+                    style={{padding:'8px 11px',borderBottom:'1px solid rgba(24,50,100,.22)',cursor:'pointer',
+                      background:selA?.id===a.id?'rgba(37,99,235,.09)':'transparent',transition:'background .15s'}}
+                    onMouseEnter={e=>e.currentTarget.style.background='rgba(37,99,235,.05)'}
+                    onMouseLeave={e=>e.currentTarget.style.background=selA?.id===a.id?'rgba(37,99,235,.09)':'transparent'}>
+                    <div style={{display:'flex',justifyContent:'space-between',marginBottom:'3px'}}>
+                      <span className="f-mono" style={{fontSize:'8.5px',color:'var(--textx)'}}>{a.id}</span>
+                      <span className="f-mono" style={{fontSize:'10px',color:m.hex,fontWeight:600}}>{fPct(a.cr)}</span>
+                    </div>
+                    <div style={{fontSize:'11px',color:'var(--text)',marginBottom:'4px',lineHeight:1.3,whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}}>{a.name}</div>
+                    <RBar val={a.cr} w={158}/>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Alerts Feed */}
+      <div className="panel" style={{borderRadius:'5px',flexShrink:0,maxHeight:'188px',overflow:'hidden',display:'flex',flexDirection:'column'}}>
+        <div style={{padding:'7px 12px',borderBottom:'1px solid var(--border)',display:'flex',alignItems:'center',gap:'7px',flexShrink:0}}>
+          <span className="sdot snom ppulse"></span>
+          <span className="f-mono" style={{fontSize:'8.5px',color:'var(--textx)',textTransform:'uppercase',letterSpacing:'.15em'}}>Active Alert Feed · Real-time</span>
+          <div style={{marginLeft:'auto',display:'flex',gap:'14px'}}>
+            {[['CRITICAL','#EF4444'],['HIGH','#F97316'],['ELEVATED','#F59E0B']].map(([s,c])=>(
+              <span key={s} className="f-mono" style={{fontSize:'8.5px',color:c}}>
+                {alerts.filter(a=>a.sev===s).length} {s}
+              </span>
+            ))}
+          </div>
+        </div>
+        <div style={{overflow:'auto',flex:1}}>
+          {alerts.map((al,i) => {
+            const sm = sevMeta(al.sev);
+            return (
+              <div key={al.id} style={{padding:'7px 12px',borderBottom:'1px solid rgba(24,50,100,.18)',borderLeft:`2px solid ${sm.c}`,background:sm.bg,display:'flex',gap:'10px',alignItems:'flex-start',animation:`alertin .3s ease ${i*.04}s both`}}>
+                <div style={{flexShrink:0,width:'58px'}}>
+                  <div className="f-mono" style={{fontSize:'7.5px',color:sm.c,fontWeight:700}}>{al.sev}</div>
+                  <div className="f-mono" style={{fontSize:'7.5px',color:'var(--textx)',marginTop:'1px'}}>{al.ts}</div>
+                </div>
+                <div style={{flex:1,minWidth:0}}>
+                  <div style={{display:'flex',gap:'7px',alignItems:'center',marginBottom:'2px'}}>
+                    <span className="f-mono" style={{fontSize:'8px',color:'var(--textd)'}}>{al.assetId}</span>
+                    <span className="f-mono" style={{fontSize:'7.5px',padding:'0 4px',borderRadius:'2px',background:al.rtype==='PHYSICAL'?'rgba(37,99,235,.15)':'rgba(245,158,11,.15)',color:al.rtype==='PHYSICAL'?'#60a5fa':'#fbbf24'}}>{al.rtype}</span>
+                  </div>
+                  <div style={{fontSize:'11px',color:'var(--text)',lineHeight:1.35}}>{al.msg}</div>
+                  <div className="f-mono" style={{fontSize:'7.5px',color:'var(--textx)',marginTop:'2px'}}>SRC: {al.src}</div>
+                </div>
+                <div className="f-mono" style={{fontSize:'7.5px',color:'var(--textx)',flexShrink:0}}>{al.id}</div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+/* ── PORTFOLIO ── */
+const PortfolioView = ({ assets, selA, onSel }) => (
+  <div style={{padding:'14px',height:'100%',overflow:'hidden',display:'flex',flexDirection:'column',gap:'10px'}}>
+    <div style={{display:'flex',alignItems:'center',gap:'10px',flexShrink:0}}>
+      <div className="f-display" style={{fontSize:'17px',fontWeight:700,letterSpacing:'.08em',color:'white',textTransform:'uppercase'}}>Asset Portfolio Registry</div>
+      <span className="f-mono" style={{fontSize:'8.5px',color:'var(--textx)'}}>· {assets.length} assets · {(assets.reduce((s,a)=>s+a.valueMm,0)/1000).toFixed(2)}B total exposure</span>
+      <div style={{marginLeft:'auto',display:'flex',gap:'7px'}}>
+        <button className="btn-g"><i className="fa-solid fa-download"></i>Export CSV</button>
+        <button className="btn-g"><i className="fa-solid fa-file-pdf"></i>TCFD Report</button>
+        <button className="btn-g"><i className="fa-solid fa-share-nodes"></i>Share</button>
+      </div>
+    </div>
+    <div className="panel" style={{borderRadius:'5px',flex:1,overflow:'hidden',display:'flex',flexDirection:'column'}}>
+      <div style={{overflow:'auto',flex:1}}>
+        <table className="dtbl">
+          <thead><tr>
+            <th>Asset ID</th><th>Name</th><th>Type</th><th>Jurisdiction</th>
+            <th>Value (USD)</th><th>Composite Risk</th><th>Physical Risk</th>
+            <th>Transition Risk</th><th>Alerts</th><th>Last Analysis</th>
+          </tr></thead>
+          <tbody>
+            {[...assets].sort((a,b)=>b.cr-a.cr).map(a=>{
+              const m = riskMeta(a.cr);
+              return (
+                <tr key={a.id} onClick={()=>onSel(a)} className={selA?.id===a.id?'sel':''}>
+                  <td><span className="f-mono" style={{fontSize:'10px',color:'#60a5fa'}}>{a.id}</span></td>
+                  <td>
+                    <div style={{fontWeight:500,color:'var(--text)'}}>{a.name}</div>
+                    <div className="f-mono" style={{fontSize:'8.5px',color:'var(--textx)',marginTop:'1px'}}>{a.country}</div>
+                  </td>
+                  <td><span className="f-mono" style={{fontSize:'8.5px',color:'var(--textd)'}}>{a.type.toUpperCase()}</span></td>
+                  <td><span className="f-mono" style={{fontSize:'10px',color:'var(--textd)'}}>{a.cc}</span></td>
+                  <td><span className="f-mono" style={{fontSize:'11px',color:'white',fontWeight:500}}>{fUsd(a.valueMm)}</span></td>
+                  <td><div style={{display:'flex',flexDirection:'column',gap:'3px'}}><RiskBadge score={a.cr}/><RBar val={a.cr} w={76}/></div></td>
+                  <td><RBar val={a.pr} w={76}/></td>
+                  <td><RBar val={a.tr} w={76}/></td>
+                  <td>{a.alerts>0
+                    ? <span className="f-mono" style={{fontSize:'10px',color:'#EF4444',background:'rgba(239,68,68,.1)',border:'1px solid rgba(239,68,68,.2)',padding:'1px 6px',borderRadius:'3px'}}>{a.alerts}</span>
+                    : <span className="f-mono" style={{fontSize:'10px',color:'var(--textx)'}}>—</span>}
+                  </td>
+                  <td><span className="f-mono" style={{fontSize:'10px',color:'var(--textx)'}}>{a.lastRun}</span></td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+    </div>
+    {selA && (
+      <div className="panel fadeup" style={{borderRadius:'5px',padding:'14px',flexShrink:0,display:'flex',gap:'20px',alignItems:'center'}}>
+        <div style={{flexShrink:0}}>
+          <div className="f-mono" style={{fontSize:'8.5px',color:'var(--textx)',marginBottom:'3px'}}>{selA.id} · {selA.country} · {selA.type.toUpperCase()}</div>
+          <div className="f-display" style={{fontSize:'18px',fontWeight:700,color:'white'}}>{selA.name}</div>
+        </div>
+        <div style={{flex:1,display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:'14px'}}>
+          {[['Composite Risk',fPct(selA.cr),riskMeta(selA.cr).hex],['Physical Risk',fPct(selA.pr),'#3B82F6'],['Transition Risk',fPct(selA.tr),'#F59E0B'],['Asset Value',fUsd(selA.valueMm),'#10B981']].map(([l,v,c])=>(
+            <div key={l}>
+              <div className="f-mono" style={{fontSize:'8px',color:'var(--textx)',textTransform:'uppercase',letterSpacing:'.1em',marginBottom:'2px'}}>{l}</div>
+              <div className="f-display" style={{fontSize:'20px',fontWeight:700,color:c}}>{v}</div>
+            </div>
+          ))}
+        </div>
+        <div style={{display:'flex',gap:'7px',flexShrink:0}}>
+          <button className="btn-p" style={{fontSize:'11px',padding:'6px 14px',letterSpacing:'.1em'}}><i className="fa-solid fa-bolt"></i>Run Analysis</button>
+          <button className="btn-g"><i className="fa-solid fa-file-alt"></i>Report</button>
+        </div>
+      </div>
+    )}
+  </div>
+);
+
+/* ── ANALYSIS TERMINAL ── */
+const AnalysisView = ({ assets }) => {
+  const [assetId,      setAssetId]      = useState(assets[1].id);
+  const [horizon,      setHorizon]      = useState(365);
+  const [scenario,     setScenario]     = useState('baseline');
+  const [urbDens,      setUrbDens]      = useState(.50);
+  const [insDrag,      setInsDrag]      = useState(.40);
+  const [liqShock,     setLiqShock]     = useState(.30);
+  const [confidence,   setConfidence]   = useState(.92);
+  const [isRunning,    setIsRunning]    = useState(false);
+  const [output,       setOutput]       = useState(null);
+  const [logs,         setLogs]         = useState([]);
+  const [aiNarrative,  setAiNarrative]  = useState(null);
+  const [aiLoading,    setAiLoading]    = useState(false);
+  const logEnd = useRef(null);
+  const selA = assets.find(a=>a.id===assetId);
+
+  const calcRisk = () => {
+    let r = selA.cr;
+    if (horizon===365)  r += .05;
+    if (horizon===1095) r += .11;
+    if (scenario==='disorderly') r += .07;
+    if (scenario==='failed')     r += .14;
+    r += urbDens * .08; r += insDrag * .06; r += liqShock * .05;
+    return Math.min(r, .98);
+  };
+  const liveR = calcRisk();
+  const liveM = riskMeta(liveR);
+
+  const SCEN = {
+    baseline:   { lbl:'SSP1-1.9 · Ordered Transition',  desc:'~1.5°C warming. Strong coordinated policy. Rapid low-carbon transition.' },
+    disorderly: { lbl:'SSP2-4.5 · Disorderly Transition',desc:'~2.7°C warming. Fragmented policy. Abrupt mid-century transition shock.' },
+    failed:     { lbl:'SSP5-8.5 · Failed Transition',   desc:'~4.4°C warming. No mitigation. Physical hazard dominates through 2100.' },
+  };
+
+  const runAnalysis = async () => {
+    setIsRunning(true); setOutput(null); setLogs([]);
+    const runId = `RUN-${Date.now().toString(36).toUpperCase()}`;
+    const steps = [
+      `[${runId}] Initializing Meteorium kernel v2.4.1 — IPCC AR6 mode`,
+      `[${runId}] Target: ${selA.id} — ${selA.name} [${selA.cc}]`,
+      `[${runId}] Parameters: scenario=${scenario.toUpperCase()} | horizon=${horizon}d | CI=${(confidence*100).toFixed(0)}%`,
+      `[${runId}] Authenticating data pipeline access...`,
+      `[${runId}] Fetching Sentinel-1 SAR (overpass ${new Date().toISOString().slice(0,10)})...`,
+      `[${runId}] Loading ECMWF ENS 51-member ensemble (+${horizon}H horizon)...`,
+      `[${runId}] Querying IPCC AR6/CMIP6 pathway database [${SCEN[scenario].lbl.split('·')[0].trim()}]...`,
+      `[${runId}] Bloomberg Terminal: Retrieving market volatility surface & carbon spread...`,
+      `[${runId}] Computing physical hazard decomposition [flood | heatwave | wind | drought | SLR]...`,
+      `[${runId}] Computing transition risk decomposition [carbon | policy | market | technology]...`,
+      `[${runId}] Applying urban density amplification factor (ξ=${urbDens.toFixed(2)})...`,
+      `[${runId}] Applying insurance drag coefficient (δ=${insDrag.toFixed(2)})...`,
+      `[${runId}] Applying liquidity shock factor (λ=${liqShock.toFixed(2)})...`,
+      `[${runId}] Running Monte Carlo simulation (n=10,000 draws)...`,
+      `[${runId}] Calculating VaR/CVaR at 95th percentile...`,
+      `[${runId}] Generating economic loss exposure estimate (USD)...`,
+      `[${runId}] Writing immutable audit record to ledger...`,
+      `[${runId}] ✓ Analysis complete — ${new Date().toISOString().replace('T',' ').slice(0,19)} Z`,
+    ];
+    for (const s of steps) {
+      await new Promise(r => setTimeout(r, 180 + Math.random()*280));
+      setLogs(prev => [...prev, s]);
+    }
+    const r = calcRisk(); const m = riskMeta(r);
+    setOutput({
+      runId, assetId:selA.id, assetName:selA.name, scenario, horizon, confidence,
+      cr: r, band: m.label, pr: Math.min(selA.pr+(scenario==='failed'?.08:0),.98),
+      tr: Math.min(selA.tr+(scenario==='disorderly'?.06:scenario==='failed'?.04:0),.98),
+      lossUsd: selA.valueMm*1e6*r*.25, var95:r*.18, cvar95:r*.27,
+      sources:['Sentinel-1 SAR','ECMWF ENS','Bloomberg Terminal','IPCC AR6/CMIP6','NOAA NHC'],
+      ts: new Date().toISOString(),
+    });
+    setIsRunning(false);
+
+    // ── Claude AI Narrative ──────────────────────────────
+    setAiLoading(true); setAiNarrative(null);
+    try {
+      const narrative = await claudeAnalyze(
+        `You are a senior climate risk analyst. Generate a concise executive intelligence brief for this asset analysis result:
+Asset: ${selA.name} (${selA.id}) | Country: ${selA.country} | Type: ${selA.type}
+Scenario: ${SCEN[scenario].lbl}
+Composite Risk: ${(r*100).toFixed(1)}% [${m.label}]
+Physical Risk: ${(Math.min(selA.pr+(scenario==='failed'?.08:0),.98)*100).toFixed(1)}%
+Transition Risk: ${(Math.min(selA.tr+(scenario==='disorderly'?.06:scenario==='failed'?.04:0),.98)*100).toFixed(1)}%
+Estimated Loss Exposure: $${(selA.valueMm*1e6*r*.25/1e6).toFixed(1)}M
+Horizon: ${horizon} days | Confidence: ${(confidence*100).toFixed(0)}%
+
+Provide: (1) Key risk drivers, (2) Immediate recommended actions, (3) Strategic outlook. Be direct and data-driven. Max 200 words.`
+      );
+      setAiNarrative(narrative);
+    } catch(e) {
+      setAiNarrative(`⚠ AI narrative unavailable: ${e.message}`);
+    }
+    setAiLoading(false);
+  };
+  useEffect(()=>{ logEnd.current?.scrollIntoView({behavior:'smooth'}); },[logs]);
+
+  const SliderParam = ({label,val,setVal,color,note}) => {
+    const pct = Math.round(val*100);
+    const c = color||'#2563EB';
+    return (
+      <div>
+        <div style={{display:'flex',justifyContent:'space-between',marginBottom:'4px'}}>
+          <span className="f-mono" style={{fontSize:'8.5px',color:'var(--textd)',textTransform:'uppercase',letterSpacing:'.1em'}}>{label}</span>
+          <span className="f-mono" style={{fontSize:'10px',color:'white',fontWeight:500}}>{pct}%</span>
+        </div>
+        <input type="range" min={0} max={1} step={.01} value={val} onChange={e=>setVal(parseFloat(e.target.value))}
+          style={{background:`linear-gradient(to right, ${c} ${pct}%, rgba(255,255,255,.07) ${pct}%)`}}/>
+        {note && <div className="f-mono" style={{fontSize:'7.5px',color:'var(--textx)',marginTop:'2px'}}>{note}</div>}
+      </div>
+    );
+  };
+
+  return (
+    <div style={{padding:'14px',height:'100%',overflow:'hidden',display:'flex',flexDirection:'column',gap:'10px'}}>
+      <div style={{display:'flex',alignItems:'center',gap:'10px',flexShrink:0}}>
+        <div className="f-display" style={{fontSize:'17px',fontWeight:700,letterSpacing:'.08em',color:'white',textTransform:'uppercase'}}>Climate Risk Analysis Terminal</div>
+        <span className="f-mono" style={{fontSize:'8.5px',color:'var(--textx)'}}>· Kernel v2.4.1 · IPCC AR6 Aligned · Monte Carlo n=10,000</span>
+      </div>
+
+      <div style={{display:'flex',gap:'10px',flex:1,minHeight:0}}>
+        {/* Parameters Panel */}
+        <div className="panel" style={{width:'272px',flexShrink:0,borderRadius:'5px',overflow:'hidden',display:'flex',flexDirection:'column'}}>
+          <div style={{padding:'8px 12px',borderBottom:'1px solid var(--border)',flexShrink:0}}>
+            <span className="f-mono" style={{fontSize:'8.5px',color:'var(--textx)',textTransform:'uppercase',letterSpacing:'.15em'}}>Model Parameters</span>
+          </div>
+          <div style={{padding:'12px',display:'flex',flexDirection:'column',gap:'12px',flex:1,overflow:'auto'}}>
+            {/* Asset */}
+            <div>
+              <label className="f-mono" style={{fontSize:'8.5px',color:'var(--textx)',textTransform:'uppercase',letterSpacing:'.1em',display:'block',marginBottom:'5px'}}>Target Asset</label>
+              <select value={assetId} onChange={e=>setAssetId(e.target.value)} className="minp">
+                {assets.map(a=><option key={a.id} value={a.id}>{a.id} · {a.name}</option>)}
+              </select>
+              {selA && <div className="f-mono" style={{fontSize:'8px',color:'var(--textx)',marginTop:'4px'}}>Value: {fUsd(selA.valueMm)} · {selA.country} · {selA.type}</div>}
+            </div>
+            {/* Horizon */}
+            <div>
+              <label className="f-mono" style={{fontSize:'8.5px',color:'var(--textx)',textTransform:'uppercase',letterSpacing:'.1em',display:'block',marginBottom:'5px'}}>Prediction Horizon</label>
+              <div style={{display:'flex',gap:'5px'}}>
+                {[[180,'6M'],[365,'1Y'],[1095,'3Y']].map(([v,l])=>(
+                  <button key={v} onClick={()=>setHorizon(v)} className="f-mono" style={{
+                    flex:1,padding:'5px',border:'1px solid',borderRadius:'3px',cursor:'pointer',fontSize:'10px',fontWeight:500,transition:'all .2s',
+                    background:horizon===v?'rgba(37,99,235,.15)':'transparent',
+                    borderColor:horizon===v?'rgba(37,99,235,.5)':'var(--border)',
+                    color:horizon===v?'#60a5fa':'var(--textd)'}}>
+                    {l}
+                  </button>
+                ))}
+              </div>
+            </div>
+            {/* Scenario */}
+            <div>
+              <label className="f-mono" style={{fontSize:'8.5px',color:'var(--textx)',textTransform:'uppercase',letterSpacing:'.1em',display:'block',marginBottom:'5px'}}>IPCC Scenario Pathway</label>
+              <div style={{display:'flex',flexDirection:'column',gap:'4px'}}>
+                {Object.entries(SCEN).map(([k,{lbl,desc}])=>(
+                  <div key={k} onClick={()=>setScenario(k)} style={{
+                    padding:'7px 9px',border:'1px solid',borderRadius:'4px',cursor:'pointer',transition:'all .2s',
+                    background:scenario===k?'rgba(37,99,235,.1)':'transparent',
+                    borderColor:scenario===k?'rgba(37,99,235,.45)':'var(--border)'}}>
+                    <div style={{display:'flex',alignItems:'center',gap:'5px',marginBottom:'2px'}}>
+                      <div style={{width:'7px',height:'7px',borderRadius:'50%',border:'2px solid',transition:'all .2s',
+                        borderColor:scenario===k?'#2563EB':'var(--textx)',background:scenario===k?'#2563EB':'transparent'}}></div>
+                      <span className="f-mono" style={{fontSize:'9.5px',fontWeight:500,color:scenario===k?'#93c5fd':'var(--textd)'}}>{lbl}</span>
+                    </div>
+                    <div className="f-mono" style={{fontSize:'7.5px',color:'var(--textx)',paddingLeft:'12px',lineHeight:1.4}}>{desc}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+            {/* Sliders */}
+            <div style={{display:'flex',flexDirection:'column',gap:'10px'}}>
+              <SliderParam label="Urban Density Factor"    val={urbDens}   setVal={setUrbDens}   color="#3B82F6" note="Amplifies physical & economic loss propagation"/>
+              <SliderParam label="Insurance Drag Factor"   val={insDrag}   setVal={setInsDrag}   color="#F59E0B" note="Coverage gap compounds loss recovery"/>
+              <SliderParam label="Liquidity Shock Factor"  val={liqShock}  setVal={setLiqShock}  color="#F97316" note="Market stress amplifies climate volatility"/>
+            </div>
+            {/* Confidence */}
+            <div>
+              <div style={{display:'flex',justifyContent:'space-between',marginBottom:'4px'}}>
+                <span className="f-mono" style={{fontSize:'8.5px',color:'var(--textd)',textTransform:'uppercase',letterSpacing:'.1em'}}>Confidence Interval</span>
+                <span className="f-mono" style={{fontSize:'10px',color:'#10B981',fontWeight:500}}>{(confidence*100).toFixed(0)}%</span>
+              </div>
+              <input type="range" min={.80} max={.99} step={.01} value={confidence}
+                onChange={e=>setConfidence(parseFloat(e.target.value))}
+                style={{background:`linear-gradient(to right, #10B981 ${((confidence-.80)/.19*100).toFixed(0)}%, rgba(255,255,255,.07) ${((confidence-.80)/.19*100).toFixed(0)}%)`}}/>
+            </div>
+          </div>
+          <div style={{padding:'10px 12px',borderTop:'1px solid var(--border)',flexShrink:0}}>
+            <button className="btn-p" onClick={runAnalysis} disabled={isRunning} style={{width:'100%',justifyContent:'center',padding:'9px',fontSize:'12px',letterSpacing:'.14em'}}>
+              {isRunning?<><i className="fa-solid fa-spinner fa-spin"></i>RUNNING ANALYSIS...</>:<><i className="fa-solid fa-bolt"></i>RUN ANALYSIS</>}
+            </button>
+          </div>
+        </div>
+
+        {/* Center: Preview + Log */}
+        <div style={{flex:1,minWidth:0,display:'flex',flexDirection:'column',gap:'10px'}}>
+          {/* Live Preview */}
+          <div className="panel" style={{borderRadius:'5px',padding:'14px',flexShrink:0}}>
+            <div style={{display:'flex',alignItems:'center',gap:'14px'}}>
+              <ArcGauge score={liveR}/>
+              <div style={{flex:1,display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:'10px'}}>
+                {[
+                  ['Live Risk Score',  fPct(liveR),                 liveM.hex],
+                  ['VaR 95%',         fPct(liveR*.18),             '#F59E0B'],
+                  ['CVaR 95%',        fPct(liveR*.27),             '#EF4444'],
+                  ['Loss Exposure',   `$${(selA.valueMm*liveR*.25).toFixed(1)}M`,'#F97316'],
+                  ['Confidence CI',   fPct(confidence),            '#10B981'],
+                  ['Scenario',        SCEN[scenario].lbl.split('·')[0].trim(),'#3B82F6'],
+                ].map(([l,v,c])=>(
+                  <div key={l}>
+                    <div className="f-mono" style={{fontSize:'7.5px',color:'var(--textx)',textTransform:'uppercase',letterSpacing:'.1em',marginBottom:'2px'}}>{l}</div>
+                    <div className="f-display" style={{fontSize:'17px',fontWeight:700,color:c}}>{v}</div>
+                  </div>
+                ))}
+              </div>
+              <div style={{width:'168px',flexShrink:0}}>
+                <div className="f-mono" style={{fontSize:'7.5px',color:'var(--textx)',marginBottom:'7px',textTransform:'uppercase',letterSpacing:'.1em'}}>Risk Decomposition</div>
+                {[['Physical',selA.pr,'#3B82F6'],['Transition',selA.tr,'#F59E0B'],['Composite',liveR,liveM.hex]].map(([l,v,c])=>(
+                  <div key={l} style={{display:'flex',alignItems:'center',gap:'7px',marginBottom:'5px'}}>
+                    <span className="f-mono" style={{fontSize:'7.5px',color:'var(--textx)',width:'55px',textTransform:'uppercase'}}>{l}</span>
+                    <div style={{flex:1,height:'3px',background:'rgba(255,255,255,.06)',borderRadius:'2px',overflow:'hidden'}}>
+                      <div style={{height:'100%',background:c,width:`${v*100}%`,transition:'width .8s'}}></div>
+                    </div>
+                    <span className="f-mono" style={{fontSize:'9.5px',color:c,minWidth:'30px',textAlign:'right'}}>{fPct(v)}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Execution Log */}
+          <div className="panel" style={{borderRadius:'5px',flex:1,overflow:'hidden',display:'flex',flexDirection:'column'}}>
+            <div style={{padding:'7px 12px',borderBottom:'1px solid var(--border)',display:'flex',alignItems:'center',gap:'7px',flexShrink:0}}>
+              <span className={`sdot ${isRunning?'snom ppulse':'sdeg'}`}></span>
+              <span className="f-mono" style={{fontSize:'8.5px',color:'var(--textx)',textTransform:'uppercase',letterSpacing:'.15em'}}>Execution Log</span>
+              {isRunning && <span className="f-mono" style={{fontSize:'8px',color:'#F59E0B',marginLeft:'4px'}}>PROCESSING</span>}
+            </div>
+            <div style={{flex:1,overflow:'auto',padding:'10px 12px',fontFamily:'IBM Plex Mono',fontSize:'10px',lineHeight:1.75,background:'rgba(0,0,0,.55)'}}>
+              {logs.length===0 && <div style={{color:'var(--textx)'}}>// Awaiting invocation. Configure parameters and press RUN ANALYSIS to execute.</div>}
+              {logs.map((l,i) => {
+                const isSuccess = l.includes('✓'); const isWarn = l.includes('...');
+                return <div key={i} style={{color:isSuccess?'#4ade80':isWarn?'#93c5fd':'#4ade80'}}>{l}</div>;
+              })}
+              {isRunning && <div style={{color:'#F59E0B'}}>// Processing<span className="blink">_</span></div>}
+              <div ref={logEnd}/>
+            </div>
+          </div>
+        </div>
+
+        {/* Output Panel */}
+        <div className="panel" style={{width:'260px',flexShrink:0,borderRadius:'5px',overflow:'auto',display:'flex',flexDirection:'column'}}>
+          <div style={{padding:'8px 12px',borderBottom:'1px solid var(--border)',flexShrink:0}}>
+            <span className="f-mono" style={{fontSize:'8.5px',color:'var(--textx)',textTransform:'uppercase',letterSpacing:'.15em'}}>Analysis Output</span>
+          </div>
+          {!output ? (
+            <div style={{padding:'28px 14px',textAlign:'center',color:'var(--textx)',fontFamily:'IBM Plex Mono',fontSize:'10px',lineHeight:2.2}}>
+              <i className="fa-solid fa-bolt" style={{fontSize:'22px',marginBottom:'10px',display:'block',opacity:.15}}></i>
+              No output yet.<br/>Configure parameters<br/>and run analysis.
+            </div>
+          ) : (
+            <div style={{padding:'12px',display:'flex',flexDirection:'column',gap:'10px',fontFamily:'IBM Plex Mono'}}>
+              {[['Run ID',output.runId,'#60a5fa'],['Asset',output.assetId,'#60a5fa'],['Name',output.assetName.length>24?output.assetName.slice(0,24)+'…':output.assetName,'var(--textd)']].map(([l,v,c])=>(
+                <div key={l}>
+                  <div style={{fontSize:'7.5px',color:'var(--textx)',textTransform:'uppercase',letterSpacing:'.1em',marginBottom:'1px'}}>{l}</div>
+                  <div style={{fontSize:'10px',color:c,lineHeight:1.4}}>{v}</div>
+                </div>
+              ))}
+              <div style={{borderTop:'1px solid var(--border)',paddingTop:'9px'}}>
+                <div style={{fontSize:'7.5px',color:'var(--textx)',textTransform:'uppercase',letterSpacing:'.1em',marginBottom:'6px'}}>Risk Scores</div>
+                {[['Composite',output.cr,riskMeta(output.cr).hex],['Physical',output.pr,'#3B82F6'],['Transition',output.tr,'#F59E0B']].map(([l,v,c])=>(
+                  <div key={l} style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'5px'}}>
+                    <span style={{fontSize:'8.5px',color:'var(--textd)'}}>{l}</span>
+                    <span style={{fontSize:'11px',color:c,fontWeight:700}}>{fPct(v)}</span>
+                  </div>
+                ))}
+              </div>
+              <div style={{borderTop:'1px solid var(--border)',paddingTop:'9px'}}>
+                <div style={{fontSize:'7.5px',color:'var(--textx)',textTransform:'uppercase',letterSpacing:'.1em',marginBottom:'6px'}}>Financial Exposure</div>
+                {[['Loss Exposure',`$${(output.lossUsd/1e6).toFixed(1)}M`,'#F97316'],['VaR 95%',fPct(output.var95),'#F59E0B'],['CVaR 95%',fPct(output.cvar95),'#EF4444']].map(([l,v,c])=>(
+                  <div key={l} style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'5px'}}>
+                    <span style={{fontSize:'8.5px',color:'var(--textd)'}}>{l}</span>
+                    <span style={{fontSize:'11px',color:c,fontWeight:700}}>{v}</span>
+                  </div>
+                ))}
+              </div>
+              <div style={{borderTop:'1px solid var(--border)',paddingTop:'9px'}}>
+                <div style={{fontSize:'7.5px',color:'var(--textx)',textTransform:'uppercase',letterSpacing:'.1em',marginBottom:'5px'}}>Data Sources</div>
+                {output.sources.map(s=>(
+                  <div key={s} style={{display:'flex',alignItems:'center',gap:'5px',marginBottom:'3px'}}>
+                    <span className="sdot snom" style={{width:'4px',height:'4px'}}></span>
+                    <span style={{fontSize:'8.5px',color:'var(--textd)'}}>{s}</span>
+                  </div>
+                ))}
+              </div>
+              <div style={{borderTop:'1px solid var(--border)',paddingTop:'9px'}}>
+                <div style={{fontSize:'8px',color:'var(--textx)',marginBottom:'2px'}}>Scenario: <span style={{color:'#60a5fa'}}>{output.scenario.toUpperCase()}</span></div>
+                <div style={{fontSize:'8px',color:'var(--textx)',marginBottom:'2px'}}>Horizon: <span style={{color:'#60a5fa'}}>{output.horizon}d</span></div>
+                <div style={{fontSize:'8px',color:'var(--textx)',marginBottom:'6px'}}>Confidence: <span style={{color:'#10B981'}}>{(output.confidence*100).toFixed(0)}%</span></div>
+              </div>
+              <div style={{display:'flex',gap:'5px'}}>
+                <button className="btn-p" style={{flex:1,justifyContent:'center',fontSize:'10px',padding:'6px 8px',letterSpacing:'.1em'}}><i className="fa-solid fa-download"></i>Export</button>
+                <button className="btn-g" style={{flex:1,justifyContent:'center',padding:'6px 8px',fontSize:'10px'}}><i className="fa-solid fa-share"></i>Share</button>
+              </div>
+
+              {/* Claude AI Narrative */}
+              <div style={{borderTop:'1px solid var(--border)',paddingTop:'9px'}}>
+                <div style={{display:'flex',alignItems:'center',gap:'5px',marginBottom:'7px'}}>
+                  <i className="fa-solid fa-microchip" style={{fontSize:'8px',color:'#3B82F6'}}></i>
+                  <span className="f-mono" style={{fontSize:'7.5px',color:'var(--textx)',textTransform:'uppercase',letterSpacing:'.12em'}}>AI Intelligence Brief</span>
+                  {aiLoading && <span className="blink f-mono" style={{fontSize:'8px',color:'#10B981',marginLeft:'4px'}}>▋</span>}
+                </div>
+                {aiLoading && (
+                  <div className="f-mono" style={{fontSize:'9px',color:'var(--textx)',lineHeight:1.8}}>
+                    Generating narrative...<br/>Querying Claude AI kernel...
+                  </div>
+                )}
+                {aiNarrative && !aiLoading && (
+                  <div style={{fontSize:'10.5px',color:'var(--text)',lineHeight:1.7,whiteSpace:'pre-wrap',borderLeft:'2px solid rgba(37,99,235,.4)',paddingLeft:'8px'}}>
+                    {aiNarrative}
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+/* ── TELEMETRY ── */
+const TelemetryView = () => {
+  const nom = TELEMETRY.filter(t=>t.status==='NOMINAL').length;
+  const deg = TELEMETRY.filter(t=>t.status==='DEGRADED').length;
+  return (
+    <div style={{padding:'14px',height:'100%',overflow:'hidden',display:'flex',flexDirection:'column',gap:'10px'}}>
+      <div style={{display:'flex',alignItems:'center',gap:'10px',flexShrink:0}}>
+        <div className="f-display" style={{fontSize:'17px',fontWeight:700,letterSpacing:'.08em',color:'white',textTransform:'uppercase'}}>Telemetry & Data Sources</div>
+        <div style={{marginLeft:'auto',display:'flex',gap:'14px'}}>
+          {[['NOMINAL','#10B981',nom],['DEGRADED','#F59E0B',deg],['OFFLINE','#EF4444',0]].map(([s,c,n])=>(
+            <div key={s} style={{display:'flex',alignItems:'center',gap:'5px'}}>
+              <span className="sdot" style={{background:c,boxShadow:`0 0 6px ${c}`}}></span>
+              <span className="f-mono" style={{fontSize:'9.5px',color:'var(--textd)'}}>{n} {s}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+      <div style={{display:'flex',gap:'8px',flexShrink:0}}>
+        <KpiCard label="Total Sources"     value="10"       sub="Data ingestion pipelines"      accent="var(--textd)" icon="fa-satellite-dish"/>
+        <KpiCard label="Nominal Pipelines" value={nom}      sub="Operating within SLA"          accent="#10B981" icon="fa-circle-check"/>
+        <KpiCard label="Avg Latency"       value="25ms"     sub="Mean end-to-end pipeline lag"  accent="#3B82F6" icon="fa-gauge-high"/>
+        <KpiCard label="Last Full Sync"    value="04:19Z"   sub="All nominal sources synced"    accent="#F59E0B" icon="fa-rotate"/>
+      </div>
+      <div className="panel" style={{borderRadius:'5px',flex:1,overflow:'hidden',display:'flex',flexDirection:'column'}}>
+        <div style={{overflow:'auto',flex:1}}>
+          <table className="dtbl">
+            <thead><tr>
+              <th>Status</th><th>Source ID</th><th>Name</th><th>Provider</th>
+              <th>Data Type</th><th>Revisit</th><th>Latency</th><th>Coverage</th><th>Last Ingested</th>
+            </tr></thead>
+            <tbody>
+              {TELEMETRY.map(t => (
+                <tr key={t.id}>
+                  <td>
+                    <div style={{display:'flex',alignItems:'center',gap:'5px'}}>
+                      <span className={`sdot ${t.status==='NOMINAL'?'snom ppulse':t.status==='DEGRADED'?'sdeg':'soff'}`}></span>
+                      <span className="f-mono" style={{fontSize:'9px',color:t.status==='NOMINAL'?'#10B981':t.status==='DEGRADED'?'#F59E0B':'#EF4444'}}>{t.status}</span>
+                    </div>
+                  </td>
+                  <td><span className="f-mono" style={{fontSize:'10px',color:'#60a5fa'}}>{t.id}</span></td>
+                  <td style={{fontWeight:500,color:'var(--text)'}}>{t.name}</td>
+                  <td><span className="f-mono" style={{fontSize:'9.5px',color:'var(--textd)'}}>{t.provider}</span></td>
+                  <td><span className="f-mono" style={{fontSize:'8.5px',color:'var(--textd)',background:'rgba(255,255,255,.04)',padding:'1px 6px',borderRadius:'2px'}}>{t.type}</span></td>
+                  <td><span className="f-mono" style={{fontSize:'10px',color:'var(--text)'}}>{t.revisit}</span></td>
+                  <td><span className="f-mono" style={{fontSize:'10px',color:t.latencyMs===null?'var(--textx)':t.latencyMs>100?'#F59E0B':'var(--text)'}}>{t.latencyMs!==null?`${t.latencyMs}ms`:'—'}</span></td>
+                  <td>
+                    <div style={{display:'flex',alignItems:'center',gap:'6px'}}>
+                      <div style={{height:'3px',width:'55px',background:'rgba(255,255,255,.06)',borderRadius:'2px',overflow:'hidden'}}>
+                        <div style={{height:'100%',background:t.coverage>=99?'#10B981':t.coverage>=90?'#3B82F6':'#F59E0B',width:`${t.coverage}%`,transition:'width .8s'}}></div>
+                      </div>
+                      <span className="f-mono" style={{fontSize:'10px',color:t.coverage>=99?'#10B981':t.coverage>=90?'var(--text)':'#F59E0B'}}>{t.coverage}%</span>
+                    </div>
+                  </td>
+                  <td><span className="f-mono" style={{fontSize:'10px',color:'var(--textx)'}}>{t.lastSync}</span></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+/* ── AI INTELLIGENCE VIEW ── */
+const AIView = ({ assets }) => {
+  const [msgs, setMsgs] = useState([
+    { role:'assistant', content:'METEORIUM AI INTELLIGENCE ONLINE\n\nI have full access to your asset portfolio, risk scores, and telemetry data. Ask me anything — threat analysis, portfolio insights, regulatory exposure, or scenario modeling.' }
+  ]);
+  const [input, setInput]     = useState('');
+  const [loading, setLoading] = useState(false);
+  const chatEnd = useRef(null);
+
+  useEffect(() => { chatEnd.current?.scrollIntoView({ behavior:'smooth' }); }, [msgs]);
+
+  const send = async () => {
+    const text = input.trim();
+    if (!text || loading) return;
+    const newMsgs = [...msgs, { role:'user', content: text }];
+    setMsgs(newMsgs);
+    setInput('');
+    setLoading(true);
+    try {
+      const portfolioContext = `PORTFOLIO CONTEXT:\n${assets.map(a=>`${a.id} ${a.name} [${a.cc}] | Composite Risk: ${(a.cr*100).toFixed(1)}% | Physical: ${(a.pr*100).toFixed(1)}% | Transition: ${(a.tr*100).toFixed(1)}% | Value: $${a.valueMm}M | Alerts: ${a.alerts}`).join('\n')}`;
+      const systemPrompt = `You are the Meteorium AI Intelligence Engine — an expert in climate risk, financial exposure, TCFD reporting, and ESG risk analysis. ${portfolioContext}\n\nUser: ${text}`;
+      const reply = await claudeChat([{ role:'user', content: systemPrompt }]);
+      setMsgs(prev => [...prev, { role:'assistant', content: reply }]);
+    } catch(e) {
+      setMsgs(prev => [...prev, { role:'assistant', content:`⚠ KERNEL ERROR: ${e.message}\nVerify backend is running on ${API_BASE}` }]);
+    }
+    setLoading(false);
+  };
+
+  const QUICK = [
+    'Which assets face the highest climate risk in 2030?',
+    'Summarize transition risk exposure across the portfolio',
+    'What are the top regulatory threats this quarter?',
+    'Generate a TCFD-aligned executive summary',
+  ];
+
+  return (
+    <div style={{padding:'14px',height:'100%',overflow:'hidden',display:'flex',flexDirection:'column',gap:'10px'}}>
+      <div style={{display:'flex',alignItems:'center',gap:'10px',flexShrink:0}}>
+        <div className="f-display" style={{fontSize:'17px',fontWeight:700,letterSpacing:'.08em',color:'white',textTransform:'uppercase'}}>AI Intelligence Terminal</div>
+        <span style={{background:'rgba(37,99,235,.15)',border:'1px solid rgba(37,99,235,.3)',color:'#60a5fa',fontFamily:'IBM Plex Mono',fontSize:'8px',letterSpacing:'.12em',padding:'2px 8px',borderRadius:'3px',textTransform:'uppercase'}}>Powered by Claude</span>
+        <span className="f-mono" style={{fontSize:'8.5px',color:'var(--textx)'}}>· Full portfolio context loaded · {assets.length} assets</span>
+        <div style={{marginLeft:'auto',display:'flex',alignItems:'center',gap:'5px'}}>
+          <span className="sdot snom ppulse"></span>
+          <span className="f-mono" style={{fontSize:'8px',color:'var(--textx)'}}>AI KERNEL ONLINE</span>
+        </div>
+      </div>
+
+      {/* Quick prompts */}
+      <div style={{display:'flex',gap:'6px',flexWrap:'wrap',flexShrink:0}}>
+        {QUICK.map(q => (
+          <button key={q} className="btn-g" style={{fontSize:'9px',padding:'4px 10px'}}
+            onClick={()=>{ setInput(q); }}>
+            <i className="fa-solid fa-bolt" style={{fontSize:'8px',color:'#3B82F6'}}></i>{q}
+          </button>
+        ))}
+      </div>
+
+      {/* Chat area */}
+      <div className="panel scan-ov" style={{borderRadius:'5px',flex:1,overflow:'hidden',display:'flex',flexDirection:'column'}}>
+        <div style={{padding:'6px 12px',borderBottom:'1px solid var(--border)',flexShrink:0,display:'flex',alignItems:'center',gap:'6px'}}>
+          <i className="fa-solid fa-microchip" style={{fontSize:'9px',color:'#3B82F6'}}></i>
+          <span className="f-mono" style={{fontSize:'8px',color:'var(--textx)',textTransform:'uppercase',letterSpacing:'.15em'}}>Intelligence Stream · Claude AI</span>
+        </div>
+        <div style={{flex:1,overflow:'auto',padding:'12px',display:'flex',flexDirection:'column',gap:'10px'}}>
+          {msgs.map((m, i) => (
+            <div key={i} style={{display:'flex',gap:'9px',alignItems:'flex-start',animation:'fadeU .3s ease forwards'}}>
+              <div style={{width:'22px',height:'22px',borderRadius:'3px',flexShrink:0,display:'flex',alignItems:'center',justifyContent:'center',marginTop:'1px',
+                background: m.role==='user' ? 'rgba(37,99,235,.2)' : 'rgba(16,185,129,.15)',
+                border: m.role==='user' ? '1px solid rgba(37,99,235,.35)' : '1px solid rgba(16,185,129,.3)'}}>
+                <i className={`fa-solid ${m.role==='user'?'fa-user':'fa-microchip'}`} style={{fontSize:'9px',color:m.role==='user'?'#60a5fa':'#10B981'}}></i>
+              </div>
+              <div style={{flex:1,minWidth:0}}>
+                <div className="f-mono" style={{fontSize:'7.5px',color:'var(--textx)',marginBottom:'4px',textTransform:'uppercase',letterSpacing:'.1em'}}>
+                  {m.role==='user' ? 'ANALYST · YOU' : 'METEORIUM AI · CLAUDE'}
+                </div>
+                <div style={{fontSize:'12px',color:'var(--text)',lineHeight:1.65,whiteSpace:'pre-wrap',fontFamily:'IBM Plex Sans'}}>{m.content}</div>
+              </div>
+            </div>
+          ))}
+          {loading && (
+            <div style={{display:'flex',gap:'9px',alignItems:'flex-start'}}>
+              <div style={{width:'22px',height:'22px',borderRadius:'3px',flexShrink:0,background:'rgba(16,185,129,.15)',border:'1px solid rgba(16,185,129,.3)',display:'flex',alignItems:'center',justifyContent:'center',marginTop:'1px'}}>
+                <i className="fa-solid fa-microchip" style={{fontSize:'9px',color:'#10B981'}}></i>
+              </div>
+              <div>
+                <div className="f-mono" style={{fontSize:'7.5px',color:'var(--textx)',marginBottom:'4px',textTransform:'uppercase',letterSpacing:'.1em'}}>METEORIUM AI · PROCESSING</div>
+                <div className="f-mono" style={{fontSize:'10px',color:'var(--textx)'}}>
+                  <span className="blink">▋</span> Analyzing portfolio data...
+                </div>
+              </div>
+            </div>
+          )}
+          <div ref={chatEnd}/>
+        </div>
+
+        {/* Input */}
+        <div style={{padding:'10px 12px',borderTop:'1px solid var(--border)',flexShrink:0,display:'flex',gap:'8px'}}>
+          <input className="minp" value={input} onChange={e=>setInput(e.target.value)}
+            onKeyDown={e=>e.key==='Enter'&&send()}
+            placeholder="Query the intelligence engine... (Enter to send)"
+            style={{flex:1,fontSize:'11px'}}/>
+          <button className="btn-p" onClick={send} disabled={loading||!input.trim()}
+            style={{padding:'7px 16px',fontSize:'11px',letterSpacing:'.1em',flexShrink:0}}>
+            <i className="fa-solid fa-paper-plane"></i>Send
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+/* ── APP ── */
+const App = () => {
+  const [view, setView] = useState('dashboard');
+  const [selA, setSelA] = useState(null);
+  const totAlerts = ASSETS.reduce((s,a)=>s+a.alerts,0);
+
+  const NAV_MAIN = [
+    { id:'dashboard', ico:'fa-chart-line',     label:'Overview' },
+    { id:'portfolio', ico:'fa-layer-group',    label:'Asset Portfolio' },
+    { id:'analysis',  ico:'fa-bolt',           label:'Risk Analysis' },
+    { id:'telemetry', ico:'fa-satellite-dish', label:'Telemetry' },
+    { id:'ai',        ico:'fa-microchip',      label:'AI Intelligence' },
+  ];
+  const NAV_SYS = [
+    { ico:'fa-file-lines',          label:'Reports' },
+    { ico:'fa-code',                label:'API Gateway' },
+    { ico:'fa-clock-rotate-left',   label:'Audit Log' },
+    { ico:'fa-gear',                label:'Settings' },
+  ];
+  const TITLES = {
+    dashboard:'Overview · Global Portfolio',
+    portfolio:'Asset Portfolio Registry',
+    analysis: 'Climate Risk Analysis Terminal',
+    telemetry:'Telemetry & Data Sources',
+    ai:       'AI Intelligence Terminal · Claude',
+  };
+
+  return (
+    <div style={{display:'flex',flexDirection:'column',height:'100vh',overflow:'hidden'}}>
+      <div className="cls">UNCLASSIFIED // FOR OFFICIAL USE ONLY (FOUO) // DISTRIBUTION C // METEORIUM PLATFORM v2.4.1</div>
+
+      <div style={{display:'flex',flex:1,overflow:'hidden'}}>
+        {/* Sidebar */}
+        <div className="sidebar">
+          {/* Logo */}
+          <div style={{padding:'14px 15px 11px',borderBottom:'1px solid var(--border)',flexShrink:0}}>
+            <div style={{display:'flex',alignItems:'center',gap:'8px',marginBottom:'3px'}}>
+              <div style={{width:'30px',height:'30px',background:'rgba(37,99,235,.13)',border:'1px solid rgba(37,99,235,.28)',borderRadius:'4px',display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0}}>
+                <i className="fa-solid fa-cloud-bolt" style={{fontSize:'13px',color:'#3B82F6'}}></i>
+              </div>
+              <div>
+                <div className="f-display" style={{fontSize:'19px',fontWeight:800,letterSpacing:'.12em',color:'white',lineHeight:1}}>METEORIUM</div>
+                <div className="f-mono" style={{fontSize:'7px',color:'var(--textx)',letterSpacing:'.15em',textTransform:'uppercase',marginTop:'1px'}}>by PREXUS</div>
+              </div>
+            </div>
+            <div className="f-mono" style={{fontSize:'7px',color:'var(--textx)',letterSpacing:'.08em',textTransform:'uppercase',marginTop:'5px'}}>Climate Risk Intelligence Platform</div>
+          </div>
+
+          {/* Nav */}
+          <div style={{padding:'8px 0',flex:1,overflow:'auto'}}>
+            <div className="f-mono" style={{padding:'5px 15px 3px',fontSize:'7px',color:'var(--textx)',textTransform:'uppercase',letterSpacing:'.15em'}}>Navigation</div>
+            {NAV_MAIN.map(n=>(
+              <div key={n.id} className={`nav-item ${view===n.id?'active':''}`} onClick={()=>setView(n.id)}>
+                <span className="ico"><i className={`fa-solid ${n.ico}`}></i></span>{n.label}
+                {n.id==='analysis' && <span className="f-mono" style={{marginLeft:'auto',fontSize:'7.5px',color:'#3B82F6',background:'rgba(37,99,235,.12)',border:'1px solid rgba(37,99,235,.2)',padding:'0 4px',borderRadius:'2px'}}>API</span>}
+                {n.id==='ai' && <span className="f-mono" style={{marginLeft:'auto',fontSize:'7.5px',color:'#10B981',background:'rgba(16,185,129,.12)',border:'1px solid rgba(16,185,129,.2)',padding:'0 4px',borderRadius:'2px'}}>NEW</span>}
+              </div>
+            ))}
+            <div className="f-mono" style={{padding:'14px 15px 3px',fontSize:'7px',color:'var(--textx)',textTransform:'uppercase',letterSpacing:'.15em',marginTop:'6px'}}>System</div>
+            {NAV_SYS.map(n=>(
+              <div key={n.label} className="nav-item" onClick={()=>{}}>
+                <span className="ico"><i className={`fa-solid ${n.ico}`}></i></span>{n.label}
+              </div>
+            ))}
+          </div>
+
+          {/* Footer */}
+          <div style={{padding:'10px 15px',borderTop:'1px solid var(--border)',flexShrink:0}}>
+            <div style={{display:'flex',alignItems:'center',gap:'5px',marginBottom:'6px'}}>
+              <span className="sdot snom ppulse"></span>
+              <span className="f-mono" style={{fontSize:'8px',color:'var(--textx)'}}>Kernel ONLINE · All systems nominal</span>
+            </div>
+            {[['ORG','WORLD_BANK_IFC'],['ROLE','ORG_ADMIN'],['USER','a.primary@wb.org']].map(([k,v])=>(
+              <div key={k} className="f-mono" style={{fontSize:'8px',color:'var(--textx)',marginBottom:'1px'}}>
+                {k}: <span style={{color:k==='ROLE'?'#10B981':'var(--textd)'}}>{v}</span>
+              </div>
+            ))}
+            <div className="f-mono" style={{fontSize:'7.5px',color:'var(--textx)',marginTop:'5px',borderTop:'1px solid var(--border)',paddingTop:'5px'}}>
+              v2.4.1 · Deploy: SOVEREIGN-CLOUD-EU<br/>Kernel: prexus-kernel-prod-eu1
+            </div>
+          </div>
+        </div>
+
+        {/* Main */}
+        <div style={{flex:1,display:'flex',flexDirection:'column',overflow:'hidden',minWidth:0}}>
+          {/* Topbar */}
+          <div style={{height:'38px',borderBottom:'1px solid var(--border)',background:'var(--bg1)',display:'flex',alignItems:'center',paddingLeft:'14px',paddingRight:'14px',gap:'10px',flexShrink:0}}>
+            <div className="f-display" style={{fontSize:'13px',fontWeight:600,letterSpacing:'.1em',color:'var(--textd)',textTransform:'uppercase'}}>{TITLES[view]}</div>
+            <div style={{marginLeft:'auto',display:'flex',alignItems:'center',gap:'14px'}}>
+              <div style={{display:'flex',alignItems:'center',gap:'5px'}}>
+                <span className="sdot snom ppulse"></span>
+                <span className="f-mono" style={{fontSize:'8.5px',color:'var(--textx)'}}>LIVE · Kernel Nominal</span>
+              </div>
+              <UTCClock/>
+              <div style={{width:'1px',height:'14px',background:'var(--border)'}}></div>
+              <div style={{display:'flex',alignItems:'center',gap:'4px'}}>
+                <i className="fa-solid fa-bell" style={{fontSize:'10px',color:'#F59E0B'}}></i>
+                <span className="f-mono" style={{fontSize:'9.5px',color:'#F59E0B',fontWeight:700}}>{totAlerts}</span>
+              </div>
+              <div style={{width:'1px',height:'14px',background:'var(--border)'}}></div>
+              <div style={{display:'flex',alignItems:'center',gap:'5px'}}>
+                <i className="fa-solid fa-shield-halved" style={{fontSize:'10px',color:'var(--textx)'}}></i>
+                <span className="f-mono" style={{fontSize:'8.5px',color:'var(--textx)'}}>SOVEREIGN-CLOUD-EU</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Content */}
+          <div style={{flex:1,overflow:'hidden'}}>
+            {view==='dashboard' && <DashboardView assets={ASSETS} alerts={ALERTS_DATA} selA={selA} onSel={setSelA}/>}
+            {view==='portfolio' && <PortfolioView assets={ASSETS} selA={selA} onSel={setSelA}/>}
+            {view==='analysis'  && <AnalysisView assets={ASSETS}/>}
+            {view==='telemetry' && <TelemetryView/>}
+            {view==='ai'        && <AIView assets={ASSETS}/>}
+          </div>
+        </div>
+      </div>
+
+      <div className="cls">UNCLASSIFIED // FOR OFFICIAL USE ONLY (FOUO) // DISTRIBUTION C // PROPRIETARY — PREXUS INC. ALL RIGHTS RESERVED</div>
+    </div>
+  );
+};
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+</body>
+</html>

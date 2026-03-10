@@ -184,7 +184,7 @@ const sevMeta = sev => ({
    CLAUDE AI — Backend Integration
    Points to your Go API at localhost:8080
 ═══════════════════════════════════════════════════════ */
-const API_BASE = 'http://localhost:8080'; // ← change to your deployed URL when live
+const API_BASE = 'https://prexus-intelligence.onrender.com'; // ← change to your deployed URL when live
 
 async function claudeAnalyze(prompt) {
   const res = await fetch(`${API_BASE}/analyze`, {

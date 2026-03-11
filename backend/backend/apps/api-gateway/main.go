@@ -5,11 +5,39 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
+	"strings"
 )
 
-type AnalyzeRequest struct {
-	Prompt string `json:"prompt"`
-	Model  string `json:"model"` // "claude" or "gemini"
+func enableCORS(w http.ResponseWriter) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE, OPTIONS")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
+}
+
+func healthHandler(w http.ResponseWriter, r *http.Request) {
+	enableCORS(w)
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(map[string]string{"status": "Prexus API is running"})
+}
+
+func analyzeHandler(w http.ResponseWriter, r *http.Request) {
+	enableCORS(w)
+	if r.Method == "OPTIONS" { w.WriteHeader(200); return }
+	w.Header().Set("Content-Type", "application/json")
+	var req struct {
+		Prompt string `json:"prompt"`
+		Model  string `json:"model"`
+	}
+	json.NewDecoder(r.Body).Decode(&req)
+	if req.Prompt == "" { json.NewEncoder(w).Encode(map[string]string{"error": "prompt required"}); return }
+	if req.Model == "" { req.Model = "gemini" }
+	result, err := AnalyzeProbability(req.Prompt, req.Model)
+	if err != nil {
+		json.NewEncoder(w).Encode(map[string]string{"error": fmt.Sprintf("KERNEL ERROR: %s\nVerify backend is running on https://prexus-intelligence.onrender.com", err.Error())})
+		return
+	}
+	json.NewEncoder(w).Encode(map[string]string{"result": result})
 }
 
 type ChatMessage struct {
@@ -17,90 +45,54 @@ type ChatMessage struct {
 	Content string `json:"content"`
 }
 
-type ChatRequest struct {
-	Messages []ChatMessage `json:"messages"`
-	Model    string        `json:"model"` // "claude" or "gemini"
-}
-
-type APIResponse struct {
-	Result string `json:"result,omitempty"`
-	Error  string `json:"error,omitempty"`
-	Model  string `json:"model,omitempty"`
-}
-
-func enableCORS(w http.ResponseWriter) {
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-	w.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS")
-	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
-	w.Header().Set("Content-Type", "application/json")
-}
-
-func healthHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintln(w, "Prexus API is running")
-}
-
-func analyzeHandler(w http.ResponseWriter, r *http.Request) {
-	enableCORS(w)
-	if r.Method == "OPTIONS" { w.WriteHeader(200); return }
-	if r.Method != "POST" { http.Error(w, "Method not allowed", 405); return }
-
-	var req AnalyzeRequest
-	json.NewDecoder(r.Body).Decode(&req)
-	if req.Prompt == "" {
-		json.NewEncoder(w).Encode(APIResponse{Error: "prompt is required"})
-		return
-	}
-	if req.Model == "" {
-		req.Model = "claude"
-	}
-
-	fullPrompt := fmt.Sprintf(`You are Prexus, a probability predictive intelligence engine.
-Analyze the following scenario and provide:
-1. A probability score (0-100%%)
-2. Key factors influencing the probability
-3. A brief recommendation
-
-Scenario: %s`, req.Prompt)
-
-	result, err := AnalyzeProbability(fullPrompt, req.Model)
-	if err != nil {
-		json.NewEncoder(w).Encode(APIResponse{Error: err.Error()})
-		return
-	}
-	json.NewEncoder(w).Encode(APIResponse{Result: result, Model: req.Model})
-}
-
 func chatHandler(w http.ResponseWriter, r *http.Request) {
 	enableCORS(w)
 	if r.Method == "OPTIONS" { w.WriteHeader(200); return }
-	if r.Method != "POST" { http.Error(w, "Method not allowed", 405); return }
-
-	var req ChatRequest
+	w.Header().Set("Content-Type", "application/json")
+	var req struct {
+		Messages []ChatMessage `json:"messages"`
+		Model    string        `json:"model"`
+	}
 	json.NewDecoder(r.Body).Decode(&req)
-	if len(req.Messages) == 0 {
-		json.NewEncoder(w).Encode(APIResponse{Error: "messages are required"})
-		return
+	if len(req.Messages) == 0 { json.NewEncoder(w).Encode(map[string]string{"error": "messages required"}); return }
+	if req.Model == "" { req.Model = "gemini" }
+	var sb strings.Builder
+	for _, m := range req.Messages {
+		if m.Role == "user" { sb.WriteString("User: " + m.Content + "\n") } else { sb.WriteString("Assistant: " + m.Content + "\n") }
 	}
-	if req.Model == "" {
-		req.Model = "claude"
-	}
-
-	lastMsg := req.Messages[len(req.Messages)-1].Content
-	fullPrompt := fmt.Sprintf("You are Prexus, an intelligent assistant specialized in probability analysis. Be concise and data-driven.\n\nUser: %s", lastMsg)
-
-	result, err := AnalyzeProbability(fullPrompt, req.Model)
+	result, err := AnalyzeProbability(sb.String(), req.Model)
 	if err != nil {
-		json.NewEncoder(w).Encode(APIResponse{Error: err.Error()})
+		json.NewEncoder(w).Encode(map[string]string{"error": fmt.Sprintf("KERNEL ERROR: %s\nVerify backend is running on https://prexus-intelligence.onrender.com", err.Error())})
 		return
 	}
-	json.NewEncoder(w).Encode(APIResponse{Result: result, Model: req.Model})
+	json.NewEncoder(w).Encode(map[string]string{"result": result})
+}
+
+func router(w http.ResponseWriter, r *http.Request) {
+	enableCORS(w)
+	path := r.URL.Path
+	switch {
+	case path == "/health":
+		healthHandler(w, r)
+	case path == "/register":
+		registerHandler(w, r)
+	case path == "/login":
+		loginHandler(w, r)
+	case path == "/analyze":
+		analyzeHandler(w, r)
+	case path == "/chat":
+		chatHandler(w, r)
+	case strings.HasPrefix(path, "/assets"):
+		authMiddleware(assetsRouter)(w, r)
+	default:
+		http.NotFound(w, r)
+	}
 }
 
 func main() {
-	http.HandleFunc("/health", healthHandler)
-	http.HandleFunc("/analyze", analyzeHandler)
-	http.HandleFunc("/chat", chatHandler)
-
-	fmt.Println("🚀 Prexus API running on :8080")
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	port := os.Getenv("PORT")
+	if port == "" { port = "8080" }
+	http.HandleFunc("/", router)
+	log.Printf("🔥 Prexus API running on :%s", port)
+	log.Fatal(http.ListenAndServe(":"+port, nil))
 }

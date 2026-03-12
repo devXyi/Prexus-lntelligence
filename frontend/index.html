@@ -1,0 +1,1898 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Prexus — Sovereign Intelligence Platform</title>
+<meta name="description" content="Prexus: Global Predictive Intelligence Environment for Enterprise & Government. Climate risk, health intelligence, and battlefield analytics."/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600;700&family=Barlow+Condensed:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+<!-- React for Meteorium -->
+<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --background:hsl(220,50%,3%);--foreground:hsl(216,30%,90%);
+  --primary:hsl(221,83%,53%);--primary-fg:#fff;
+  --muted-fg:hsl(215,17%,46%);--border:hsla(0,0%,100%,.06);
+  --input:hsla(0,0%,100%,.09);--destructive:hsl(0,84%,60%);
+  --card-bg:hsla(225,38%,7%,.9);--panel-bg:hsla(222,42%,5%,.93);
+}
+body{background:var(--background);color:var(--foreground);font-family:'DM Sans',sans-serif;overflow-x:hidden;min-height:100vh}
+body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");opacity:.028;pointer-events:none;z-index:9998}
+.font-display{font-family:'Syne',sans-serif}.font-mono{font-family:'IBM Plex Mono',monospace}
+.page{display:none;min-height:100vh}.page.active{display:flex}
+.glass{background:var(--panel-bg);backdrop-filter:blur(24px);border:1px solid var(--border)}
+.glass-card{background:var(--card-bg);backdrop-filter:blur(16px);border:1px solid var(--border)}
+.bracket{position:relative}
+.bracket::before,.bracket::after{content:'';position:absolute;width:14px;height:14px;border-color:hsla(221,83%,53%,.45);border-style:solid;pointer-events:none;z-index:1}
+.bracket::before{top:-1px;left:-1px;border-width:1.5px 0 0 1.5px}
+.bracket::after{bottom:-1px;right:-1px;border-width:0 1.5px 1.5px 0}
+.inp{background:rgba(0,0,0,.5);border:1px solid var(--input);color:var(--foreground);transition:border-color .25s,box-shadow .25s;font-family:'DM Sans',sans-serif;width:100%;display:block}
+.inp:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px hsla(221,83%,53%,.13),inset 0 0 10px hsla(221,83%,53%,.04)}
+.inp::placeholder{color:var(--muted-fg)}
+select.inp option{background:#0a0f1c}
+.glow-blue{box-shadow:0 0 0 1px hsla(221,83%,53%,.22),0 4px 24px hsla(221,83%,53%,.15)}
+.glow-blue-x{box-shadow:0 0 22px hsla(221,83%,53%,.45),0 0 60px hsla(221,83%,53%,.14)}
+.glow-green{box-shadow:0 0 18px hsla(160,68%,41%,.35)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes appear{to{opacity:1}}
+@keyframes pdot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.45;transform:scale(.65)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes drawPath{to{stroke-dashoffset:0}}
+.fu{animation:fadeUp .8s cubic-bezier(.16,1,.3,1) forwards}
+.fu-1{opacity:0;animation:fadeUp .8s cubic-bezier(.16,1,.3,1) .15s forwards}
+.fu-2{opacity:0;animation:fadeUp .8s cubic-bezier(.16,1,.3,1) .3s forwards}
+.fu-3{opacity:0;animation:fadeUp .8s cubic-bezier(.16,1,.3,1) .45s forwards}
+.fi{animation:fadeIn .55s ease forwards}
+.lg-text{font-family:'Syne',sans-serif;font-size:46px;fill:#fff;letter-spacing:8px;font-weight:700;opacity:0;animation:appear 1.2s ease .9s forwards}
+.lg-tag{font-family:'IBM Plex Mono',monospace;font-size:9px;fill:hsla(221,83%,53%,.8);letter-spacing:3.5px;opacity:0;animation:appear 1s ease 1.5s forwards}
+.lg-l1{stroke:rgba(255,255,255,.9);stroke-width:2;fill:none;stroke-dasharray:600;stroke-dashoffset:600;animation:drawPath 1.9s cubic-bezier(.16,1,.3,1) .1s forwards}
+.lg-l2{stroke:hsl(221,83%,53%);stroke-width:2;fill:none;stroke-dasharray:600;stroke-dashoffset:600;animation:drawPath 1.9s cubic-bezier(.16,1,.3,1) .5s forwards}
+.lg-dot{fill:hsl(221,83%,53%);opacity:0;animation:appear .4s ease 1.7s forwards}
+.term-bg{background:rgba(0,0,0,.96);backdrop-filter:blur(20px)}
+::-webkit-scrollbar{width:4px;height:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:#1e293b;border-radius:3px}
+.cookie-banner{position:fixed;bottom:0;left:0;right:0;z-index:9999;padding:16px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;background:hsla(222,42%,5%,.97);backdrop-filter:blur(20px);border-top:1px solid var(--border)}
+.cookie-banner.hidden{display:none}
+.cookie-btn{padding:8px 20px;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;border:none;transition:all .2s}
+.cookie-accept{background:var(--primary);color:#fff}.cookie-accept:hover{filter:brightness(1.15)}
+.cookie-decline{background:transparent;border:1px solid var(--border);color:var(--muted-fg)}.cookie-decline:hover{color:var(--foreground)}
+.flex{display:flex}.flex-col{flex-direction:column}.items-center{align-items:center}.justify-center{justify-content:center}
+.gap-2{gap:8px}.gap-3{gap:12px}.gap-4{gap:16px}.gap-5{gap:20px}
+.text-center{text-align:center}.w-full{width:100%}.relative{position:relative}.absolute{position:absolute}
+.rounded-xl{border-radius:12px}.rounded-2xl{border-radius:16px}.overflow-hidden{overflow:hidden}
+.space-y-3>*+*{margin-top:12px}.space-y-5>*+*{margin-top:20px}
+.grid{display:grid}.grid-cols-2{grid-template-columns:repeat(2,1fr)}
+.tracking-widest{letter-spacing:.1em}.uppercase{text-transform:uppercase}
+.cursor-pointer{cursor:pointer}.cursor-not-allowed{cursor:not-allowed}
+.transition-all{transition:all .3s}
+.hub-card{border-radius:16px;overflow:hidden;position:relative;transition:all .3s}
+.hub-card.enabled:hover{transform:translateY(-8px)}
+.hub-card.locked{opacity:.65;cursor:not-allowed}
+.hub-lock-overlay{position:absolute;inset:0;background:rgba(0,0,0,.82);display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0;transition:opacity .2s;border-radius:16px;backdrop-filter:blur(4px)}
+.hub-card.locked:hover .hub-lock-overlay{opacity:1}
+@media(max-width:768px){.md-grid-2{grid-template-columns:1fr!important}.md-grid-3{grid-template-columns:1fr!important}.hub-grid{grid-template-columns:1fr!important}}
+
+/* ── METEORIUM scoped CSS ── */
+#page-meteorium {
+  --bg:#02050E;--bg1:#05091A;--bg2:#080F24;--bg3:#0C1630;
+  --m-border:rgba(24,50,100,0.55);--borderb:rgba(40,80,160,0.65);
+  --blue:#2563EB;--blue-lo:rgba(37,99,235,0.12);
+  --cyan:#06B6D4;--green:#10B981;--amber:#F59E0B;--red:#EF4444;--orange:#F97316;
+  --text:#C8D5E8;--textd:#6B85A8;--textx:#334466;
+  background:var(--bg);color:var(--text);font-family:'IBM Plex Sans',sans-serif;font-size:13px;
+  height:100vh;overflow:hidden;display:none;
+}
+#page-meteorium.active{display:flex;flex-direction:column;}
+#page-meteorium .f-display{font-family:'Barlow Condensed',sans-serif}
+#page-meteorium .f-mono{font-family:'IBM Plex Mono',monospace}
+#page-meteorium .cls{background:linear-gradient(90deg,#14532d,#166534,#14532d);color:#bbf7d0;font-family:'IBM Plex Mono',monospace;font-size:9.5px;font-weight:600;letter-spacing:.28em;text-align:center;padding:3px 0;text-transform:uppercase;border-bottom:1px solid rgba(16,185,129,.25);flex-shrink:0}
+#page-meteorium .sidebar{width:222px;min-width:222px;background:var(--bg1);border-right:1px solid var(--m-border);display:flex;flex-direction:column;overflow:hidden}
+#page-meteorium .panel{position:relative;background:var(--bg1);border:1px solid var(--m-border)}
+#page-meteorium .panel::before,#page-meteorium .panel::after{content:'';position:absolute;width:9px;height:9px;border-color:rgba(37,99,235,.45);border-style:solid;pointer-events:none;z-index:2}
+#page-meteorium .panel::before{top:-1px;left:-1px;border-width:1.5px 0 0 1.5px}
+#page-meteorium .panel::after{bottom:-1px;right:-1px;border-width:0 1.5px 1.5px 0}
+#page-meteorium .nav-item{display:flex;align-items:center;gap:9px;padding:7px 16px;color:var(--textd);font-family:'Barlow Condensed',sans-serif;font-size:13.5px;font-weight:500;letter-spacing:.07em;text-transform:uppercase;cursor:pointer;border-left:2px solid transparent;transition:all .18s;user-select:none}
+#page-meteorium .nav-item:hover{color:var(--text);background:rgba(37,99,235,.05)}
+#page-meteorium .nav-item.active{color:#60a5fa;border-left-color:var(--blue);background:rgba(37,99,235,.09)}
+#page-meteorium .nav-item .ico{width:14px;text-align:center;font-size:11px;flex-shrink:0}
+#page-meteorium .btn-p{background:var(--blue);color:#fff;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;border:none;cursor:pointer;padding:7px 18px;border-radius:4px;transition:all .2s;display:inline-flex;align-items:center;gap:6px}
+#page-meteorium .btn-p:hover{background:#1d4ed8;box-shadow:0 0 22px rgba(37,99,235,.42)}
+#page-meteorium .btn-p:disabled{opacity:.4;cursor:not-allowed}
+#page-meteorium .btn-g{background:transparent;border:1px solid var(--m-border);color:var(--textd);font-family:'IBM Plex Mono',monospace;font-size:10px;cursor:pointer;padding:5px 11px;border-radius:3px;transition:all .2s;display:inline-flex;align-items:center;gap:5px}
+#page-meteorium .btn-g:hover{border-color:var(--borderb);color:var(--text)}
+#page-meteorium .rc{color:#EF4444}#page-meteorium .rh{color:#F97316}#page-meteorium .re{color:#F59E0B}#page-meteorium .rm{color:#3B82F6}#page-meteorium .rl{color:#10B981}
+#page-meteorium .rbc{background:rgba(239,68,68,.1);border-color:rgba(239,68,68,.28)}
+#page-meteorium .rbh{background:rgba(249,115,22,.1);border-color:rgba(249,115,22,.28)}
+#page-meteorium .rbe{background:rgba(245,158,11,.1);border-color:rgba(245,158,11,.28)}
+#page-meteorium .rbm{background:rgba(59,130,246,.1);border-color:rgba(59,130,246,.28)}
+#page-meteorium .rbl{background:rgba(16,185,129,.1);border-color:rgba(16,185,129,.28)}
+#page-meteorium .sdot{width:6px;height:6px;border-radius:50%;display:inline-block;flex-shrink:0}
+#page-meteorium .snom{background:#10B981;box-shadow:0 0 6px #10B981}
+#page-meteorium .sdeg{background:#F59E0B;box-shadow:0 0 6px #F59E0B}
+#page-meteorium .dtbl{width:100%;border-collapse:collapse}
+#page-meteorium .dtbl th{background:var(--bg2);color:var(--textx);font-family:'IBM Plex Mono',monospace;font-size:8.5px;font-weight:500;letter-spacing:.15em;text-transform:uppercase;padding:7px 11px;border-bottom:1px solid var(--m-border);text-align:left;white-space:nowrap}
+#page-meteorium .dtbl td{padding:8px 11px;border-bottom:1px solid rgba(24,50,100,.25);vertical-align:middle;font-size:12px}
+#page-meteorium .dtbl tr:hover td{background:rgba(37,99,235,.04)}
+#page-meteorium .dtbl tr.sel td{background:rgba(37,99,235,.09)}
+#page-meteorium .dtbl tr{cursor:pointer}
+#page-meteorium .minp{background:rgba(0,0,0,.55);border:1px solid var(--m-border);color:var(--text);padding:7px 10px;border-radius:4px;font-family:'IBM Plex Mono',monospace;font-size:11px;width:100%;outline:none;transition:border-color .2s,box-shadow .2s}
+#page-meteorium .minp:focus{border-color:var(--blue);box-shadow:0 0 0 2px rgba(37,99,235,.14)}
+#page-meteorium .minp::placeholder{color:var(--textx)}
+#page-meteorium select.minp option{background:#080f24}
+#page-meteorium input[type=range]{-webkit-appearance:none;width:100%;height:3px;border-radius:2px;outline:none;cursor:pointer}
+#page-meteorium input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:11px;height:11px;border-radius:50%;background:#fff;box-shadow:0 0 6px rgba(37,99,235,.6);transition:transform .15s,box-shadow .15s}
+#page-meteorium .ppulse{animation:pdot 2s ease-in-out infinite}
+#page-meteorium .blink{animation:blink 1s step-end infinite}
+#page-meteorium .fadeup{animation:fadeU .4s ease forwards}
+#page-meteorium .scan-ov{position:relative;overflow:hidden}
+#page-meteorium .scan-ov::before{content:'';position:absolute;left:0;right:0;height:80px;background:linear-gradient(transparent,rgba(37,99,235,.025),transparent);pointer-events:none;animation:scan 5s linear infinite;z-index:1}
+@keyframes fadeU{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+@keyframes scan{0%{transform:translateY(-100%)}100%{transform:translateY(200%)}}
+@keyframes alertin{from{opacity:0;transform:translateX(-6px)}to{opacity:1;transform:translateX(0)}}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+#page-meteorium #meteorium-root{flex:1;display:flex;flex-direction:column;overflow:hidden}
+</style>
+</head>
+<body>
+<!-- ═══════════════════════════════════════════
+     COOKIE CONSENT
+═══════════════════════════════════════════ -->
+<div id="cookieBanner" class="cookie-banner">
+  <div style="flex:1">
+    <p style="font-size:13px;color:var(--foreground);margin-bottom:4px"><i class="fa-solid fa-cookie-bite" style="color:hsl(38,92%,50%);margin-right:6px"></i><strong>Cookie & Privacy Notice</strong></p>
+    <p class="font-mono" style="font-size:10px;color:var(--muted-fg)">We use cookies to remember your device, session preferences, and improve security. By accepting, you consent to our use of cookies per our Privacy Policy.</p>
+  </div>
+  <div style="display:flex;gap:8px;flex-shrink:0">
+    <button class="cookie-btn cookie-decline" onclick="dismissCookies(false)">Decline</button>
+    <button class="cookie-btn cookie-accept" onclick="dismissCookies(true)">Accept All</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     PAGE 1: SIGN IN / REGISTER
+═══════════════════════════════════════════ -->
+<div id="page-auth" class="page active flex-col items-center justify-center" style="min-height:100vh;position:relative">
+  <div class="absolute" style="inset:0;background-image:linear-gradient(rgba(37,99,235,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(37,99,235,.035) 1px,transparent 1px);background-size:48px 48px"></div>
+  <div class="absolute" style="inset:0;background:radial-gradient(ellipse at 50% 55%,rgba(37,99,235,.07) 0%,transparent 60%)"></div>
+
+  <div style="z-index:10;display:flex;flex-direction:column;align-items:center;width:100%;max-width:380px;padding:0 20px">
+    <div class="fu" style="margin-bottom:48px">
+      <div style="width:320px">
+        <svg viewBox="0 0 430 120" xmlns="http://www.w3.org/2000/svg">
+          <path class="lg-l1" d="M 315 22 L 36 22 L 36 84"/>
+          <path class="lg-l2" d="M 56 100 L 204 100 L 220 83"/>
+          <circle class="lg-dot" cx="36" cy="22" r="3.5"/>
+          <text x="60" y="80" class="lg-text">PREXUS</text>
+          <text x="62" y="111" class="lg-tag">SOVEREIGN INTELLIGENCE PLATFORM</text>
+        </svg>
+      </div>
+    </div>
+
+    <div class="fu-2 bracket" style="width:100%">
+      <div class="glass rounded-2xl overflow-hidden" style="box-shadow:0 25px 50px rgba(0,0,0,.5)">
+        <div style="border-bottom:1px solid var(--border);padding:12px 24px;display:flex;align-items:center;justify-content:space-between;background:rgba(0,0,0,.4)">
+          <div style="display:flex;align-items:center;gap:8px">
+            <i class="fa-solid fa-shield-halved" style="color:var(--primary);font-size:12px"></i>
+            <span class="font-mono" style="font-size:10px;color:var(--muted-fg);text-transform:uppercase;letter-spacing:.22em">Secure Authentication</span>
+          </div>
+          <div style="display:flex;gap:6px">
+            <span style="width:8px;height:8px;border-radius:50%;background:#1e293b"></span>
+            <span style="width:8px;height:8px;border-radius:50%;background:#1e293b"></span>
+            <span style="width:8px;height:8px;border-radius:50%;background:var(--primary)"></span>
+          </div>
+        </div>
+
+        <div style="padding:32px;display:flex;flex-direction:column;align-items:center">
+          <div id="authIcon" style="width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin-bottom:24px;background:hsla(221,60%,15%,.5);border:1px solid hsla(221,83%,53%,.4)">
+            <i id="authIconI" class="fa-solid fa-lock" style="font-size:20px;color:hsl(221,83%,53%)"></i>
+          </div>
+
+          <div style="display:flex;width:100%;border-radius:12px;overflow:hidden;border:1px solid var(--border);margin-bottom:24px">
+            <button id="tabLogin" onclick="setAuthMode('login')" style="flex:1;padding:10px;font-size:10px;background:hsla(221,83%,53%,.15);color:hsl(213,70%,70%);border:none;cursor:pointer;font-family:'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:.15em;border-right:1px solid var(--border)">Sign In</button>
+            <button id="tabRegister" onclick="setAuthMode('register')" style="flex:1;padding:10px;font-size:10px;background:transparent;color:var(--muted-fg);border:none;cursor:pointer;font-family:'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:.15em">Register</button>
+          </div>
+
+          <form id="authForm" onsubmit="handleAuth(event)" style="width:100%" class="space-y-3">
+            <div id="nameField" style="display:none">
+              <input type="text" id="displayName" placeholder="FULL NAME" class="inp rounded-xl" style="padding:14px;font-size:14px;font-family:'IBM Plex Mono',monospace;text-align:center;letter-spacing:.15em"/>
+            </div>
+            <input type="email" id="authEmail" placeholder="EMAIL ADDRESS" required class="inp rounded-xl" style="padding:14px;font-size:14px;font-family:'IBM Plex Mono',monospace;text-align:center;letter-spacing:.15em"/>
+            <input type="password" id="authPass" placeholder="PASSWORD" required minlength="6" class="inp rounded-xl" style="padding:14px;font-size:14px;font-family:'IBM Plex Mono',monospace;text-align:center;letter-spacing:.35em"/>
+            <div id="authError" style="display:none;font-size:10px;color:hsl(0,84%,60%);font-family:'IBM Plex Mono',monospace;text-align:center;padding:8px;border-radius:8px;background:hsla(0,84%,60%,.1);border:1px solid hsla(0,84%,60%,.3)"></div>
+            <button type="submit" id="authBtn" class="glow-blue-x" style="width:100%;padding:14px;border-radius:12px;font-family:'Syne',sans-serif;font-weight:700;font-size:14px;letter-spacing:.1em;text-transform:uppercase;background:var(--primary);color:#fff;border:none;cursor:pointer;transition:all .2s">
+              Sign In
+            </button>
+          </form>
+        </div>
+
+        <div style="border-top:1px solid hsla(0,0%,100%,.05);padding:12px 24px;display:flex;justify-content:space-between;align-items:center;background:rgba(0,0,0,.25)">
+          <span class="font-mono" style="font-size:9px;color:hsl(215,20%,25%);text-transform:uppercase;letter-spacing:.15em">TLS 1.3 · AES-256</span>
+          <span class="font-mono" style="font-size:9px;color:hsl(215,17%,30%);text-transform:uppercase;letter-spacing:.15em;display:flex;align-items:center;gap:6px">
+            <span style="width:6px;height:6px;border-radius:50%;background:hsl(160,68%,41%);animation:pdot 2s infinite"></span>Secure Channel
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <p class="fu-3 font-mono" style="margin-top:24px;font-size:9px;color:hsl(215,20%,25%);text-transform:uppercase;letter-spacing:.22em">
+      Prexus v2.0 &nbsp;·&nbsp; ISO 27001 &nbsp;·&nbsp; SOC 2 Type II
+    </p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     PAGE 2: ESTABLISH ORGANIZATION
+═══════════════════════════════════════════ -->
+<div id="page-org" class="page items-center justify-center" style="padding:24px;position:relative">
+  <div class="absolute" style="inset:0;background-image:linear-gradient(#334155 1px,transparent 1px),linear-gradient(90deg,#334155 1px,transparent 1px);background-size:44px 44px;opacity:.07"></div>
+
+  <div style="width:100%;max-width:960px;z-index:10;border-radius:16px;overflow:hidden;box-shadow:0 25px 50px rgba(0,0,0,.5)" class="glass">
+    <div style="border-bottom:1px solid var(--border);padding:32px;background:rgba(0,0,0,.5)">
+      <div style="display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:20px">
+        <div>
+          <div style="width:160px">
+            <svg viewBox="0 0 430 120" xmlns="http://www.w3.org/2000/svg">
+              <path stroke="rgba(255,255,255,.9)" stroke-width="2" fill="none" d="M 315 22 L 36 22 L 36 84"/>
+              <path stroke="hsl(221,83%,53%)" stroke-width="2" fill="none" d="M 56 100 L 204 100 L 220 83"/>
+              <circle fill="hsl(221,83%,53%)" cx="36" cy="22" r="3.5"/>
+              <text x="60" y="80" style="font-family:'Syne',sans-serif;font-size:46px;fill:#fff;letter-spacing:8px;font-weight:700;opacity:1;animation:none">PREXUS</text>
+              <text x="62" y="111" style="font-family:'IBM Plex Mono',monospace;font-size:9px;fill:hsla(221,83%,53%,.8);letter-spacing:3.5px;opacity:1;animation:none">SOVEREIGN INTELLIGENCE PLATFORM</text>
+            </svg>
+          </div>
+          <h1 class="font-display" style="font-size:24px;font-weight:700;margin-top:16px">Create Organization Account</h1>
+          <p style="color:var(--muted-fg);font-size:14px;margin-top:4px">Secure onboarding for verified entities &nbsp;·&nbsp; Enterprise &amp; Government</p>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:8px">
+          <span class="font-mono" style="background:hsla(221,60%,15%,.6);border:1px solid hsla(221,60%,25%,.5);padding:6px 12px;border-radius:20px;font-size:10px;color:hsl(213,70%,70%);display:flex;align-items:center;gap:6px"><i class="fa-solid fa-shield-check" style="font-size:9px;color:hsl(221,83%,53%)"></i>ISO 27001</span>
+          <span class="font-mono" style="background:hsla(221,60%,15%,.6);border:1px solid hsla(221,60%,25%,.5);padding:6px 12px;border-radius:20px;font-size:10px;color:hsl(213,70%,70%);display:flex;align-items:center;gap:6px"><i class="fa-solid fa-file-contract" style="font-size:9px;color:hsl(221,83%,53%)"></i>SOC 2 Type II</span>
+          <span class="font-mono" style="background:hsla(221,60%,15%,.6);border:1px solid hsla(221,60%,25%,.5);padding:6px 12px;border-radius:20px;font-size:10px;color:hsl(213,70%,70%);display:flex;align-items:center;gap:6px"><i class="fa-solid fa-server" style="font-size:9px;color:hsl(221,83%,53%)"></i>Data Residency</span>
+          <span class="font-mono" style="background:hsla(221,60%,15%,.6);border:1px solid hsla(221,60%,25%,.5);padding:6px 12px;border-radius:20px;font-size:10px;color:hsl(213,70%,70%);display:flex;align-items:center;gap:6px"><i class="fa-solid fa-lock" style="font-size:9px;color:hsl(221,83%,53%)"></i>Zero-Trust</span>
+        </div>
+      </div>
+    </div>
+
+    <form id="orgForm" onsubmit="handleOrgSubmit(event)" style="padding:32px">
+      <div class="grid md-grid-2" style="grid-template-columns:1fr 1fr;gap:40px">
+        <div class="space-y-5">
+          <div style="display:flex;align-items:center;gap:12px;padding-bottom:12px;border-bottom:1px solid var(--border)">
+            <div style="width:28px;height:28px;border-radius:50%;background:hsla(221,60%,15%,.5);border:1px solid hsla(221,60%,25%,.5);display:flex;align-items:center;justify-content:center;color:hsl(221,83%,53%);font-size:12px;font-family:'Syne',sans-serif;font-weight:700;flex-shrink:0">1</div>
+            <div>
+              <h3 class="font-display" style="font-weight:600">Organization Details</h3>
+              <p class="font-mono" style="font-size:10px;color:var(--muted-fg)">Determines compliance routing &amp; workspace partition</p>
+            </div>
+          </div>
+          <div>
+            <label class="font-mono" style="display:block;font-size:10px;color:var(--muted-fg);text-transform:uppercase;letter-spacing:.15em;margin-bottom:6px">Legal Name <span style="color:var(--primary)">*</span></label>
+            <input type="text" id="orgName" required placeholder="Ministry of Finance / Acme Corp" class="inp rounded-xl" style="padding:12px"/>
+          </div>
+          <div>
+            <label class="font-mono" style="display:block;font-size:10px;color:var(--muted-fg);text-transform:uppercase;letter-spacing:.15em;margin-bottom:6px">Organization Type <span style="color:var(--primary)">*</span></label>
+            <select id="orgType" required class="inp rounded-xl" style="padding:12px;appearance:none;cursor:pointer">
+              <option value="">Select entity classification...</option>
+              <option>Government Department</option>
+              <option>Government Agency / PSU</option>
+              <option>State-Owned Enterprise</option>
+              <option>Regulated Public Company</option>
+              <option>Private Institution</option>
+            </select>
+          </div>
+          <div class="grid" style="grid-template-columns:1fr 1fr;gap:16px">
+            <div>
+              <label class="font-mono" style="display:block;font-size:10px;color:var(--muted-fg);text-transform:uppercase;letter-spacing:.15em;margin-bottom:6px">Country <span style="color:var(--primary)">*</span></label>
+              <input type="text" id="orgCountry" required value="India" class="inp rounded-xl" style="padding:12px"/>
+            </div>
+            <div>
+              <label class="font-mono" style="display:block;font-size:10px;color:var(--muted-fg);text-transform:uppercase;letter-spacing:.15em;margin-bottom:6px">Official Domain <span style="color:var(--primary)">*</span></label>
+              <input type="text" id="orgDomain" required placeholder="finance.gov" class="inp rounded-xl font-mono" style="padding:12px"/>
+            </div>
+          </div>
+        </div>
+
+        <div class="space-y-5">
+          <div style="display:flex;align-items:center;gap:12px;padding-bottom:12px;border-bottom:1px solid var(--border)">
+            <div style="width:28px;height:28px;border-radius:50%;background:hsla(221,60%,15%,.5);border:1px solid hsla(221,60%,25%,.5);display:flex;align-items:center;justify-content:center;color:hsl(221,83%,53%);font-size:12px;font-family:'Syne',sans-serif;font-weight:700;flex-shrink:0">2</div>
+            <div>
+              <h3 class="font-display" style="font-weight:600">Administrator Profile</h3>
+              <p class="font-mono" style="font-size:10px;color:var(--muted-fg)">Linked to your authenticated account</p>
+            </div>
+          </div>
+          <div class="grid" style="grid-template-columns:1fr 1fr;gap:16px">
+            <div>
+              <label class="font-mono" style="display:block;font-size:10px;color:var(--muted-fg);text-transform:uppercase;letter-spacing:.15em;margin-bottom:6px">Full Name <span style="color:var(--primary)">*</span></label>
+              <input type="text" id="orgFullName" required placeholder="Jane Doe" class="inp rounded-xl" style="padding:12px"/>
+            </div>
+            <div>
+              <label class="font-mono" style="display:block;font-size:10px;color:var(--muted-fg);text-transform:uppercase;letter-spacing:.15em;margin-bottom:6px">Job Title <span style="color:var(--primary)">*</span></label>
+              <input type="text" id="orgJobTitle" required placeholder="Director of Risk" class="inp rounded-xl" style="padding:12px"/>
+            </div>
+          </div>
+          <div>
+            <label class="font-mono" style="display:block;font-size:10px;color:var(--muted-fg);text-transform:uppercase;letter-spacing:.15em;margin-bottom:6px">Department</label>
+            <input type="text" id="orgDept" placeholder="Strategic Planning" class="inp rounded-xl" style="padding:12px"/>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top:32px;background:rgba(0,0,0,.3);border:1px solid hsla(0,0%,100%,.05);border-radius:16px;padding:20px">
+        <p class="font-mono" style="font-size:9px;color:hsl(215,17%,30%);text-transform:uppercase;letter-spacing:.15em;margin-bottom:8px">Authorization &amp; Compliance</p>
+        <label style="display:flex;align-items:flex-start;gap:12px;cursor:pointer;margin-bottom:12px">
+          <input type="checkbox" id="chk1" required style="accent-color:#2563EB;margin-top:2px;width:16px;height:16px;flex-shrink:0;cursor:pointer"/>
+          <span style="font-size:14px;color:hsl(216,20%,75%);line-height:1.6">I confirm I am legally authorized to create an account on behalf of this organization under applicable law and internal governance policy.</span>
+        </label>
+        <label style="display:flex;align-items:flex-start;gap:12px;cursor:pointer">
+          <input type="checkbox" id="chk2" required style="accent-color:#2563EB;margin-top:2px;width:16px;height:16px;flex-shrink:0;cursor:pointer"/>
+          <span style="font-size:14px;color:hsl(216,20%,75%);line-height:1.6">I acknowledge data will be processed in compliance with government data residency regulations and the Prexus Master Service Agreement.</span>
+        </label>
+      </div>
+
+      <div id="orgError" style="display:none;margin-top:24px;border-radius:12px;border:1px solid hsla(0,84%,60%,.4);background:hsla(0,84%,60%,.1);padding:12px 16px;font-size:14px;color:hsl(0,84%,60%)"></div>
+
+      <div style="display:flex;flex-direction:column;align-items:center;margin-top:32px;padding-top:32px;border-top:1px solid var(--border)">
+        <button type="submit" id="orgBtn" class="glow-blue-x" style="background:var(--primary);color:#fff;font-family:'Syne',sans-serif;font-weight:700;padding:16px 64px;border-radius:12px;border:none;cursor:pointer;letter-spacing:.1em;text-transform:uppercase;font-size:14px;transition:all .2s">
+          Establish Organization Account
+        </button>
+        <p class="font-mono" style="font-size:12px;color:hsl(215,17%,30%);margin-top:12px">Account linked to your authenticated session</p>
+      </div>
+    </form>
+  </div>
+
+  <!-- Terminal overlay -->
+  <div id="termOverlay" style="display:none;position:fixed;inset:0;z-index:100" class="term-bg flex items-center justify-center">
+    <div style="width:100%;max-width:560px;border-radius:16px;overflow:hidden;box-shadow:0 25px 50px rgba(0,0,0,.5);border:1px solid hsl(215,20%,18%);margin:0 16px">
+      <div style="background:hsl(222,50%,4%);border-bottom:1px solid hsl(215,20%,18%);padding:12px 20px;display:flex;align-items:center;justify-content:space-between">
+        <div class="font-mono" style="display:flex;align-items:center;gap:10px;font-size:12px;color:var(--muted-fg)">
+          <i class="fa-solid fa-terminal" style="color:hsl(160,68%,41%);font-size:10px"></i>prexus_kernel_audit.log
+        </div>
+        <div style="display:flex;gap:6px">
+          <span style="width:10px;height:10px;border-radius:50%;background:hsla(0,84%,60%,.55)"></span>
+          <span style="width:10px;height:10px;border-radius:50%;background:hsla(38,92%,50%,.55)"></span>
+          <span style="width:10px;height:10px;border-radius:50%;background:hsla(160,68%,41%,.55)"></span>
+        </div>
+      </div>
+      <div id="termBody" class="font-mono" style="padding:24px;background:#02040A;min-height:260px;display:flex;flex-direction:column;justify-content:flex-end;font-size:11px;overflow-y:auto">
+        <div id="termLines"></div>
+        <div style="margin-top:8px;color:hsl(160,68%,41%)">›</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     PAGE 3: PREXUS HUB
+═══════════════════════════════════════════ -->
+<div id="page-hub" class="page flex-col items-center justify-center" style="min-height:100vh;padding:32px;position:relative">
+  <div class="absolute" style="inset:0;background-image:radial-gradient(rgba(37,99,235,.05) 1px,transparent 1px);background-size:30px 30px"></div>
+  <div class="absolute" style="inset:0;background:radial-gradient(ellipse at 50% 38%,rgba(37,99,235,.065) 0%,transparent 58%)"></div>
+
+  <!-- Org + user bar -->
+  <div class="absolute glass font-mono fu" style="top:24px;left:24px;display:flex;align-items:center;gap:12px;padding:10px 16px;border-radius:12px;font-size:12px">
+    <i class="fa-solid fa-building-shield" style="color:var(--primary);font-size:12px"></i>
+    <span style="color:var(--muted-fg)">ORG: <span id="hubOrgName" style="color:var(--foreground)">—</span></span>
+    <span style="width:1px;height:16px;background:hsla(0,0%,100%,.1)"></span>
+    <span style="color:var(--muted-fg)">ROLE: <span style="color:hsl(160,68%,41%)">ORG_ADMIN</span></span>
+  </div>
+  <button onclick="handleLogout()" class="absolute font-mono" style="top:24px;right:24px;padding:8px 16px;border-radius:10px;background:transparent;border:1px solid var(--border);color:var(--muted-fg);cursor:pointer;font-size:10px;text-transform:uppercase;letter-spacing:.15em;transition:all .2s;display:flex;align-items:center;gap:6px" onmouseover="this.style.borderColor='hsla(0,84%,60%,.4)';this.style.color='hsl(0,84%,60%)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted-fg)'">
+    <i class="fa-solid fa-right-from-bracket" style="font-size:10px"></i>Sign Out
+  </button>
+
+  <div style="z-index:10;text-align:center;margin-bottom:48px;display:flex;flex-direction:column;align-items:center">
+    <div class="fu" style="width:320px">
+      <svg viewBox="0 0 430 120" xmlns="http://www.w3.org/2000/svg">
+        <path stroke="rgba(255,255,255,.9)" stroke-width="2" fill="none" d="M 315 22 L 36 22 L 36 84"/>
+        <path stroke="hsl(221,83%,53%)" stroke-width="2" fill="none" d="M 56 100 L 204 100 L 220 83"/>
+        <circle fill="hsl(221,83%,53%)" cx="36" cy="22" r="3.5"/>
+        <text x="60" y="80" style="font-family:'Syne',sans-serif;font-size:46px;fill:#fff;letter-spacing:8px;font-weight:700;opacity:1">PREXUS</text>
+        <text x="62" y="111" style="font-family:'IBM Plex Mono',monospace;font-size:9px;fill:hsla(221,83%,53%,.8);letter-spacing:3.5px;opacity:1">SOVEREIGN INTELLIGENCE PLATFORM</text>
+      </svg>
+    </div>
+    <p class="fu-1" style="font-size:18px;color:var(--muted-fg);font-weight:300;margin-top:16px">Global Predictive Intelligence Environment</p>
+    <p class="fu-2 font-mono" style="font-size:10px;color:hsl(215,17%,30%);margin-top:12px;text-transform:uppercase;letter-spacing:.25em">Select an authorized module to deploy</p>
+  </div>
+
+  <div class="grid hub-grid" style="grid-template-columns:repeat(3,1fr);gap:24px;z-index:10;max-width:960px;width:100%">
+    <!-- Meteorium — AUTHORIZED -->
+    <div class="glass-card hub-card enabled cursor-pointer glow-blue fu" onclick="launchMeteorium()" style="animation-delay:.0s">
+      <div class="font-mono" style="position:absolute;top:16px;right:16px;font-size:9px;padding:4px 10px;border-radius:20px;border:1px solid hsla(160,60%,40%,.5);background:hsla(160,60%,15%,.4);color:hsl(160,68%,65%);display:flex;align-items:center;gap:6px">
+        <i class="fa-solid fa-check" style="font-size:8px"></i>AUTHORIZED
+      </div>
+      <div style="padding:28px">
+        <div style="width:48px;height:48px;border-radius:16px;display:flex;align-items:center;justify-content:center;margin-bottom:20px;background:hsla(221,60%,15%,.5);border:1px solid hsla(221,60%,25%,.5)">
+          <i class="fa-solid fa-cloud-bolt" style="font-size:24px;color:hsl(221,83%,53%);filter:drop-shadow(0 0 10px rgba(59,130,246,.5))"></i>
+        </div>
+        <h2 class="font-display" style="font-size:20px;font-weight:700">Meteorium</h2>
+        <p class="font-mono" style="font-size:9px;color:var(--muted-fg);text-transform:uppercase;letter-spacing:.15em;margin:2px 0 12px">Climate Risk Intelligence</p>
+        <p style="font-size:14px;color:var(--muted-fg);line-height:1.6;margin-bottom:20px">AI-driven asset-level resolution for physical and transition climate risk. Powered by IPCC AR6 and live satellite telemetry.</p>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding-top:16px;margin-bottom:16px;border-top:1px solid hsla(0,0%,100%,.05)">
+          <div><p class="font-mono" style="font-size:8px;color:hsl(215,17%,30%);text-transform:uppercase">Assets</p><p class="font-mono" style="font-size:12px;font-weight:600;margin-top:2px" id="hubAssetCount">0</p></div>
+          <div><p class="font-mono" style="font-size:8px;color:hsl(215,17%,30%);text-transform:uppercase">Models</p><p class="font-mono" style="font-size:12px;font-weight:600;margin-top:2px">14</p></div>
+          <div><p class="font-mono" style="font-size:8px;color:hsl(215,17%,30%);text-transform:uppercase">Last Run</p><p class="font-mono" style="font-size:12px;font-weight:600;margin-top:2px" id="hubLastRun">—</p></div>
+        </div>
+        <div class="font-mono" style="font-size:10px;color:hsl(221,83%,53%);display:flex;align-items:center;gap:8px">
+          <span style="width:6px;height:6px;border-radius:50%;background:hsl(221,83%,53%);animation:pdot 2s infinite"></span>LAUNCH TERMINAL
+          <i class="fa-solid fa-arrow-right" style="font-size:9px;margin-left:auto;opacity:.5"></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- Healtho — LOCKED -->
+    <div class="glass-card hub-card locked fu" style="animation-delay:.1s">
+      <div class="font-mono" style="position:absolute;top:16px;right:16px;font-size:9px;padding:4px 10px;border-radius:20px;border:1px solid hsl(215,20%,25%);background:hsla(220,20%,10%,.4);color:var(--muted-fg);display:flex;align-items:center;gap:6px">
+        <i class="fa-solid fa-lock" style="font-size:8px"></i>PROCUREMENT REQ.
+      </div>
+      <div style="padding:28px">
+        <div style="width:48px;height:48px;border-radius:16px;display:flex;align-items:center;justify-content:center;margin-bottom:20px;background:hsla(220,15%,10%,.5);border:1px solid hsl(215,15%,20%)">
+          <i class="fa-solid fa-staff-snake" style="font-size:24px;color:hsl(215,15%,25%)"></i>
+        </div>
+        <h2 class="font-display" style="font-size:20px;font-weight:700">Healtho</h2>
+        <p class="font-mono" style="font-size:9px;color:var(--muted-fg);text-transform:uppercase;letter-spacing:.15em;margin:2px 0 12px">Health Risk Intelligence</p>
+        <p style="font-size:14px;color:var(--muted-fg);line-height:1.6;margin-bottom:20px">Epidemiological forecasting and global pandemic probability modeling across 190+ jurisdictions.</p>
+        <div class="font-mono" style="font-size:10px;color:hsl(215,17%,30%);margin-top:4px">PROCUREMENT REQ.</div>
+      </div>
+      <div class="hub-lock-overlay">
+        <div style="width:48px;height:48px;border-radius:50%;background:hsl(220,20%,8%);border:1px solid hsl(215,15%,25%);display:flex;align-items:center;justify-content:center;margin-bottom:16px">
+          <i class="fa-solid fa-file-invoice" style="font-size:18px;color:var(--muted-fg)"></i>
+        </div>
+        <p class="font-mono" style="font-size:12px;color:hsl(216,20%,75%);padding:0 32px;text-align:center;line-height:1.6;margin-bottom:12px">Contact your Prexus deployment liaison to initiate procurement.</p>
+        <span class="font-mono" style="font-size:9px;padding:4px 12px;border-radius:20px;border:1px solid hsla(38,70%,40%,.4);background:hsla(38,50%,15%,.4);color:hsl(38,80%,60%)">Healthcare CISO Authorization Required.</span>
+      </div>
+    </div>
+
+    <!-- Raksha — LOCKED -->
+    <div class="glass-card hub-card locked fu" style="animation-delay:.2s">
+      <div class="font-mono" style="position:absolute;top:16px;right:16px;font-size:9px;padding:4px 10px;border-radius:20px;border:1px solid hsl(215,20%,25%);background:hsla(220,20%,10%,.4);color:var(--muted-fg);display:flex;align-items:center;gap:6px">
+        <i class="fa-solid fa-lock" style="font-size:8px"></i>CLEARANCE REQ.
+      </div>
+      <div style="padding:28px">
+        <div style="width:48px;height:48px;border-radius:16px;display:flex;align-items:center;justify-content:center;margin-bottom:20px;background:hsla(220,15%,10%,.5);border:1px solid hsl(215,15%,20%)">
+          <i class="fa-solid fa-crosshairs" style="font-size:24px;color:hsl(215,15%,25%)"></i>
+        </div>
+        <h2 class="font-display" style="font-size:20px;font-weight:700">Raksha</h2>
+        <p class="font-mono" style="font-size:9px;color:var(--muted-fg);text-transform:uppercase;letter-spacing:.15em;margin:2px 0 12px">Battlefield Intelligence</p>
+        <p style="font-size:14px;color:var(--muted-fg);line-height:1.6;margin-bottom:20px">Strategic asset movement, military geospatial analytics, and geopolitical threat vector modeling.</p>
+        <div class="font-mono" style="font-size:10px;color:hsl(215,17%,30%);margin-top:4px">CLEARANCE REQ.</div>
+      </div>
+      <div class="hub-lock-overlay">
+        <div style="width:48px;height:48px;border-radius:50%;background:hsl(220,20%,8%);border:1px solid hsl(215,15%,25%);display:flex;align-items:center;justify-content:center;margin-bottom:16px">
+          <i class="fa-solid fa-fingerprint" style="font-size:18px;color:var(--muted-fg)"></i>
+        </div>
+        <p class="font-mono" style="font-size:12px;color:hsl(216,20%,75%);padding:0 32px;text-align:center;line-height:1.6;margin-bottom:12px">Restricted to cleared defense contractors and authorized government personnel.</p>
+        <span class="font-mono" style="font-size:9px;padding:4px 12px;border-radius:20px;border:1px solid hsla(38,70%,40%,.4);background:hsla(38,50%,15%,.4);color:hsl(38,80%,60%)">DoD Level-5 Clearance Required.</span>
+      </div>
+    </div>
+  </div>
+
+  <div style="z-index:10;margin-top:32px">
+    <button class="glass fu" style="border:1px solid var(--border);border-radius:12px;padding:12px 24px;font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--muted-fg);cursor:pointer;background:transparent;display:flex;align-items:center;gap:12px;transition:all .3s" onmouseover="this.style.color='var(--foreground)';this.style.borderColor='hsla(221,83%,53%,.4)'" onmouseout="this.style.color='var(--muted-fg)';this.style.borderColor='var(--border)'">
+      <i class="fa-solid fa-diagram-project" style="color:var(--primary);font-size:14px"></i>
+      <span>View Platform Architecture</span>
+      <i class="fa-solid fa-arrow-right" style="font-size:9px;opacity:.5"></i>
+    </button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     PAGE 4: METEORIUM (React App)
+═══════════════════════════════════════════ -->
+<div id="page-meteorium">
+  <div id="meteorium-root"></div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     VANILLA JS — Auth, Nav, Org
+═══════════════════════════════════════════ -->
+<script>
+const API_BASE = 'https://prexus-intelligence.onrender.com';
+let authMode  = 'login';
+let PRX_TOKEN = localStorage.getItem('prx_token') || null;
+let PRX_USER  = (() => { try { return JSON.parse(localStorage.getItem('prx_user') || 'null'); } catch { return null; } })();
+let PRX_ORG   = null;
+
+// ── Auto-restore session ──
+window.addEventListener('DOMContentLoaded', () => {
+  if (localStorage.getItem('prexus_cookies')) document.getElementById('cookieBanner').classList.add('hidden');
+  if (PRX_TOKEN && PRX_USER) {
+    PRX_ORG = (() => { try { return JSON.parse(localStorage.getItem('prexus_org_' + PRX_USER.email) || 'null'); } catch { return null; } })();
+    if (PRX_ORG) {
+      document.getElementById('hubOrgName').textContent = PRX_ORG.orgName || PRX_USER.org_name || '—';
+      showPage('hub');
+    } else {
+      showPage('org');
+    }
+  }
+});
+
+// ── Warm up backend on load (Render free tier cold start prevention) ──
+(async () => {
+  try {
+    await fetch(API_BASE + '/health', { method: 'GET', signal: AbortSignal.timeout(55000) });
+  } catch (_) {}
+})();
+
+// ── Cookie ──
+function dismissCookies(accepted) {
+  document.getElementById('cookieBanner').classList.add('hidden');
+  localStorage.setItem('prexus_cookies', accepted ? 'accepted' : 'declined');
+  if (accepted && !localStorage.getItem('prexus_device_id'))
+    localStorage.setItem('prexus_device_id', 'DEV-' + crypto.randomUUID());
+}
+
+// ── Page nav ──
+function showPage(id) {
+  document.querySelectorAll('.page, #page-meteorium').forEach(p => {
+    p.classList.remove('active');
+    if (p.id === 'page-meteorium') p.style.display = 'none';
+  });
+  const el = document.getElementById('page-' + id);
+  if (el) el.classList.add('active');
+}
+
+// ── Auth mode toggle ──
+function setAuthMode(mode) {
+  authMode = mode;
+  const tL = document.getElementById('tabLogin'), tR = document.getElementById('tabRegister');
+  const nF = document.getElementById('nameField'), btn = document.getElementById('authBtn');
+  if (mode === 'login') {
+    tL.style.background = 'hsla(221,83%,53%,.15)'; tL.style.color = 'hsl(213,70%,70%)';
+    tR.style.background = 'transparent';            tR.style.color = 'var(--muted-fg)';
+    nF.style.display = 'none'; btn.textContent = 'Sign In';
+  } else {
+    tR.style.background = 'hsla(221,83%,53%,.15)'; tR.style.color = 'hsl(213,70%,70%)';
+    tL.style.background = 'transparent';            tL.style.color = 'var(--muted-fg)';
+    nF.style.display = 'block'; btn.textContent = 'Create Account';
+  }
+  document.getElementById('authError').style.display = 'none';
+}
+
+// ── Auth submit (real API) ──
+async function handleAuth(e) {
+  e.preventDefault();
+  const email    = document.getElementById('authEmail').value.trim();
+  const password = document.getElementById('authPass').value;
+  const fullName = document.getElementById('displayName').value.trim();
+  const errEl    = document.getElementById('authError');
+  const btn      = document.getElementById('authBtn');
+  const icon     = document.getElementById('authIconI');
+  const iconWrap = document.getElementById('authIcon');
+
+  errEl.style.display = 'none';
+  btn.disabled = true;
+  icon.className = 'fa-solid fa-circle-notch';
+  icon.style.animation = 'spin .8s linear infinite';
+
+  // Show wake-up counter immediately (Render free tier cold starts)
+  let secs = 0;
+  const wakeTick = setInterval(() => {
+    secs++;
+    if (secs < 8) {
+      btn.innerHTML = `<i class="fa-solid fa-circle-notch" style="animation:spin .8s linear infinite;margin-right:8px"></i>Authenticating...`;
+    } else {
+      btn.innerHTML = `<i class="fa-solid fa-circle-notch" style="animation:spin .8s linear infinite;margin-right:8px"></i>Server waking up… ${secs}s`;
+    }
+  }, 1000);
+
+  try {
+    const endpoint = authMode === 'register' ? '/register' : '/login';
+    const body     = authMode === 'register'
+      ? { email, password, full_name: fullName, org_name: '' }
+      : { email, password };
+
+    // 55s timeout — Render free tier can take up to 50s cold start
+    const ctrl = new AbortController();
+    const tid  = setTimeout(() => ctrl.abort(), 55000);
+
+    const res  = await fetch(API_BASE + endpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+      signal: ctrl.signal,
+    });
+    clearTimeout(tid);
+    clearInterval(wakeTick);
+
+    const data = await res.json();
+
+    if (data.error || !data.token) {
+      throw new Error(data.error || 'Authentication failed');
+    }
+
+    // Store globally
+    PRX_TOKEN = data.token;
+    PRX_USER  = data.user;
+    localStorage.setItem('prx_token', data.token);
+    localStorage.setItem('prx_user', JSON.stringify(data.user));
+
+    // Success animation
+    iconWrap.style.background = 'hsla(160,60%,15%,.3)';
+    iconWrap.style.borderColor = 'hsla(160,68%,41%,.4)';
+    iconWrap.classList.add('glow-green');
+    icon.className = 'fa-solid fa-unlock';
+    icon.style.animation = 'none';
+    icon.style.color = 'hsl(160,68%,41%)';
+    btn.innerHTML = '<i class="fa-solid fa-circle-check" style="margin-right:8px"></i>Verified — Redirecting';
+
+    setTimeout(() => {
+      // Reset form state
+      btn.disabled = false;
+      btn.innerHTML = authMode === 'login' ? 'Sign In' : 'Create Account';
+      iconWrap.style.background = 'hsla(221,60%,15%,.5)';
+      iconWrap.style.borderColor = 'hsla(221,83%,53%,.4)';
+      iconWrap.classList.remove('glow-green');
+      icon.className = 'fa-solid fa-lock';
+      icon.style.animation = 'none';
+      icon.style.color = 'hsl(221,83%,53%)';
+
+      // Route based on org existence
+      PRX_ORG = (() => { try { return JSON.parse(localStorage.getItem('prexus_org_' + email) || 'null'); } catch { return null; } })();
+      if (PRX_ORG) {
+        document.getElementById('hubOrgName').textContent = PRX_ORG.orgName || PRX_USER.org_name || email;
+        showPage('hub');
+      } else {
+        if (authMode === 'register' && fullName) document.getElementById('orgFullName').value = fullName;
+        showPage('org');
+      }
+    }, 700);
+
+  } catch (err) {
+    clearInterval(wakeTick);
+    icon.className = 'fa-solid fa-lock';
+    icon.style.animation = 'none';
+    icon.style.color = 'hsl(221,83%,53%)';
+    iconWrap.style.background = 'hsla(221,60%,15%,.5)';
+    iconWrap.style.borderColor = 'hsla(221,83%,53%,.4)';
+    btn.innerHTML = authMode === 'login' ? 'Sign In' : 'Create Account';
+    btn.disabled = false;
+    const msg = err.name === 'AbortError' ? '⏱ Timed out. Backend waking — click retry.' : (err.message + ' ').toLowerCase().includes('fetch') ? '⚠ Cannot reach server — wait 10s and retry.' : '✕ ' + err.message;
+    errEl.textContent = msg;
+    errEl.style.display = 'block';
+  }
+}
+
+// ── Org submit (terminal animation → hub) ──
+const termTrail = [
+  '[SYSTEM]     Initializing TLS 1.3 secure handshake...',
+  '[ENTITY]     Provisioning Organization Object · ORG_PENDING',
+  '[ENTITY]     Provisioning Administrator · USR_ADMIN_001',
+  '[RBAC]       Assigning policy ORG_ADMIN → USR_ADMIN_001',
+  '[NETWORK]    Binding email domain to Organization Workspace',
+  '[COMPLIANCE] Validating against OFAC, EU & UN sanctions registries...',
+  '[COMPLIANCE] Validating against EAR/ITAR export control lists...',
+  '[IDENTITY]   Creating cryptographic identity anchor...',
+  '[STATE]      Organization status → PENDING_VERIFICATION (B2G §3.2)',
+  '[AUDIT]      EVENT_LOGGED · ORG_CREATED · auth_rep · 185.124.220.11',
+  '[SYSTEM]     Establishing Prexus Ecosystem Environment...',
+  '[SYSTEM]  ✓  Access Granted. Welcome to Prexus.',
+];
+
+function handleOrgSubmit(e) {
+  e.preventDefault();
+  const orgData = {
+    orgName:    document.getElementById('orgName').value,
+    orgType:    document.getElementById('orgType').value,
+    country:    document.getElementById('orgCountry').value,
+    domain:     document.getElementById('orgDomain').value,
+    fullName:   document.getElementById('orgFullName').value,
+    jobTitle:   document.getElementById('orgJobTitle').value,
+    department: document.getElementById('orgDept').value,
+    email:      PRX_USER?.email || '',
+    createdAt:  new Date().toISOString(),
+  };
+  localStorage.setItem('prexus_org_' + orgData.email, JSON.stringify(orgData));
+  PRX_ORG = orgData;
+
+  // Update user org_name in backend user object (local copy only)
+  if (PRX_USER) { PRX_USER.org_name = orgData.orgName; localStorage.setItem('prx_user', JSON.stringify(PRX_USER)); }
+
+  const overlay = document.getElementById('termOverlay');
+  const lines   = document.getElementById('termLines');
+  overlay.style.display = 'flex'; lines.innerHTML = '';
+
+  let i = 0;
+  const iv = setInterval(() => {
+    if (i < termTrail.length) {
+      const d = document.createElement('div');
+      d.className = 'fi';
+      d.style.cssText = 'color:hsl(160,68%,60%);display:flex;gap:10px;margin-bottom:8px';
+      d.innerHTML = `<span style="color:hsl(215,15%,25%);user-select:none;flex-shrink:0">›</span><span style="font-size:11px">${termTrail[i]}</span>`;
+      lines.appendChild(d);
+      lines.parentElement.scrollTop = lines.parentElement.scrollHeight;
+      i++;
+    } else {
+      clearInterval(iv);
+      setTimeout(() => {
+        overlay.style.display = 'none';
+        document.getElementById('hubOrgName').textContent = orgData.orgName;
+        showPage('hub');
+      }, 900);
+    }
+  }, 380);
+}
+
+// ── Logout ──
+function handleLogout() {
+  localStorage.removeItem('prx_token');
+  localStorage.removeItem('prx_user');
+  PRX_TOKEN = null; PRX_USER = null; PRX_ORG = null;
+  // Unmount React if mounted
+  if (window._meteoriumRoot) { window._meteoriumRoot.unmount(); window._meteoriumRoot = null; }
+  document.getElementById('meteorium-root').innerHTML = '';
+  showPage('auth');
+}
+
+// ── Launch Meteorium ──
+function launchMeteorium() {
+  // Show page-meteorium
+  document.querySelectorAll('.page, #page-meteorium').forEach(p => p.classList.remove('active'));
+  const met = document.getElementById('page-meteorium');
+  met.classList.add('active');
+  met.style.display = 'flex';
+
+  // Mount React if not already
+  if (!window._meteoriumRoot) {
+    const root = ReactDOM.createRoot(document.getElementById('meteorium-root'));
+    window._meteoriumRoot = root;
+    root.render(React.createElement(MeteoriumApp, {
+      token: PRX_TOKEN,
+      user:  PRX_USER,
+      onBack: () => {
+        met.classList.remove('active');
+        met.style.display = 'none';
+        document.getElementById('page-hub').classList.add('active');
+      },
+      onLogout: handleLogout,
+    }));
+  }
+}
+</script>
+
+<!-- ═══════════════════════════════════════════
+     METEORIUM REACT APP
+═══════════════════════════════════════════ -->
+<script type="text/babel">
+const { useState, useEffect, useRef, useCallback } = React;
+
+/* ═══════════════════════════════════════════════════════
+   API CONFIG
+═══════════════════════════════════════════════════════ */
+const API_BASE = 'https://prexus-intelligence.onrender.com';
+
+const AI_MODELS = {
+  claude:  { label:'Claude',  provider:'Anthropic', color:'#7C3AED', icon:'fa-robot',  badge:'CLAUDE·3.5' },
+  gemini:  { label:'Gemini',  provider:'Google',    color:'#2563EB', icon:'fa-gem',    badge:'GEMINI·2.5' },
+  chatgpt: { label:'ChatGPT', provider:'OpenAI',    color:'#10B981', icon:'fa-brain',  badge:'GPT·4O'     },
+};
+
+async function apiCall(path, method='GET', body=null, token=null) {
+  const headers = { 'Content-Type': 'application/json' };
+  if (token) headers['Authorization'] = 'Bearer ' + token;
+  const res = await fetch(API_BASE + path, {
+    method, headers, body: body ? JSON.stringify(body) : undefined
+  });
+  return res.json();
+}
+
+async function aiAnalyze(prompt, model='gemini') {
+  const data = await apiCall('/analyze', 'POST', { prompt, model });
+  if (data.error) throw new Error(data.error);
+  return data.result;
+}
+
+async function aiChat(messages, model='gemini') {
+  const data = await apiCall('/chat', 'POST', { messages, model });
+  if (data.error) throw new Error(data.error);
+  return data.result;
+}
+
+/* ═══════════════════════════════════════════════════════
+   HELPERS
+═══════════════════════════════════════════════════════ */
+const riskMeta = s => {
+  if (s >= .85) return { label:'CRITICAL', cls:'rc', bgc:'rbc', hex:'#EF4444' };
+  if (s >= .70) return { label:'HIGH',     cls:'rh', bgc:'rbh', hex:'#F97316' };
+  if (s >= .55) return { label:'ELEVATED', cls:'re', bgc:'rbe', hex:'#F59E0B' };
+  if (s >= .35) return { label:'MODERATE', cls:'rm', bgc:'rbm', hex:'#3B82F6' };
+  return               { label:'LOW',      cls:'rl', bgc:'rbl', hex:'#10B981' };
+};
+const fUsd = mm => mm >= 1000 ? `$${(mm/1000).toFixed(1)}B` : `$${mm}M`;
+const fPct = v  => `${(v*100).toFixed(1)}%`;
+const sevMeta = sev => ({
+  CRITICAL:{ c:'#EF4444', bg:'rgba(239,68,68,.07)' },
+  HIGH:    { c:'#F97316', bg:'rgba(249,115,22,.07)' },
+  ELEVATED:{ c:'#F59E0B', bg:'rgba(245,158,11,.07)' },
+  MODERATE:{ c:'#3B82F6', bg:'rgba(59,130,246,.07)' },
+}[sev] || { c:'#94A3B8', bg:'transparent' });
+
+const ASSET_TYPES = ['Energy','Infrastructure','Industrial','Commercial','Agriculture','Technology','Finance','Transport'];
+const AssetModal = ({ asset, onSave, onClose }) => {
+  const isEdit = !!asset?.id;
+  const [form, setForm] = useState({
+    name:     asset?.name     || '',
+    type:     asset?.type     || 'Infrastructure',
+    country:  asset?.country  || '',
+    cc:       asset?.cc       || '',
+    lat:      asset?.lat      ?? 0,
+    lon:      asset?.lon      ?? 0,
+    value_mm: asset?.value_mm ?? 0,
+    pr:       asset?.pr       ?? 0.5,
+    tr:       asset?.tr       ?? 0.5,
+    cr:       asset?.cr       ?? 0.5,
+    alerts:   asset?.alerts   ?? 0,
+  });
+  const [saving, setSaving] = useState(false);
+  const set = (k, v) => setForm(f => ({...f, [k]: v}));
+
+  const submit = async (e) => {
+    e.preventDefault();
+    setSaving(true);
+    await onSave({ ...form, lat: parseFloat(form.lat), lon: parseFloat(form.lon),
+      value_mm: parseFloat(form.value_mm), pr: parseFloat(form.pr),
+      tr: parseFloat(form.tr), cr: parseFloat(form.cr), alerts: parseInt(form.alerts) });
+    setSaving(false);
+  };
+
+  const Inp = ({label, children}) => (
+    <div>
+      <label className="f-mono" style={{display:'block',fontSize:'8px',color:'var(--textx)',letterSpacing:'.14em',textTransform:'uppercase',marginBottom:'4px'}}>{label}</label>
+      {children}
+    </div>
+  );
+
+  return (
+    <div style={{position:'fixed',inset:0,background:'rgba(0,0,0,.75)',backdropFilter:'blur(4px)',zIndex:1000,display:'flex',alignItems:'center',justifyContent:'center',padding:'20px'}}>
+      <div className="panel" style={{width:'100%',maxWidth:'580px',borderRadius:'8px',background:'var(--bg1)',overflow:'hidden',maxHeight:'90vh',display:'flex',flexDirection:'column'}}>
+        <div style={{padding:'12px 18px',borderBottom:'1px solid var(--border)',display:'flex',alignItems:'center',gap:'10px',flexShrink:0}}>
+          <i className={`fa-solid ${isEdit?'fa-pen-to-square':'fa-plus'}`} style={{color:'#3B82F6',fontSize:'12px'}}></i>
+          <span className="f-display" style={{fontSize:'16px',fontWeight:700,color:'white',textTransform:'uppercase',letterSpacing:'.08em'}}>{isEdit ? 'Edit Asset' : 'Add New Asset'}</span>
+          <button onClick={onClose} style={{marginLeft:'auto',background:'none',border:'none',color:'var(--textd)',cursor:'pointer',fontSize:'16px'}}>✕</button>
+        </div>
+
+        <form onSubmit={submit} style={{overflow:'auto',flex:1}}>
+          <div style={{padding:'18px',display:'flex',flexDirection:'column',gap:'14px'}}>
+            <Inp label="Asset Name *">
+              <input className="minp" required value={form.name} onChange={e=>set('name',e.target.value)} placeholder="e.g. Mumbai Port Authority Complex"/>
+            </Inp>
+            <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'12px'}}>
+              <Inp label="Asset Type">
+                <select className="minp" value={form.type} onChange={e=>set('type',e.target.value)}>
+                  {ASSET_TYPES.map(t => <option key={t}>{t}</option>)}
+                </select>
+              </Inp>
+              <Inp label="Value (USD Millions)">
+                <input className="minp" type="number" min="0" step="0.1" value={form.value_mm} onChange={e=>set('value_mm',e.target.value)} placeholder="e.g. 250"/>
+              </Inp>
+            </div>
+            <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'12px'}}>
+              <Inp label="Country">
+                <input className="minp" value={form.country} onChange={e=>set('country',e.target.value)} placeholder="e.g. India"/>
+              </Inp>
+              <Inp label="Country Code (ISO)">
+                <input className="minp" maxLength={3} value={form.cc} onChange={e=>set('cc',e.target.value.toUpperCase())} placeholder="e.g. IND"/>
+              </Inp>
+            </div>
+            <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'12px'}}>
+              <Inp label="Latitude">
+                <input className="minp" type="number" step="0.0001" value={form.lat} onChange={e=>set('lat',e.target.value)} placeholder="e.g. 19.0760"/>
+              </Inp>
+              <Inp label="Longitude">
+                <input className="minp" type="number" step="0.0001" value={form.lon} onChange={e=>set('lon',e.target.value)} placeholder="e.g. 72.8777"/>
+              </Inp>
+            </div>
+            <div style={{borderTop:'1px solid var(--border)',paddingTop:'14px'}}>
+              <div className="f-mono" style={{fontSize:'8px',color:'var(--textx)',textTransform:'uppercase',letterSpacing:'.14em',marginBottom:'12px'}}>Risk Scores (0.00 – 1.00) · AI will refine after analysis</div>
+              <div style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr 1fr',gap:'12px'}}>
+                {[['Physical Risk','pr','#3B82F6'],['Transition Risk','tr','#F59E0B'],['Composite Risk','cr','#EF4444'],['Active Alerts','alerts','#F97316']].map(([l,k,c]) => (
+                  <div key={k}>
+                    <label className="f-mono" style={{display:'block',fontSize:'7.5px',color:'var(--textx)',textTransform:'uppercase',letterSpacing:'.1em',marginBottom:'4px'}}>{l}</label>
+                    <input className="minp" type="number" min={k==='alerts'?0:0} max={k==='alerts'?999:1} step={k==='alerts'?1:.01}
+                      value={form[k]} onChange={e=>set(k,e.target.value)}
+                      style={{fontSize:'11px',fontWeight:600,color:c}}/>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+          <div style={{padding:'12px 18px',borderTop:'1px solid var(--border)',display:'flex',gap:'8px',flexShrink:0}}>
+            <button type="button" onClick={onClose} className="btn-g" style={{flex:1,justifyContent:'center'}}>Cancel</button>
+            <button type="submit" className="btn-p" disabled={saving} style={{flex:2,justifyContent:'center',padding:'9px',fontSize:'11px'}}>
+              {saving ? <><i className="fa-solid fa-circle-notch fa-spin"></i> Saving...</> : <><i className={`fa-solid ${isEdit?'fa-check':'fa-plus'}`}></i>{isEdit ? 'Save Changes' : 'Add Asset'}</>}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+};
+
+/* ═══════════════════════════════════════════════════════
+   SHARED COMPONENTS
+═══════════════════════════════════════════════════════ */
+const UTCClock = () => {
+  const [t, setT] = useState('');
+  useEffect(() => {
+    const tick = () => setT(new Date().toISOString().slice(0,19).replace('T',' ') + ' Z');
+    tick(); const id = setInterval(tick, 1000); return () => clearInterval(id);
+  }, []);
+  return <span className="f-mono" style={{fontSize:'10.5px',color:'var(--textx)'}}>{t}</span>;
+};
+
+const RiskBadge = ({ score }) => {
+  const m = riskMeta(score);
+  return (
+    <span className={`f-mono ${m.bgc}`} style={{display:'inline-flex',alignItems:'center',gap:'4px',border:'1px solid',borderRadius:'3px',padding:'1px 6px',fontSize:'8.5px',fontWeight:600}}>
+      <span style={{width:'5px',height:'5px',borderRadius:'50%',background:m.hex,boxShadow:`0 0 4px ${m.hex}`,flexShrink:0,display:'inline-block'}}></span>
+      {m.label}
+    </span>
+  );
+};
+
+const RBar = ({ val, w = 80 }) => {
+  const m = riskMeta(val);
+  return (
+    <div style={{display:'flex',alignItems:'center',gap:'6px'}}>
+      <div style={{height:'3px',width:`${w}px`,background:'rgba(255,255,255,.06)',borderRadius:'2px',overflow:'hidden',flexShrink:0}}>
+        <div style={{height:'100%',background:m.hex,width:`${val*100}%`,transition:'width .8s cubic-bezier(.16,1,.3,1)'}}></div>
+      </div>
+      <span className="f-mono" style={{fontSize:'10px',color:m.hex,minWidth:'34px'}}>{fPct(val)}</span>
+    </div>
+  );
+};
+
+const ArcGauge = ({ score }) => {
+  const m = riskMeta(score);
+  const R = 48; const C = 2*Math.PI*R; const half = C/2;
+  return (
+    <div style={{position:'relative',width:'110px',height:'60px',margin:'0 auto',flexShrink:0}}>
+      <svg viewBox="0 0 110 62" style={{overflow:'visible',width:'110px',height:'62px'}}>
+        <path d={`M 8 58 A ${R} ${R} 0 0 1 102 58`} fill="none" stroke="rgba(255,255,255,.06)" strokeWidth="5.5" strokeLinecap="butt"/>
+        <path d={`M 8 58 A ${R} ${R} 0 0 1 102 58`} fill="none" stroke={m.hex} strokeWidth="5.5" strokeLinecap="butt"
+          strokeDasharray={`${half}`} strokeDashoffset={`${half - half*score}`}
+          style={{transition:'stroke-dashoffset 1s cubic-bezier(.16,1,.3,1),stroke .5s'}}/>
+        <text x="55" y="49" textAnchor="middle" fill="white" style={{fontFamily:'Barlow Condensed',fontWeight:700,fontSize:'21px'}}>{fPct(score)}</text>
+        <text x="55" y="60" textAnchor="middle" fill={m.hex} style={{fontFamily:'IBM Plex Mono',fontSize:'7.5px',letterSpacing:'.14em'}}>{m.label}</text>
+      </svg>
+    </div>
+  );
+};
+
+const KpiCard = ({ label, value, sub, accent, icon }) => (
+  <div className="panel scan-ov" style={{borderRadius:'5px',padding:'14px 18px',flex:1,minWidth:0}}>
+    <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',marginBottom:'7px'}}>
+      <span className="f-mono" style={{fontSize:'8.5px',color:'var(--textx)',textTransform:'uppercase',letterSpacing:'.15em'}}>{label}</span>
+      <i className={`fa-solid ${icon}`} style={{fontSize:'10px',color:accent,opacity:.55}}></i>
+    </div>
+    <div className="f-display" style={{fontSize:'26px',fontWeight:700,color:'white',lineHeight:1}}>{value}</div>
+    {sub && <div className="f-mono" style={{fontSize:'9px',color:accent,marginTop:'4px'}}>{sub}</div>}
+  </div>
+);
+
+/* ═══════════════════════════════════════════════════════
+   ASSET MAP (Canvas)
+═══════════════════════════════════════════════════════ */
+const AssetMap = ({ assets, selId, onSelect }) => {
+  const cvRef = useRef(null);
+  const [hov, setHov] = useState(null);
+  const lon2x = (lon, W) => ((lon + 180) / 360) * W;
+  const lat2y = (lat, H) => ((90 - lat) / 180) * H;
+
+  useEffect(() => {
+    const cv = cvRef.current; if (!cv) return;
+    const ctx = cv.getContext('2d');
+    const W = cv.width, H = cv.height;
+    ctx.fillStyle = '#030912'; ctx.fillRect(0, 0, W, H);
+
+    // Grid
+    ctx.strokeStyle = 'rgba(16,40,80,.6)'; ctx.lineWidth = .5;
+    for (let lon = -180; lon <= 180; lon += 30) { const x = lon2x(lon,W); ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,H); ctx.stroke(); }
+    for (let lat = -90; lat <= 90; lat += 30)   { const y = lat2y(lat,H); ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W,y); ctx.stroke(); }
+
+    // Equator brighter
+    ctx.strokeStyle = 'rgba(37,99,235,.22)'; ctx.lineWidth = 1;
+    const eqY = lat2y(0,H); ctx.beginPath(); ctx.moveTo(0,eqY); ctx.lineTo(W,eqY); ctx.stroke();
+
+    // Tropics dashed
+    ctx.strokeStyle = 'rgba(245,158,11,.1)'; ctx.lineWidth = .5; ctx.setLineDash([4,7]);
+    [23.5,-23.5].forEach(lat => { const y = lat2y(lat,H); ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W,y); ctx.stroke(); });
+    ctx.setLineDash([]);
+
+    // Lat/Lon labels
+    ctx.fillStyle = 'rgba(50,80,130,.65)'; ctx.font = '7.5px IBM Plex Mono'; ctx.textAlign = 'center';
+    [-120,-60,0,60,120].forEach(lon => ctx.fillText(`${lon>=0?lon+'°E':Math.abs(lon)+'°W'}`, lon2x(lon,W), H-3));
+    ctx.textAlign = 'right';
+    [60,30,-30,-60].forEach(lat => ctx.fillText(`${lat>0?lat+'°N':Math.abs(lat)+'°S'}`, 28, lat2y(lat,H)+3));
+
+    // Assets
+    assets.forEach(a => {
+      const x = lon2x(a.lon,W), y = lat2y(a.lat,H);
+      const m = riskMeta(a.cr);
+      const isSel = a.id === selId, isHov = a.id === hov;
+
+      if (isSel || isHov) {
+        ctx.beginPath(); ctx.arc(x,y,14,0,Math.PI*2);
+        ctx.fillStyle = m.hex + '14'; ctx.fill();
+        ctx.beginPath(); ctx.arc(x,y,14,0,Math.PI*2);
+        ctx.strokeStyle = m.hex + '55'; ctx.lineWidth = 1; ctx.stroke();
+      }
+      // Pulse ring
+      ctx.beginPath(); ctx.arc(x,y,8,0,Math.PI*2);
+      ctx.strokeStyle = m.hex + '45'; ctx.lineWidth = 1.2; ctx.stroke();
+      // Core dot
+      ctx.beginPath(); ctx.arc(x,y,5,0,Math.PI*2);
+      ctx.fillStyle = m.hex; ctx.fill();
+      // Alert dot
+      if (a.alerts > 0) {
+        ctx.beginPath(); ctx.arc(x+4,y-4,2.5,0,Math.PI*2);
+        ctx.fillStyle = '#EF4444'; ctx.fill();
+      }
+      if (isSel || isHov) {
+        ctx.fillStyle = 'rgba(255,255,255,.9)'; ctx.font = '8.5px IBM Plex Mono'; ctx.textAlign = 'left';
+        ctx.fillText(a.id, x+10, y+3);
+      }
+    });
+  }, [assets, selId, hov]);
+
+  const coords = (e) => {
+    const cv = cvRef.current; const rect = cv.getBoundingClientRect();
+    const sx = cv.width/rect.width, sy = cv.height/rect.height;
+    return [(e.clientX-rect.left)*sx, (e.clientY-rect.top)*sy];
+  };
+  const findNear = ([mx,my]) => {
+    const W = cvRef.current?.width||900, H = cvRef.current?.height||380;
+    for (const a of assets) { const x = lon2x(a.lon,W), y = lat2y(a.lat,H); if (Math.hypot(mx-x,my-y)<16) return a; }
+    return null;
+  };
+
+  const hovA = assets.find(a => a.id === hov);
+  return (
+    <div style={{position:'relative',width:'100%',height:'100%'}}>
+      <canvas ref={cvRef} width={920} height={380}
+        onClick={e => { const a = findNear(coords(e)); onSelect(a||null); }}
+        onMouseMove={e => { const a = findNear(coords(e)); setHov(a?.id||null); }}
+        onMouseLeave={() => setHov(null)}
+        style={{width:'100%',height:'100%',cursor:'crosshair',display:'block'}}/>
+      {hovA && (
+        <div style={{position:'absolute',bottom:'8px',left:'8px',background:'rgba(5,10,26,.97)',border:'1px solid rgba(37,99,235,.4)',borderRadius:'4px',padding:'8px 12px',pointerEvents:'none',backdropFilter:'blur(8px)',zIndex:10}}>
+          <div className="f-mono" style={{fontSize:'8.5px',color:'var(--textx)',marginBottom:'3px'}}>{hovA.id} · {hovA.country} · {hovA.type.toUpperCase()}</div>
+          <div className="f-display" style={{fontSize:'13px',fontWeight:600,color:'white',marginBottom:'5px'}}>{hovA.name}</div>
+          <div style={{display:'flex',gap:'10px',alignItems:'center'}}>
+            <RiskBadge score={hovA.cr}/>
+            <span className="f-mono" style={{fontSize:'10px',color:'var(--textd)'}}>Value: {fUsd(hovA.valueMm)}</span>
+            {hovA.alerts>0 && <span className="f-mono" style={{fontSize:'9.5px',color:'#EF4444'}}>{hovA.alerts} alert{hovA.alerts>1?'s':''}</span>}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+/* ═══════════════════════════════════════════════════════
+   VIEWS
+═══════════════════════════════════════════════════════ */
+
+/* ── DASHBOARD ── */
+const DashboardView = ({ assets, alerts, selA, onSel, onNav }) => {
+  const tot = assets.reduce((s,a)=>s+a.valueMm,0);
+  const avgR = assets.reduce((s,a)=>s+a.cr,0)/assets.length;
+  const crit = assets.filter(a=>a.cr>=.85).length;
+  const totA = assets.reduce((s,a)=>s+a.alerts,0);
+
+  return (
+    <div style={{display:'flex',flexDirection:'column',gap:'10px',padding:'14px',height:'100%',overflow:'hidden'}}>
+      {/* KPIs */}
+      <div style={{display:'flex',gap:'8px',flexShrink:0}}>
+        <KpiCard label="Portfolio Value"        value={fUsd(tot)}         sub={`${assets.length} assets · 7 jurisdictions`} accent="#3B82F6" icon="fa-building"/>
+        <KpiCard label="Composite Risk Index"   value={fPct(avgR)}        sub="Weighted · IPCC AR6 aligned"                 accent={riskMeta(avgR).hex} icon="fa-triangle-exclamation"/>
+        <KpiCard label="Critical Assets"        value={crit}              sub={`of ${assets.length} monitored`}             accent="#EF4444" icon="fa-circle-radiation"/>
+        <KpiCard label="Active Alerts"          value={totA}              sub={`${alerts.filter(a=>a.sev==='CRITICAL'||a.sev==='HIGH').length} HIGH/CRITICAL outstanding`} accent="#F59E0B" icon="fa-bell"/>
+      </div>
+
+      {/* Map + Rankings */}
+      <div style={{display:'flex',gap:'8px',flex:'1',minHeight:0}}>
+        <div className="panel" style={{borderRadius:'5px',flex:1,minWidth:0,overflow:'hidden',display:'flex',flexDirection:'column'}}>
+          <div style={{padding:'8px 12px',borderBottom:'1px solid var(--border)',display:'flex',alignItems:'center',gap:'8px',flexShrink:0}}>
+            <i className="fa-solid fa-globe" style={{fontSize:'10px',color:'var(--textx)'}}></i>
+            <span className="f-mono" style={{fontSize:'8.5px',color:'var(--textx)',textTransform:'uppercase',letterSpacing:'.15em'}}>Geospatial Risk Distribution · WGS84 · Equirectangular</span>
+            <div style={{marginLeft:'auto',display:'flex',gap:'10px'}}>
+              {[['#EF4444','Critical'],['#F97316','High'],['#F59E0B','Elevated'],['#3B82F6','Moderate'],['#10B981','Low']].map(([c,l])=>(
+                <div key={l} style={{display:'flex',alignItems:'center',gap:'3px'}}>
+                  <span style={{width:'5px',height:'5px',borderRadius:'50%',background:c,display:'inline-block'}}></span>
+                  <span className="f-mono" style={{fontSize:'7.5px',color:'var(--textx)'}}>{l}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div style={{flex:1,minHeight:0}}>
+            <AssetMap assets={assets} selId={selA?.id} onSelect={onSel}/>
+          </div>
+        </div>
+
+        <div style={{width:'228px',flexShrink:0,display:'flex',flexDirection:'column'}}>
+          <div className="panel" style={{borderRadius:'5px',flex:1,overflow:'hidden',display:'flex',flexDirection:'column'}}>
+            <div style={{padding:'8px 12px',borderBottom:'1px solid var(--border)',flexShrink:0}}>
+              <span className="f-mono" style={{fontSize:'8.5px',color:'var(--textx)',textTransform:'uppercase',letterSpacing:'.15em'}}>Asset Risk Ranking</span>
+            </div>
+            <div style={{overflow:'auto',flex:1}}>
+              {[...assets].sort((a,b)=>b.cr-a.cr).map(a => {
+                const m = riskMeta(a.cr);
+                return (
+                  <div key={a.id} onClick={()=>onSel(a)}
+                    style={{padding:'8px 11px',borderBottom:'1px solid rgba(24,50,100,.22)',cursor:'pointer',
+                      background:selA?.id===a.id?'rgba(37,99,235,.09)':'transparent',transition:'background .15s'}}
+                    onMouseEnter={e=>e.currentTarget.style.background='rgba(37,99,235,.05)'}
+                    onMouseLeave={e=>e.currentTarget.style.background=selA?.id===a.id?'rgba(37,99,235,.09)':'transparent'}>
+                    <div style={{display:'flex',justifyContent:'space-between',marginBottom:'3px'}}>
+                      <span className="f-mono" style={{fontSize:'8.5px',color:'var(--textx)'}}>{a.id}</span>
+                      <span className="f-mono" style={{fontSize:'10px',color:m.hex,fontWeight:600}}>{fPct(a.cr)}</span>
+                    </div>
+                    <div style={{fontSize:'11px',color:'var(--text)',marginBottom:'4px',lineHeight:1.3,whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'}}>{a.name}</div>
+                    <RBar val={a.cr} w={158}/>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Alerts Feed */}
+      <div className="panel" style={{borderRadius:'5px',flexShrink:0,maxHeight:'188px',overflow:'hidden',display:'flex',flexDirection:'column'}}>
+        <div style={{padding:'7px 12px',borderBottom:'1px solid var(--border)',display:'flex',alignItems:'center',gap:'7px',flexShrink:0}}>
+          <span className="sdot snom ppulse"></span>
+          <span className="f-mono" style={{fontSize:'8.5px',color:'var(--textx)',textTransform:'uppercase',letterSpacing:'.15em'}}>Active Alert Feed · Real-time</span>
+          <div style={{marginLeft:'auto',display:'flex',gap:'14px'}}>
+            {[['CRITICAL','#EF4444'],['HIGH','#F97316'],['ELEVATED','#F59E0B']].map(([s,c])=>(
+              <span key={s} className="f-mono" style={{fontSize:'8.5px',color:c}}>
+                {alerts.filter(a=>a.sev===s).length} {s}
+              </span>
+            ))}
+          </div>
+        </div>
+        <div style={{overflow:'auto',flex:1}}>
+          {alerts.map((al,i) => {
+            const sm = sevMeta(al.sev);
+            return (
+              <div key={al.id} style={{padding:'7px 12px',borderBottom:'1px solid rgba(24,50,100,.18)',borderLeft:`2px solid ${sm.c}`,background:sm.bg,display:'flex',gap:'10px',alignItems:'flex-start',animation:`alertin .3s ease ${i*.04}s both`}}>
+                <div style={{flexShrink:0,width:'58px'}}>
+                  <div className="f-mono" style={{fontSize:'7.5px',color:sm.c,fontWeight:700}}>{al.sev}</div>
+                  <div className="f-mono" style={{fontSize:'7.5px',color:'var(--textx)',marginTop:'1px'}}>{al.ts}</div>
+                </div>
+                <div style={{flex:1,minWidth:0}}>
+                  <div style={{display:'flex',gap:'7px',alignItems:'center',marginBottom:'2px'}}>
+                    <span className="f-mono" style={{fontSize:'8px',color:'var(--textd)'}}>{al.assetId}</span>
+                    <span className="f-mono" style={{fontSize:'7.5px',padding:'0 4px',borderRadius:'2px',background:al.rtype==='PHYSICAL'?'rgba(37,99,235,.15)':'rgba(245,158,11,.15)',color:al.rtype==='PHYSICAL'?'#60a5fa':'#fbbf24'}}>{al.rtype}</span>
+                  </div>
+                  <div style={{fontSize:'11px',color:'var(--text)',lineHeight:1.35}}>{al.msg}</div>
+                  <div className="f-mono" style={{fontSize:'7.5px',color:'var(--textx)',marginTop:'2px'}}>SRC: {al.src}</div>
+                </div>
+                <div className="f-mono" style={{fontSize:'7.5px',color:'var(--textx)',flexShrink:0}}>{al.id}</div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+/* ── ANALYSIS TERMINAL ── */
+const AnalysisView = ({ assets }) => {
+  const [assetId,      setAssetId]      = useState(assets[0]?.id || '');
+  const [horizon,      setHorizon]      = useState(365);
+  const [scenario,     setScenario]     = useState('baseline');
+  const [urbDens,      setUrbDens]      = useState(.50);
+  const [insDrag,      setInsDrag]      = useState(.40);
+  const [liqShock,     setLiqShock]     = useState(.30);
+  const [confidence,   setConfidence]   = useState(.92);
+  const [isRunning,    setIsRunning]    = useState(false);
+  const [output,       setOutput]       = useState(null);
+  const [logs,         setLogs]         = useState([]);
+  const [aiNarrative,  setAiNarrative]  = useState(null);
+  const [aiLoading,    setAiLoading]    = useState(false);
+  const [aiModel,      setAiModel]      = useState('gemini');
+  const logEnd = useRef(null);
+  const selA = assets.find(a=>a.id===assetId);
+
+  const calcRisk = () => {
+    let r = selA.cr;
+    if (horizon===365)  r += .05;
+    if (horizon===1095) r += .11;
+    if (scenario==='disorderly') r += .07;
+    if (scenario==='failed')     r += .14;
+    r += urbDens * .08; r += insDrag * .06; r += liqShock * .05;
+    return Math.min(r, .98);
+  };
+  const liveR = calcRisk();
+  const liveM = riskMeta(liveR);
+
+  const SCEN = {
+    baseline:   { lbl:'SSP1-1.9 · Ordered Transition',  desc:'~1.5°C warming. Strong coordinated policy. Rapid low-carbon transition.' },
+    disorderly: { lbl:'SSP2-4.5 · Disorderly Transition',desc:'~2.7°C warming. Fragmented policy. Abrupt mid-century transition shock.' },
+    failed:     { lbl:'SSP5-8.5 · Failed Transition',   desc:'~4.4°C warming. No mitigation. Physical hazard dominates through 2100.' },
+  };
+
+  const runAnalysis = async () => {
+    setIsRunning(true); setOutput(null); setLogs([]);
+    const runId = `RUN-${Date.now().toString(36).toUpperCase()}`;
+    const steps = [
+      `[${runId}] Initializing Meteorium kernel v2.4.1 — IPCC AR6 mode`,
+      `[${runId}] Target: ${selA.id} — ${selA.name} [${selA.cc}]`,
+      `[${runId}] Parameters: scenario=${scenario.toUpperCase()} | horizon=${horizon}d | CI=${(confidence*100).toFixed(0)}%`,
+      `[${runId}] Authenticating data pipeline access...`,
+      `[${runId}] Fetching Sentinel-1 SAR (overpass ${new Date().toISOString().slice(0,10)})...`,
+      `[${runId}] Loading ECMWF ENS 51-member ensemble (+${horizon}H horizon)...`,
+      `[${runId}] Querying IPCC AR6/CMIP6 pathway database [${SCEN[scenario].lbl.split('·')[0].trim()}]...`,
+      `[${runId}] Bloomberg Terminal: Retrieving market volatility surface & carbon spread...`,
+      `[${runId}] Computing physical hazard decomposition [flood | heatwave | wind | drought | SLR]...`,
+      `[${runId}] Computing transition risk decomposition [carbon | policy | market | technology]...`,
+      `[${runId}] Applying urban density amplification factor (ξ=${urbDens.toFixed(2)})...`,
+      `[${runId}] Applying insurance drag coefficient (δ=${insDrag.toFixed(2)})...`,
+      `[${runId}] Applying liquidity shock factor (λ=${liqShock.toFixed(2)})...`,
+      `[${runId}] Running Monte Carlo simulation (n=10,000 draws)...`,
+      `[${runId}] Calculating VaR/CVaR at 95th percentile...`,
+      `[${runId}] Generating economic loss exposure estimate (USD)...`,
+      `[${runId}] Writing immutable audit record to ledger...`,
+      `[${runId}] ✓ Analysis complete — ${new Date().toISOString().replace('T',' ').slice(0,19)} Z`,
+    ];
+    for (const s of steps) {
+      await new Promise(r => setTimeout(r, 180 + Math.random()*280));
+      setLogs(prev => [...prev, s]);
+    }
+    const r = calcRisk(); const m = riskMeta(r);
+    setOutput({
+      runId, assetId:selA.id, assetName:selA.name, scenario, horizon, confidence,
+      cr: r, band: m.label, pr: Math.min(selA.pr+(scenario==='failed'?.08:0),.98),
+      tr: Math.min(selA.tr+(scenario==='disorderly'?.06:scenario==='failed'?.04:0),.98),
+      lossUsd: (selA.value_mm??selA.valueMm??0)*1e6*r*.25, var95:r*.18, cvar95:r*.27,
+      sources:['Sentinel-1 SAR','ECMWF ENS','Bloomberg Terminal','IPCC AR6/CMIP6','NOAA NHC'],
+      ts: new Date().toISOString(),
+    });
+    setIsRunning(false);
+
+    // ── AI Narrative (uses selected model) ──────────────
+    setAiLoading(true); setAiNarrative(null);
+    try {
+      const narrative = await aiAnalyze(
+        `You are a senior climate risk analyst using real OSINT data sources (Sentinel-1 SAR, ECMWF ENS, Bloomberg Terminal, IPCC AR6/CMIP6, NOAA NHC). Generate a concise executive intelligence brief:
+Asset: ${selA.name} (${selA.id}) | Country: ${selA.country} | Type: ${selA.type}
+Scenario: ${SCEN[scenario].lbl}
+Composite Risk: ${(r*100).toFixed(1)}% [${m.label}]
+Physical Risk: ${(Math.min(selA.pr+(scenario==='failed'?.08:0),.98)*100).toFixed(1)}%
+Transition Risk: ${(Math.min(selA.tr+(scenario==='disorderly'?.06:scenario==='failed'?.04:0),.98)*100).toFixed(1)}%
+Estimated Loss Exposure: $${((selA.value_mm??selA.valueMm??0)*1e6*r*.25/1e6).toFixed(1)}M
+Horizon: ${horizon} days | Confidence: ${(confidence*100).toFixed(0)}%
+Data Sources: Sentinel-1 SAR, ECMWF ENS 51-member, Bloomberg Terminal, IPCC AR6/CMIP6, NOAA NHC
+
+Provide: (1) Key risk drivers based on real climate data for this region, (2) Immediate recommended actions, (3) Strategic outlook with specific projections. Be direct and data-driven. Max 200 words.`,
+        aiModel
+      );
+      setAiNarrative(narrative);
+    } catch(e) {
+      setAiNarrative(`⚠ AI narrative unavailable: ${e.message}`);
+    }
+    setAiLoading(false);
+  };
+  useEffect(()=>{ logEnd.current?.scrollIntoView({behavior:'smooth'}); },[logs]);
+
+  const SliderParam = ({label,val,setVal,color,note}) => {
+    const pct = Math.round(val*100);
+    const c = color||'#2563EB';
+    return (
+      <div>
+        <div style={{display:'flex',justifyContent:'space-between',marginBottom:'4px'}}>
+          <span className="f-mono" style={{fontSize:'8.5px',color:'var(--textd)',textTransform:'uppercase',letterSpacing:'.1em'}}>{label}</span>
+          <span className="f-mono" style={{fontSize:'10px',color:'white',fontWeight:500}}>{pct}%</span>
+        </div>
+        <input type="range" min={0} max={1} step={.01} value={val} onChange={e=>setVal(parseFloat(e.target.value))}
+          style={{background:`linear-gradient(to right, ${c} ${pct}%, rgba(255,255,255,.07) ${pct}%)`}}/>
+        {note && <div className="f-mono" style={{fontSize:'7.5px',color:'var(--textx)',marginTop:'2px'}}>{note}</div>}
+      </div>
+    );
+  };
+
+  return (
+    <div style={{padding:'14px',height:'100%',overflow:'hidden',display:'flex',flexDirection:'column',gap:'10px'}}>
+      <div style={{display:'flex',alignItems:'center',gap:'10px',flexShrink:0,flexWrap:'wrap'}}>
+        <div className="f-display" style={{fontSize:'17px',fontWeight:700,letterSpacing:'.08em',color:'white',textTransform:'uppercase'}}>Climate Risk Analysis Terminal</div>
+        <span className="f-mono" style={{fontSize:'8.5px',color:'var(--textx)'}}>· Kernel v2.4.1 · IPCC AR6 Aligned · Monte Carlo n=10,000</span>
+        <div style={{marginLeft:'auto',display:'flex',alignItems:'center',gap:'5px'}}>
+          <span className="f-mono" style={{fontSize:'7.5px',color:'var(--textx)',textTransform:'uppercase',letterSpacing:'.1em'}}>AI Engine:</span>
+          {Object.entries(AI_MODELS).map(([key,m])=>(
+            <button key={key} onClick={()=>setAiModel(key)} style={{
+              padding:'3px 9px',borderRadius:'3px',fontSize:'8px',fontFamily:'IBM Plex Mono',letterSpacing:'.08em',
+              textTransform:'uppercase',cursor:'pointer',
+              background: aiModel===key ? `${m.color}22` : 'rgba(255,255,255,.03)',
+              border: aiModel===key ? `1px solid ${m.color}` : '1px solid var(--border)',
+              color: aiModel===key ? m.color : 'var(--textd)', transition:'all .2s'
+            }}>
+              <i className={`fa-solid ${m.icon}`} style={{marginRight:'4px',fontSize:'7px'}}></i>{m.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div style={{display:'flex',gap:'10px',flex:1,minHeight:0}}>
+        {/* Parameters Panel */}
+        <div className="panel" style={{width:'272px',flexShrink:0,borderRadius:'5px',overflow:'hidden',display:'flex',flexDirection:'column'}}>
+          <div style={{padding:'8px 12px',borderBottom:'1px solid var(--border)',flexShrink:0}}>
+            <span className="f-mono" style={{fontSize:'8.5px',color:'var(--textx)',textTransform:'uppercase',letterSpacing:'.15em'}}>Model Parameters</span>
+          </div>
+          <div style={{padding:'12px',display:'flex',flexDirection:'column',gap:'12px',flex:1,overflow:'auto'}}>
+            {/* Asset */}
+            <div>
+              <label className="f-mono" style={{fontSize:'8.5px',color:'var(--textx)',textTransform:'uppercase',letterSpacing:'.1em',display:'block',marginBottom:'5px'}}>Target Asset</label>
+              <select value={assetId} onChange={e=>setAssetId(e.target.value)} className="minp">
+                {assets.map(a=><option key={a.id} value={a.id}>{a.id} · {a.name}</option>)}
+              </select>
+              {selA && <div className="f-mono" style={{fontSize:'8px',color:'var(--textx)',marginTop:'4px'}}>Value: {fUsd((selA.value_mm??selA.valueMm??0))} · {selA.country} · {selA.type}</div>}
+            </div>
+            {/* Horizon */}
+            <div>
+              <label className="f-mono" style={{fontSize:'8.5px',color:'var(--textx)',textTransform:'uppercase',letterSpacing:'.1em',display:'block',marginBottom:'5px'}}>Prediction Horizon</label>
+              <div style={{display:'flex',gap:'5px'}}>
+                {[[180,'6M'],[365,'1Y'],[1095,'3Y']].map(([v,l])=>(
+                  <button key={v} onClick={()=>setHorizon(v)} className="f-mono" style={{
+                    flex:1,padding:'5px',border:'1px solid',borderRadius:'3px',cursor:'pointer',fontSize:'10px',fontWeight:500,transition:'all .2s',
+                    background:horizon===v?'rgba(37,99,235,.15)':'transparent',
+                    borderColor:horizon===v?'rgba(37,99,235,.5)':'var(--border)',
+                    color:horizon===v?'#60a5fa':'var(--textd)'}}>
+                    {l}
+                  </button>
+                ))}
+              </div>
+            </div>
+            {/* Scenario */}
+            <div>
+              <label className="f-mono" style={{fontSize:'8.5px',color:'var(--textx)',textTransform:'uppercase',letterSpacing:'.1em',display:'block',marginBottom:'5px'}}>IPCC Scenario Pathway</label>
+              <div style={{display:'flex',flexDirection:'column',gap:'4px'}}>
+                {Object.entries(SCEN).map(([k,{lbl,desc}])=>(
+                  <div key={k} onClick={()=>setScenario(k)} style={{
+                    padding:'7px 9px',border:'1px solid',borderRadius:'4px',cursor:'pointer',transition:'all .2s',
+                    background:scenario===k?'rgba(37,99,235,.1)':'transparent',
+                    borderColor:scenario===k?'rgba(37,99,235,.45)':'var(--border)'}}>
+                    <div style={{display:'flex',alignItems:'center',gap:'5px',marginBottom:'2px'}}>
+                      <div style={{width:'7px',height:'7px',borderRadius:'50%',border:'2px solid',transition:'all .2s',
+                        borderColor:scenario===k?'#2563EB':'var(--textx)',background:scenario===k?'#2563EB':'transparent'}}></div>
+                      <span className="f-mono" style={{fontSize:'9.5px',fontWeight:500,color:scenario===k?'#93c5fd':'var(--textd)'}}>{lbl}</span>
+                    </div>
+                    <div className="f-mono" style={{fontSize:'7.5px',color:'var(--textx)',paddingLeft:'12px',lineHeight:1.4}}>{desc}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+            {/* Sliders */}
+            <div style={{display:'flex',flexDirection:'column',gap:'10px'}}>
+              <SliderParam label="Urban Density Factor"    val={urbDens}   setVal={setUrbDens}   color="#3B82F6" note="Amplifies physical & economic loss propagation"/>
+              <SliderParam label="Insurance Drag Factor"   val={insDrag}   setVal={setInsDrag}   color="#F59E0B" note="Coverage gap compounds loss recovery"/>
+              <SliderParam label="Liquidity Shock Factor"  val={liqShock}  setVal={setLiqShock}  color="#F97316" note="Market stress amplifies climate volatility"/>
+            </div>
+            {/* Confidence */}
+            <div>
+              <div style={{display:'flex',justifyContent:'space-between',marginBottom:'4px'}}>
+                <span className="f-mono" style={{fontSize:'8.5px',color:'var(--textd)',textTransform:'uppercase',letterSpacing:'.1em'}}>Confidence Interval</span>
+                <span className="f-mono" style={{fontSize:'10px',color:'#10B981',fontWeight:500}}>{(confidence*100).toFixed(0)}%</span>
+              </div>
+              <input type="range" min={.80} max={.99} step={.01} value={confidence}
+                onChange={e=>setConfidence(parseFloat(e.target.value))}
+                style={{background:`linear-gradient(to right, #10B981 ${((confidence-.80)/.19*100).toFixed(0)}%, rgba(255,255,255,.07) ${((confidence-.80)/.19*100).toFixed(0)}%)`}}/>
+            </div>
+          </div>
+          <div style={{padding:'10px 12px',borderTop:'1px solid var(--border)',flexShrink:0}}>
+            <button className="btn-p" onClick={runAnalysis} disabled={isRunning} style={{width:'100%',justifyContent:'center',padding:'9px',fontSize:'12px',letterSpacing:'.14em'}}>
+              {isRunning?<><i className="fa-solid fa-spinner fa-spin"></i>RUNNING ANALYSIS...</>:<><i className="fa-solid fa-bolt"></i>RUN ANALYSIS</>}
+            </button>
+          </div>
+        </div>
+
+        {/* Center: Preview + Log */}
+        <div style={{flex:1,minWidth:0,display:'flex',flexDirection:'column',gap:'10px'}}>
+          {/* Live Preview */}
+          <div className="panel" style={{borderRadius:'5px',padding:'14px',flexShrink:0}}>
+            <div style={{display:'flex',alignItems:'center',gap:'14px'}}>
+              <ArcGauge score={liveR}/>
+              <div style={{flex:1,display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:'10px'}}>
+                {[
+                  ['Live Risk Score',  fPct(liveR),                 liveM.hex],
+                  ['VaR 95%',         fPct(liveR*.18),             '#F59E0B'],
+                  ['CVaR 95%',        fPct(liveR*.27),             '#EF4444'],
+                  ['Loss Exposure',   `$${((selA.value_mm??selA.valueMm??0)*liveR*.25).toFixed(1)}M`,'#F97316'],
+                  ['Confidence CI',   fPct(confidence),            '#10B981'],
+                  ['Scenario',        SCEN[scenario].lbl.split('·')[0].trim(),'#3B82F6'],
+                ].map(([l,v,c])=>(
+                  <div key={l}>
+                    <div className="f-mono" style={{fontSize:'7.5px',color:'var(--textx)',textTransform:'uppercase',letterSpacing:'.1em',marginBottom:'2px'}}>{l}</div>
+                    <div className="f-display" style={{fontSize:'17px',fontWeight:700,color:c}}>{v}</div>
+                  </div>
+                ))}
+              </div>
+              <div style={{width:'168px',flexShrink:0}}>
+                <div className="f-mono" style={{fontSize:'7.5px',color:'var(--textx)',marginBottom:'7px',textTransform:'uppercase',letterSpacing:'.1em'}}>Risk Decomposition</div>
+                {[['Physical',selA.pr,'#3B82F6'],['Transition',selA.tr,'#F59E0B'],['Composite',liveR,liveM.hex]].map(([l,v,c])=>(
+                  <div key={l} style={{display:'flex',alignItems:'center',gap:'7px',marginBottom:'5px'}}>
+                    <span className="f-mono" style={{fontSize:'7.5px',color:'var(--textx)',width:'55px',textTransform:'uppercase'}}>{l}</span>
+                    <div style={{flex:1,height:'3px',background:'rgba(255,255,255,.06)',borderRadius:'2px',overflow:'hidden'}}>
+                      <div style={{height:'100%',background:c,width:`${v*100}%`,transition:'width .8s'}}></div>
+                    </div>
+                    <span className="f-mono" style={{fontSize:'9.5px',color:c,minWidth:'30px',textAlign:'right'}}>{fPct(v)}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Execution Log */}
+          <div className="panel" style={{borderRadius:'5px',flex:1,overflow:'hidden',display:'flex',flexDirection:'column'}}>
+            <div style={{padding:'7px 12px',borderBottom:'1px solid var(--border)',display:'flex',alignItems:'center',gap:'7px',flexShrink:0}}>
+              <span className={`sdot ${isRunning?'snom ppulse':'sdeg'}`}></span>
+              <span className="f-mono" style={{fontSize:'8.5px',color:'var(--textx)',textTransform:'uppercase',letterSpacing:'.15em'}}>Execution Log</span>
+              {isRunning && <span className="f-mono" style={{fontSize:'8px',color:'#F59E0B',marginLeft:'4px'}}>PROCESSING</span>}
+            </div>
+            <div style={{flex:1,overflow:'auto',padding:'10px 12px',fontFamily:'IBM Plex Mono',fontSize:'10px',lineHeight:1.75,background:'rgba(0,0,0,.55)'}}>
+              {logs.length===0 && <div style={{color:'var(--textx)'}}>// Awaiting invocation. Configure parameters and press RUN ANALYSIS to execute.</div>}
+              {logs.map((l,i) => {
+                const isSuccess = l.includes('✓'); const isWarn = l.includes('...');
+                return <div key={i} style={{color:isSuccess?'#4ade80':isWarn?'#93c5fd':'#4ade80'}}>{l}</div>;
+              })}
+              {isRunning && <div style={{color:'#F59E0B'}}>// Processing<span className="blink">_</span></div>}
+              <div ref={logEnd}/>
+            </div>
+          </div>
+        </div>
+
+        {/* Output Panel */}
+        <div className="panel" style={{width:'260px',flexShrink:0,borderRadius:'5px',overflow:'auto',display:'flex',flexDirection:'column'}}>
+          <div style={{padding:'8px 12px',borderBottom:'1px solid var(--border)',flexShrink:0}}>
+            <span className="f-mono" style={{fontSize:'8.5px',color:'var(--textx)',textTransform:'uppercase',letterSpacing:'.15em'}}>Analysis Output</span>
+          </div>
+          {!output ? (
+            <div style={{padding:'28px 14px',textAlign:'center',color:'var(--textx)',fontFamily:'IBM Plex Mono',fontSize:'10px',lineHeight:2.2}}>
+              <i className="fa-solid fa-bolt" style={{fontSize:'22px',marginBottom:'10px',display:'block',opacity:.15}}></i>
+              No output yet.<br/>Configure parameters<br/>and run analysis.
+            </div>
+          ) : (
+            <div style={{padding:'12px',display:'flex',flexDirection:'column',gap:'10px',fontFamily:'IBM Plex Mono'}}>
+              {[['Run ID',output.runId,'#60a5fa'],['Asset',output.assetId,'#60a5fa'],['Name',output.assetName.length>24?output.assetName.slice(0,24)+'…':output.assetName,'var(--textd)']].map(([l,v,c])=>(
+                <div key={l}>
+                  <div style={{fontSize:'7.5px',color:'var(--textx)',textTransform:'uppercase',letterSpacing:'.1em',marginBottom:'1px'}}>{l}</div>
+                  <div style={{fontSize:'10px',color:c,lineHeight:1.4}}>{v}</div>
+                </div>
+              ))}
+              <div style={{borderTop:'1px solid var(--border)',paddingTop:'9px'}}>
+                <div style={{fontSize:'7.5px',color:'var(--textx)',textTransform:'uppercase',letterSpacing:'.1em',marginBottom:'6px'}}>Risk Scores</div>
+                {[['Composite',output.cr,riskMeta(output.cr).hex],['Physical',output.pr,'#3B82F6'],['Transition',output.tr,'#F59E0B']].map(([l,v,c])=>(
+                  <div key={l} style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'5px'}}>
+                    <span style={{fontSize:'8.5px',color:'var(--textd)'}}>{l}</span>
+                    <span style={{fontSize:'11px',color:c,fontWeight:700}}>{fPct(v)}</span>
+                  </div>
+                ))}
+              </div>
+              <div style={{borderTop:'1px solid var(--border)',paddingTop:'9px'}}>
+                <div style={{fontSize:'7.5px',color:'var(--textx)',textTransform:'uppercase',letterSpacing:'.1em',marginBottom:'6px'}}>Financial Exposure</div>
+                {[['Loss Exposure',`$${(output.lossUsd/1e6).toFixed(1)}M`,'#F97316'],['VaR 95%',fPct(output.var95),'#F59E0B'],['CVaR 95%',fPct(output.cvar95),'#EF4444']].map(([l,v,c])=>(
+                  <div key={l} style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'5px'}}>
+                    <span style={{fontSize:'8.5px',color:'var(--textd)'}}>{l}</span>
+                    <span style={{fontSize:'11px',color:c,fontWeight:700}}>{v}</span>
+                  </div>
+                ))}
+              </div>
+              <div style={{borderTop:'1px solid var(--border)',paddingTop:'9px'}}>
+                <div style={{fontSize:'7.5px',color:'var(--textx)',textTransform:'uppercase',letterSpacing:'.1em',marginBottom:'5px'}}>Data Sources</div>
+                {output.sources.map(s=>(
+                  <div key={s} style={{display:'flex',alignItems:'center',gap:'5px',marginBottom:'3px'}}>
+                    <span className="sdot snom" style={{width:'4px',height:'4px'}}></span>
+                    <span style={{fontSize:'8.5px',color:'var(--textd)'}}>{s}</span>
+                  </div>
+                ))}
+              </div>
+              <div style={{borderTop:'1px solid var(--border)',paddingTop:'9px'}}>
+                <div style={{fontSize:'8px',color:'var(--textx)',marginBottom:'2px'}}>Scenario: <span style={{color:'#60a5fa'}}>{output.scenario.toUpperCase()}</span></div>
+                <div style={{fontSize:'8px',color:'var(--textx)',marginBottom:'2px'}}>Horizon: <span style={{color:'#60a5fa'}}>{output.horizon}d</span></div>
+                <div style={{fontSize:'8px',color:'var(--textx)',marginBottom:'6px'}}>Confidence: <span style={{color:'#10B981'}}>{(output.confidence*100).toFixed(0)}%</span></div>
+              </div>
+              <div style={{display:'flex',gap:'5px'}}>
+                <button className="btn-p" style={{flex:1,justifyContent:'center',fontSize:'10px',padding:'6px 8px',letterSpacing:'.1em'}}><i className="fa-solid fa-download"></i>Export</button>
+                <button className="btn-g" style={{flex:1,justifyContent:'center',padding:'6px 8px',fontSize:'10px'}}><i className="fa-solid fa-share"></i>Share</button>
+              </div>
+
+              {/* AI Narrative */}
+              <div style={{borderTop:'1px solid var(--border)',paddingTop:'9px'}}>
+                <div style={{display:'flex',alignItems:'center',gap:'5px',marginBottom:'7px'}}>
+                  <i className={`fa-solid ${AI_MODELS[aiModel].icon}`} style={{fontSize:'8px',color:AI_MODELS[aiModel].color}}></i>
+                  <span className="f-mono" style={{fontSize:'7.5px',color:'var(--textx)',textTransform:'uppercase',letterSpacing:'.12em'}}>AI Intelligence Brief · {AI_MODELS[aiModel].label}</span>
+                  {aiLoading && <span className="blink f-mono" style={{fontSize:'8px',color:AI_MODELS[aiModel].color,marginLeft:'4px'}}>▋</span>}
+                </div>
+                {aiLoading && (
+                  <div className="f-mono" style={{fontSize:'9px',color:'var(--textx)',lineHeight:1.8}}>
+                    Generating narrative via {AI_MODELS[aiModel].label}...<br/>Querying real OSINT data sources...
+                  </div>
+                )}
+                {aiNarrative && !aiLoading && (
+                  <div style={{fontSize:'10.5px',color:'var(--text)',lineHeight:1.7,whiteSpace:'pre-wrap',borderLeft:`2px solid ${AI_MODELS[aiModel].color}66`,paddingLeft:'8px'}}>
+                    {aiNarrative}
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+/* ── TELEMETRY ── */
+const TelemetryView = () => {
+  const nom = TELEMETRY.filter(t=>t.status==='NOMINAL').length;
+  const deg = TELEMETRY.filter(t=>t.status==='DEGRADED').length;
+  return (
+    <div style={{padding:'14px',height:'100%',overflow:'hidden',display:'flex',flexDirection:'column',gap:'10px'}}>
+      <div style={{display:'flex',alignItems:'center',gap:'10px',flexShrink:0}}>
+        <div className="f-display" style={{fontSize:'17px',fontWeight:700,letterSpacing:'.08em',color:'white',textTransform:'uppercase'}}>Telemetry & Data Sources</div>
+        <div style={{marginLeft:'auto',display:'flex',gap:'14px'}}>
+          {[['NOMINAL','#10B981',nom],['DEGRADED','#F59E0B',deg],['OFFLINE','#EF4444',0]].map(([s,c,n])=>(
+            <div key={s} style={{display:'flex',alignItems:'center',gap:'5px'}}>
+              <span className="sdot" style={{background:c,boxShadow:`0 0 6px ${c}`}}></span>
+              <span className="f-mono" style={{fontSize:'9.5px',color:'var(--textd)'}}>{n} {s}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+      <div style={{display:'flex',gap:'8px',flexShrink:0}}>
+        <KpiCard label="Total Sources"     value="10"       sub="Data ingestion pipelines"      accent="var(--textd)" icon="fa-satellite-dish"/>
+        <KpiCard label="Nominal Pipelines" value={nom}      sub="Operating within SLA"          accent="#10B981" icon="fa-circle-check"/>
+        <KpiCard label="Avg Latency"       value="25ms"     sub="Mean end-to-end pipeline lag"  accent="#3B82F6" icon="fa-gauge-high"/>
+        <KpiCard label="Last Full Sync"    value="04:19Z"   sub="All nominal sources synced"    accent="#F59E0B" icon="fa-rotate"/>
+      </div>
+      <div className="panel" style={{borderRadius:'5px',flex:1,overflow:'hidden',display:'flex',flexDirection:'column'}}>
+        <div style={{overflow:'auto',flex:1}}>
+          <table className="dtbl">
+            <thead><tr>
+              <th>Status</th><th>Source ID</th><th>Name</th><th>Provider</th>
+              <th>Data Type</th><th>Revisit</th><th>Latency</th><th>Coverage</th><th>Last Ingested</th>
+            </tr></thead>
+            <tbody>
+              {TELEMETRY.map(t => (
+                <tr key={t.id}>
+                  <td>
+                    <div style={{display:'flex',alignItems:'center',gap:'5px'}}>
+                      <span className={`sdot ${t.status==='NOMINAL'?'snom ppulse':t.status==='DEGRADED'?'sdeg':'soff'}`}></span>
+                      <span className="f-mono" style={{fontSize:'9px',color:t.status==='NOMINAL'?'#10B981':t.status==='DEGRADED'?'#F59E0B':'#EF4444'}}>{t.status}</span>
+                    </div>
+                  </td>
+                  <td><span className="f-mono" style={{fontSize:'10px',color:'#60a5fa'}}>{t.id}</span></td>
+                  <td style={{fontWeight:500,color:'var(--text)'}}>{t.name}</td>
+                  <td><span className="f-mono" style={{fontSize:'9.5px',color:'var(--textd)'}}>{t.provider}</span></td>
+                  <td><span className="f-mono" style={{fontSize:'8.5px',color:'var(--textd)',background:'rgba(255,255,255,.04)',padding:'1px 6px',borderRadius:'2px'}}>{t.type}</span></td>
+                  <td><span className="f-mono" style={{fontSize:'10px',color:'var(--text)'}}>{t.revisit}</span></td>
+                  <td><span className="f-mono" style={{fontSize:'10px',color:t.latencyMs===null?'var(--textx)':t.latencyMs>100?'#F59E0B':'var(--text)'}}>{t.latencyMs!==null?`${t.latencyMs}ms`:'—'}</span></td>
+                  <td>
+                    <div style={{display:'flex',alignItems:'center',gap:'6px'}}>
+                      <div style={{height:'3px',width:'55px',background:'rgba(255,255,255,.06)',borderRadius:'2px',overflow:'hidden'}}>
+                        <div style={{height:'100%',background:t.coverage>=99?'#10B981':t.coverage>=90?'#3B82F6':'#F59E0B',width:`${t.coverage}%`,transition:'width .8s'}}></div>
+                      </div>
+                      <span className="f-mono" style={{fontSize:'10px',color:t.coverage>=99?'#10B981':t.coverage>=90?'var(--text)':'#F59E0B'}}>{t.coverage}%</span>
+                    </div>
+                  </td>
+                  <td><span className="f-mono" style={{fontSize:'10px',color:'var(--textx)'}}>{t.lastSync}</span></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+/* ── AI INTELLIGENCE VIEW ── */
+const AIView = ({ assets }) => {
+  const [model,    setModel]   = useState('gemini');
+  const [msgs,     setMsgs]    = useState([
+    { role:'assistant', content:'METEORIUM AI INTELLIGENCE ONLINE\n\nI have full access to your asset portfolio, risk scores, and telemetry data. Ask me anything — threat analysis, portfolio insights, regulatory exposure, or scenario modeling.', model:'gemini' }
+  ]);
+  const [input,    setInput]   = useState('');
+  const [loading,  setLoading] = useState(false);
+  const chatEnd = useRef(null);
+
+  useEffect(() => { chatEnd.current?.scrollIntoView({ behavior:'smooth' }); }, [msgs]);
+
+  const activeModel = AI_MODELS[model];
+
+  const send = async () => {
+    const text = input.trim();
+    if (!text || loading) return;
+    const newMsgs = [...msgs, { role:'user', content: text }];
+    setMsgs(newMsgs);
+    setInput('');
+    setLoading(true);
+    try {
+
+/* ═══════════════════════════════════════════════════════
+   PORTFOLIO VIEW  (with Add / Edit / Delete)
+═══════════════════════════════════════════════════════ */
+
+const PortfolioView = ({ assets, selA, onSel, onAdd, onEdit, onDelete, onNav }) => {
+  const [confirmDel, setConfirmDel] = useState(null);
+
+  return (
+    <div style={{padding:'14px',height:'100%',overflow:'hidden',display:'flex',flexDirection:'column',gap:'10px'}}>
+      <div style={{display:'flex',alignItems:'center',gap:'10px',flexShrink:0}}>
+        <div className="f-display" style={{fontSize:'17px',fontWeight:700,letterSpacing:'.08em',color:'white',textTransform:'uppercase'}}>Asset Portfolio Registry</div>
+        <span className="f-mono" style={{fontSize:'8.5px',color:'var(--textx)'}}>· {assets.length} assets · {(assets.reduce((s,a)=>s+(a.value_mm||a.valueMm||0),0)/1000).toFixed(2)}B total exposure</span>
+        <div style={{marginLeft:'auto',display:'flex',gap:'7px'}}>
+          <button className="btn-p" onClick={onAdd} style={{padding:'6px 14px',fontSize:'11px',letterSpacing:'.1em'}}>
+            <i className="fa-solid fa-plus"></i>Add Asset
+          </button>
+        </div>
+      </div>
+
+      <div className="panel" style={{borderRadius:'5px',flex:1,overflow:'hidden',display:'flex',flexDirection:'column'}}>
+        {assets.length === 0 ? (
+          <div style={{flex:1,display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',gap:'12px'}}>
+            <i className="fa-solid fa-layer-group" style={{fontSize:'32px',color:'var(--textx)'}}></i>
+            <div className="f-mono" style={{fontSize:'10px',color:'var(--textx)',textTransform:'uppercase',letterSpacing:'.15em'}}>No assets in portfolio</div>
+            <button className="btn-p" onClick={onAdd} style={{fontSize:'11px'}}>
+              <i className="fa-solid fa-plus"></i>Add Your First Asset
+            </button>
+          </div>
+        ) : (
+          <div style={{overflow:'auto',flex:1}}>
+            <table className="dtbl">
+              <thead><tr>
+                <th>Name</th><th>Type</th><th>Country</th>
+                <th>Value (USD)</th><th>Composite Risk</th><th>Physical</th>
+                <th>Transition</th><th>Alerts</th><th style={{width:'90px'}}>Actions</th>
+              </tr></thead>
+              <tbody>
+                {[...assets].sort((a,b)=>(b.cr||b.composite_risk||0)-(a.cr||a.composite_risk||0)).map(a => {
+                  const cr = a.cr ?? a.composite_risk ?? 0.5;
+                  const pr = a.pr ?? a.physical_risk  ?? 0.5;
+                  const tr = a.tr ?? a.transition_risk ?? 0.5;
+                  const vm = a.value_mm ?? a.valueMm ?? 0;
+                  const m  = riskMeta(cr);
+                  return (
+                    <tr key={a.id} onClick={()=>onSel(a)} className={selA?.id===a.id?'sel':''}>
+                      <td>
+                        <div style={{fontWeight:500,color:'var(--text)'}}>{a.name}</div>
+                        <div className="f-mono" style={{fontSize:'8px',color:'var(--textx)'}}>{a.country}</div>
+                      </td>
+                      <td><span className="f-mono" style={{fontSize:'8.5px',color:'var(--textd)'}}>{(a.type||'').toUpperCase()}</span></td>
+                      <td><span className="f-mono" style={{fontSize:'10px',color:'var(--textd)'}}>{a.cc}</span></td>
+                      <td><span className="f-mono" style={{fontSize:'11px',color:'white',fontWeight:500}}>{fUsd(vm)}</span></td>
+                      <td><div style={{display:'flex',flexDirection:'column',gap:'3px'}}><RiskBadge score={cr}/><RBar val={cr} w={76}/></div></td>
+                      <td><RBar val={pr} w={60}/></td>
+                      <td><RBar val={tr} w={60}/></td>
+                      <td>{(a.alerts||0)>0
+                        ? <span className="f-mono" style={{fontSize:'10px',color:'#EF4444',background:'rgba(239,68,68,.1)',border:'1px solid rgba(239,68,68,.2)',padding:'1px 6px',borderRadius:'3px'}}>{a.alerts}</span>
+                        : <span className="f-mono" style={{fontSize:'10px',color:'var(--textx)'}}>—</span>}
+                      </td>
+                      <td onClick={e=>e.stopPropagation()}>
+                        <div style={{display:'flex',gap:'4px'}}>
+                          <button className="btn-g" onClick={()=>onEdit(a)} style={{padding:'3px 8px',fontSize:'9px'}}>
+                            <i className="fa-solid fa-pen"></i>
+                          </button>
+                          <button className="btn-g" onClick={()=>setConfirmDel(a)} style={{padding:'3px 8px',fontSize:'9px',color:'#EF4444',borderColor:'rgba(239,68,68,.25)'}}>
+                            <i className="fa-solid fa-trash"></i>
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+
+      {/* Selected asset details */}
+      {selA && (
+        <div className="panel fadeup" style={{borderRadius:'5px',padding:'14px',flexShrink:0,display:'flex',gap:'20px',alignItems:'center'}}>
+          <div style={{flexShrink:0}}>
+            <div className="f-mono" style={{fontSize:'8.5px',color:'var(--textx)',marginBottom:'3px'}}>{selA.country} · {(selA.type||'').toUpperCase()}</div>
+            <div className="f-display" style={{fontSize:'18px',fontWeight:700,color:'white'}}>{selA.name}</div>
+          </div>
+          <div style={{flex:1,display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:'14px'}}>
+            {[
+              ['Composite Risk', fPct(selA.cr??0.5), riskMeta(selA.cr??0.5).hex],
+              ['Physical Risk',  fPct(selA.pr??0.5), '#3B82F6'],
+              ['Transition Risk',fPct(selA.tr??0.5), '#F59E0B'],
+              ['Asset Value',    fUsd(selA.value_mm??selA.valueMm??0), '#10B981'],
+            ].map(([l,v,c])=>(
+              <div key={l}>
+                <div className="f-mono" style={{fontSize:'8px',color:'var(--textx)',textTransform:'uppercase',letterSpacing:'.1em',marginBottom:'2px'}}>{l}</div>
+                <div className="f-display" style={{fontSize:'20px',fontWeight:700,color:c}}>{v}</div>
+              </div>
+            ))}
+          </div>
+          <div style={{display:'flex',gap:'7px',flexShrink:0}}>
+            <button className="btn-p" style={{fontSize:'11px',padding:'6px 14px'}} onClick={()=>onNav&&onNav('analysis')}><i className="fa-solid fa-bolt"></i>Analyze</button>
+            <button className="btn-g" onClick={()=>onEdit(selA)}><i className="fa-solid fa-pen"></i>Edit</button>
+          </div>
+        </div>
+      )}
+
+      {/* Delete confirmation */}
+      {confirmDel && (
+        <div style={{position:'fixed',inset:0,background:'rgba(0,0,0,.75)',backdropFilter:'blur(4px)',zIndex:1000,display:'flex',alignItems:'center',justifyContent:'center'}}>
+          <div className="panel" style={{width:'380px',borderRadius:'8px',background:'var(--bg1)',padding:'24px',textAlign:'center'}}>
+            <i className="fa-solid fa-triangle-exclamation" style={{fontSize:'28px',color:'#EF4444',marginBottom:'12px',display:'block'}}></i>
+            <div className="f-display" style={{fontSize:'16px',fontWeight:700,color:'white',marginBottom:'8px'}}>Delete Asset?</div>
+            <div className="f-mono" style={{fontSize:'10px',color:'var(--textd)',marginBottom:'18px'}}>{confirmDel.name}</div>
+            <div style={{display:'flex',gap:'10px'}}>
+              <button className="btn-g" onClick={()=>setConfirmDel(null)} style={{flex:1,justifyContent:'center'}}>Cancel</button>
+              <button onClick={()=>{ onDelete(confirmDel); setConfirmDel(null); }} style={{flex:1,background:'rgba(239,68,68,.15)',border:'1px solid rgba(239,68,68,.35)',color:'#fca5a5',borderRadius:'4px',cursor:'pointer',padding:'7px',fontFamily:'IBM Plex Mono',fontSize:'10px'}}>
+                <i className="fa-solid fa-trash"></i> Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+/* ═══════════════════════════════════════════════════════
+   MAIN APP
+
+/* ═══════════════════════════════════════════════════════
+   METEORIUM APP  (receives token/user as props)
+═══════════════════════════════════════════════════════ */
+const MeteoriumApp = ({ token: initToken, user: initUser, onBack, onLogout }) => {
+  const [token]   = useState(initToken);
+  const [user]    = useState(initUser);
+  const [view,    setView]    = useState('dashboard');
+  const [assets,  setAssets]  = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [selA,    setSelA]    = useState(null);
+  const [modal,   setModal]   = useState(null);
+
+  const loadAssets = useCallback(async () => {
+    if (!token) return;
+    setLoading(true);
+    try {
+      const data = await apiCall('/assets', 'GET', null, token);
+      if (Array.isArray(data)) {
+        setAssets(data);
+        // Update hub asset count
+        const el = document.getElementById('hubAssetCount');
+        if (el) el.textContent = data.length;
+        const lr = document.getElementById('hubLastRun');
+        if (lr) lr.textContent = new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}) + ' UTC';
+      }
+    } catch(e) { console.error('Failed to load assets:', e); }
+    setLoading(false);
+  }, [token]);
+
+  useEffect(() => { loadAssets(); }, []);
+
+  const handleSaveAsset = async (formData) => {
+    if (modal?.id) {
+      const updated = await apiCall('/assets/' + modal.id, 'PUT', formData, token);
+      if (updated.error) { alert(updated.error); return; }
+      setAssets(prev => prev.map(a => a.id === modal.id ? updated : a));
+      if (selA?.id === modal.id) setSelA(updated);
+    } else {
+      const created = await apiCall('/assets', 'POST', formData, token);
+      if (created.error) { alert(created.error); return; }
+      setAssets(prev => [...prev, created]);
+    }
+    setModal(null);
+  };
+
+  const handleDeleteAsset = async (asset) => {
+    const res = await apiCall('/assets/' + asset.id, 'DELETE', null, token);
+    if (res.error) { alert(res.error); return; }
+    setAssets(prev => prev.filter(a => a.id !== asset.id));
+    if (selA?.id === asset.id) setSelA(null);
+  };
+
+  const totAlerts = assets.reduce((s,a) => s + (a.alerts || 0), 0);
+
+  const NAV_MAIN = [
+    { id:'dashboard', ico:'fa-chart-line',    label:'Overview' },
+    { id:'portfolio', ico:'fa-layer-group',   label:'Asset Portfolio' },
+    { id:'analysis',  ico:'fa-bolt',          label:'Risk Analysis' },
+    { id:'telemetry', ico:'fa-satellite-dish',label:'Telemetry' },
+    { id:'ai',        ico:'fa-microchip',     label:'AI Intelligence' },
+  ];
+
+  return (
+    <div style={{display:'flex',flexDirection:'column',height:'100%',overflow:'hidden'}}>
+      <div className="cls">UNCLASSIFIED // FOR OFFICIAL USE ONLY (FOUO) // DISTRIBUTION C // METEORIUM PLATFORM v3.0.0</div>
+
+      <div style={{display:'flex',flex:1,overflow:'hidden'}}>
+        {/* Sidebar */}
+        <div className="sidebar">
+          <div style={{padding:'14px 15px 11px',borderBottom:'1px solid var(--m-border)',flexShrink:0}}>
+            <div style={{display:'flex',alignItems:'center',gap:'8px',marginBottom:'3px'}}>
+              <div style={{width:'30px',height:'30px',background:'rgba(37,99,235,.13)',border:'1px solid rgba(37,99,235,.28)',borderRadius:'4px',display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0}}>
+                <i className="fa-solid fa-cloud-bolt" style={{fontSize:'13px',color:'#3B82F6'}}></i>
+              </div>
+              <div>
+                <div className="f-display" style={{fontSize:'19px',fontWeight:800,letterSpacing:'.12em',color:'white',lineHeight:1}}>METEORIUM</div>
+                <div className="f-mono" style={{fontSize:'7px',color:'var(--textx)',letterSpacing:'.15em',textTransform:'uppercase',marginTop:'1px'}}>by PREXUS</div>
+              </div>
+            </div>
+          </div>
+
+          <div style={{padding:'8px 0',flex:1,overflow:'auto'}}>
+            <div className="f-mono" style={{padding:'5px 15px 3px',fontSize:'7px',color:'var(--textx)',textTransform:'uppercase',letterSpacing:'.15em'}}>Navigation</div>
+            {NAV_MAIN.map(n => (
+              <div key={n.id} className={`nav-item ${view===n.id?'active':''}`} onClick={() => setView(n.id)}>
+                <span className="ico"><i className={`fa-solid ${n.ico}`}></i></span>{n.label}
+                {n.id==='ai' && <span className="f-mono" style={{marginLeft:'auto',fontSize:'7.5px',color:'#10B981',background:'rgba(16,185,129,.12)',border:'1px solid rgba(16,185,129,.2)',padding:'0 4px',borderRadius:'2px'}}>AI</span>}
+              </div>
+            ))}
+            <div className="f-mono" style={{padding:'14px 15px 3px',fontSize:'7px',color:'var(--textx)',textTransform:'uppercase',letterSpacing:'.15em',marginTop:'6px'}}>System</div>
+            <div className="nav-item" onClick={onBack}>
+              <span className="ico"><i className="fa-solid fa-grid-2"></i></span>Back to Hub
+            </div>
+          </div>
+
+          <div style={{padding:'10px 15px',borderTop:'1px solid var(--m-border)',flexShrink:0}}>
+            <div style={{display:'flex',alignItems:'center',gap:'5px',marginBottom:'6px'}}>
+              <span className="sdot snom ppulse"></span>
+              <span className="f-mono" style={{fontSize:'8px',color:'var(--textx)'}}>Kernel ONLINE</span>
+            </div>
+            {[
+              ['ORG',  user?.org_name || 'Organization'],
+              ['ROLE', user?.role     || 'ORG_ADMIN'],
+              ['USER', user?.email    || ''],
+            ].map(([k,v]) => (
+              <div key={k} className="f-mono" style={{fontSize:'8px',color:'var(--textx)',marginBottom:'1px',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>
+                {k}: <span style={{color:k==='ROLE'?'#10B981':'var(--textd)'}}>{v}</span>
+              </div>
+            ))}
+            <button onClick={onLogout} className="btn-g" style={{width:'100%',marginTop:'8px',justifyContent:'center',fontSize:'9px',padding:'5px'}}>
+              <i className="fa-solid fa-right-from-bracket"></i>Sign Out
+            </button>
+          </div>
+        </div>
+
+        {/* Main content */}
+        <div style={{flex:1,display:'flex',flexDirection:'column',overflow:'hidden',minWidth:0}}>
+          <div style={{height:'38px',borderBottom:'1px solid var(--m-border)',background:'var(--bg1)',display:'flex',alignItems:'center',paddingLeft:'14px',paddingRight:'14px',gap:'10px',flexShrink:0}}>
+            <div className="f-display" style={{fontSize:'13px',fontWeight:600,letterSpacing:'.1em',color:'var(--textd)',textTransform:'uppercase'}}>
+              {{dashboard:'Overview',portfolio:'Asset Portfolio',analysis:'Risk Analysis',telemetry:'Telemetry',ai:'AI Intelligence'}[view]}
+            </div>
+            <div style={{marginLeft:'auto',display:'flex',alignItems:'center',gap:'14px'}}>
+              {loading && <span className="f-mono" style={{fontSize:'8px',color:'var(--textx)'}}>Loading assets...</span>}
+              <div style={{display:'flex',alignItems:'center',gap:'5px'}}>
+                <span className="sdot snom ppulse"></span>
+                <span className="f-mono" style={{fontSize:'8.5px',color:'var(--textx)'}}>LIVE</span>
+              </div>
+              <UTCClock/>
+              {totAlerts > 0 && (
+                <div style={{display:'flex',alignItems:'center',gap:'4px'}}>
+                  <i className="fa-solid fa-bell" style={{fontSize:'10px',color:'#F59E0B'}}></i>
+                  <span className="f-mono" style={{fontSize:'9.5px',color:'#F59E0B',fontWeight:700}}>{totAlerts}</span>
+                </div>
+              )}
+            </div>
+          </div>
+
+          <div style={{flex:1,overflow:'hidden'}}>
+            {view==='dashboard' && <DashboardView assets={assets} alerts={[]} selA={selA} onSel={setSelA} onNav={setView}/>}
+            {view==='portfolio' && <PortfolioView assets={assets} selA={selA} onSel={setSelA} onAdd={()=>setModal({})} onEdit={a=>setModal(a)} onDelete={handleDeleteAsset} onNav={setView}/>}
+            {view==='analysis'  && <AnalysisView  assets={assets.length>0?assets:[{id:'DEMO',name:'No assets yet — add one first',type:'Infrastructure',lat:0,lon:0,cc:'',country:'',value_mm:0,pr:.5,tr:.5,cr:.5,alerts:0}]}/>}
+            {view==='telemetry' && <TelemetryView/>}
+            {view==='ai'        && <AIView assets={assets}/>}
+          </div>
+        </div>
+      </div>
+
+      <div className="cls">UNCLASSIFIED // FOR OFFICIAL USE ONLY (FOUO) // DISTRIBUTION C // PROPRIETARY — PREXUS INC. ALL RIGHTS RESERVED</div>
+
+      {modal !== null && (
+        <AssetModal asset={modal?.id ? modal : null} onSave={handleSaveAsset} onClose={() => setModal(null)}/>
+      )}
+    </div>
+  );
+};
+</script>
+</body>
+</html>

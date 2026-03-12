@@ -1954,7 +1954,7 @@ const MeteoriumApp = ({ token: initToken, user: initUser, onBack, onLogout }) =>
           </div>
 
           <div style={{flex:1,overflow:'hidden'}}>
-            {view==='dashboard' && <DashboardView assets={assets} alerts={assets.filter(a=>a.alerts>0).map(a=>({id:'AL-'+a.id,assetId:a.id,sev:a.cr>.85?'CRITICAL':'HIGH',rtype:'PHYSICAL',msg:`${a.name} risk threshold exceeded`,src:'Meteorium Engine',ts:new Date().toISOString().slice(11,16)+'Z'}))} selA={selA} onSel={setSelA} onNav={setView}/>
+            {view==='dashboard' && <DashboardView assets={assets} alerts={assets.filter(a=>a.alerts>0).map(a=>({id:'AL-'+a.id,assetId:a.id,sev:a.cr>.85?'CRITICAL':'HIGH',rtype:'PHYSICAL',msg:a.name+' risk threshold exceeded',src:'Meteorium Engine',ts:new Date().toISOString().slice(11,16)+'Z'}))} selA={selA} onSel={setSelA} onNav={setView}/>
             {view==='portfolio' && <PortfolioView assets={assets} selA={selA} onSel={setSelA} onAdd={()=>setModal({})} onEdit={a=>setModal(a)} onDelete={handleDeleteAsset} onNav={setView}/>}
             {view==='analysis'  && <AnalysisView  assets={assets.length>0?assets:[{id:'DEMO',name:'No assets yet — add one first',type:'Infrastructure',lat:0,lon:0,cc:'',country:'',value_mm:0,pr:.5,tr:.5,cr:.5,alerts:0}]}/>}
             {view==='telemetry' && <TelemetryView/>}

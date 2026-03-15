@@ -1,0 +1,34 @@
+# Meteorium Engine — Python Dependencies
+# data-engine/python/requirements.txt
+
+# ── Web framework ─────────────────────────────────────────
+fastapi==0.111.0
+uvicorn[standard]==0.30.1
+pydantic==2.7.1
+
+# ── HTTP client ───────────────────────────────────────────
+httpx==0.27.0
+
+# ── Scientific ────────────────────────────────────────────
+numpy==1.26.4
+xarray==2024.5.0
+netCDF4==1.6.5
+scipy==1.13.1
+
+# ── Climate data APIs ─────────────────────────────────────
+cdsapi==0.7.0
+
+# ── Geospatial ────────────────────────────────────────────
+h3==3.7.6
+shapely==2.0.4
+
+# ── Scheduling ────────────────────────────────────────────
+apscheduler==3.10.4
+
+# ── Utilities ─────────────────────────────────────────────
+python-dotenv==1.0.1
+tenacity==8.3.0
+
+# ── Rust engine (built separately) ────────────────────────
+# maturin>=1.5.0
+# meteorium_engine  ← maturin develop --release

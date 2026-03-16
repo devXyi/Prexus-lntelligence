@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Prexus — Book a Demonstration</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Martian+Mono:wght@300;400;500&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,300&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --void:#020912;--deep:#04101f;--surface:#06162a;
+  --cobalt:#0EA5E9;--cobalt-lo:rgba(14,165,233,.07);--cobalt-hi:rgba(14,165,233,.28);
+  --ice:#E0F0FF;--steel:#7BA4C0;--muted:#2A4A65;
+  --wire:rgba(14,165,233,.1);--green:#10B981;--amber:#F59E0B;--red:#EF4444;
+  --f-display:'Bebas Neue',sans-serif;--f-data:'Martian Mono',monospace;
+  --f-serif:'Source Serif 4',serif;--f-ui:'IBM Plex Sans',sans-serif;
+}
+html,body{height:100%}
+body{background:var(--void);color:var(--ice);font-family:var(--f-ui);overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");opacity:.02;pointer-events:none;z-index:9999}
+a{text-decoration:none;color:inherit}
+::-webkit-scrollbar{width:3px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--muted);border-radius:2px}
+
+/* NAV */
+.nav{position:fixed;top:0;left:0;right:0;z-index:100;height:52px;display:flex;align-items:center;padding:0 48px;background:rgba(2,9,18,.94);backdrop-filter:blur(20px);border-bottom:1px solid var(--wire)}
+.nav-back{font-family:var(--f-data);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--steel);display:flex;align-items:center;gap:8px;transition:color .2s;cursor:pointer}
+.nav-back:hover{color:var(--ice)}
+.nav-logo{position:absolute;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center}
+.nav-wordmark{font-family:var(--f-display);font-size:18px;letter-spacing:.14em;color:white;line-height:1}
+.nav-product{font-family:var(--f-data);font-size:7px;letter-spacing:.22em;color:var(--cobalt);text-transform:uppercase;opacity:.8;line-height:1}
+.nav-skip{font-family:var(--f-data);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--steel);margin-left:auto}
+.nav-skip a{color:var(--cobalt);border:1px solid var(--cobalt-hi);padding:5px 12px;border-radius:2px;background:var(--cobalt-lo);transition:all .2s}
+.nav-skip a:hover{background:rgba(14,165,233,.14)}
+
+/* PAGE */
+.page{min-height:100vh;padding:100px 48px 60px;display:flex;gap:60px;max-width:1100px;margin:0 auto}
+
+/* LEFT: info */
+.left{flex:0 0 420px;padding-top:20px}
+.left-eyebrow{font-family:var(--f-data);font-size:9px;letter-spacing:.28em;text-transform:uppercase;color:var(--cobalt);margin-bottom:20px;display:flex;align-items:center;gap:10px}
+.left-eyebrow::before{content:'';display:block;width:24px;height:1px;background:var(--cobalt);opacity:.5}
+.left-h1{font-family:var(--f-display);font-size:52px;letter-spacing:.04em;text-transform:uppercase;color:white;line-height:1.0;margin-bottom:20px}
+.left-body{font-family:var(--f-serif);font-size:16px;font-weight:300;color:var(--steel);line-height:1.75;margin-bottom:36px}
+
+.demo-feature{display:flex;align-items:flex-start;gap:14px;margin-bottom:18px;padding:14px 16px;border:1px solid var(--wire);border-radius:3px;background:rgba(4,16,31,.5)}
+.demo-feature-icon{width:32px;height:32px;border-radius:8px;background:rgba(14,165,233,.1);border:1px solid rgba(14,165,233,.18);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.demo-feature-title{font-family:var(--f-display);font-size:14px;letter-spacing:.08em;text-transform:uppercase;color:white;margin-bottom:3px}
+.demo-feature-desc{font-size:12.5px;color:var(--steel);font-family:var(--f-serif);font-style:italic;line-height:1.5}
+
+.demo-quote{margin-top:28px;padding:20px 22px;border-left:3px solid var(--cobalt);background:rgba(14,165,233,.05);border-radius:0 3px 3px 0}
+.demo-quote-text{font-family:var(--f-serif);font-size:15px;font-style:italic;color:var(--steel);line-height:1.7;margin-bottom:10px}
+.demo-quote-attr{font-family:var(--f-data);font-size:8.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+
+/* RIGHT: form */
+.right{flex:1}
+.form-card{background:rgba(4,16,31,.8);border:1px solid var(--wire);border-radius:4px;overflow:hidden;position:relative}
+.form-card::before,.form-card::after{content:'';position:absolute;width:10px;height:10px;border-color:var(--cobalt-hi);border-style:solid;pointer-events:none;z-index:2}
+.form-card::before{top:-1px;left:-1px;border-width:1.5px 0 0 1.5px}
+.form-card::after{bottom:-1px;right:-1px;border-width:0 1.5px 1.5px 0}
+
+.form-tabs{display:flex;border-bottom:1px solid var(--wire)}
+.form-tab{flex:1;padding:14px 16px;font-family:var(--f-data);font-size:10px;letter-spacing:.14em;text-transform:uppercase;text-align:center;cursor:pointer;border:none;background:transparent;transition:all .2s;color:var(--muted);border-bottom:2px solid transparent}
+.form-tab:first-child{border-right:1px solid var(--wire)}
+.form-tab.active{color:var(--cobalt);border-bottom-color:var(--cobalt);background:var(--cobalt-lo)}
+.form-tab:hover:not(.active){color:var(--steel);background:rgba(255,255,255,.02)}
+
+.form-body{padding:28px}
+
+.form-section-label{font-family:var(--f-data);font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;margin-top:20px}
+.form-section-label:first-child{margin-top:0}
+
+.field{margin-bottom:14px}
+.field label{display:block;font-family:var(--f-data);font-size:8.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--steel);margin-bottom:5px}
+.field label .req{color:var(--cobalt);margin-left:2px}
+.inp{width:100%;background:rgba(0,0,0,.5);border:1px solid rgba(14,165,233,.12);color:var(--ice);font-family:var(--f-ui);font-size:14px;padding:10px 13px;border-radius:3px;transition:border-color .2s;outline:none}
+.inp:focus{border-color:var(--cobalt);box-shadow:0 0 0 3px rgba(14,165,233,.1)}
+.inp::placeholder{color:var(--muted)}
+select.inp{cursor:pointer;appearance:none;-webkit-appearance:none}
+select.inp option{background:#0a0f1c}
+.inp-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+
+.module-select{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px}
+.module-opt{padding:10px 12px;border:1px solid var(--wire);border-radius:3px;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:8px;font-family:var(--f-data);font-size:10px;letter-spacing:.06em;color:var(--steel)}
+.module-opt:hover{border-color:var(--cobalt-hi);background:var(--cobalt-lo);color:var(--ice)}
+.module-opt.selected{border-color:var(--cobalt-hi);background:var(--cobalt-lo);color:var(--cobalt)}
+.module-opt.locked{opacity:.45;cursor:not-allowed}
+.module-opt-icon{font-size:14px}
+
+.slot-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:6px}
+.slot{padding:9px 12px;border:1px solid var(--wire);border-radius:3px;cursor:pointer;text-align:center;font-family:var(--f-data);font-size:9px;letter-spacing:.08em;color:var(--steel);transition:all .2s}
+.slot:hover{border-color:var(--cobalt-hi);color:var(--cobalt);background:var(--cobalt-lo)}
+.slot.selected{border-color:var(--cobalt-hi);color:var(--cobalt);background:var(--cobalt-lo)}
+.slot.taken{opacity:.35;cursor:not-allowed;text-decoration:line-through}
+
+.divider-line{height:1px;background:var(--wire);margin:20px 0}
+
+.form-error{display:none;background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.25);border-radius:3px;padding:10px 12px;font-family:var(--f-data);font-size:10px;color:var(--red);letter-spacing:.04em;margin-bottom:14px;line-height:1.5}
+.form-error.show{display:block}
+
+.btn-submit{width:100%;padding:14px;background:var(--cobalt);color:white;border:none;border-radius:3px;cursor:pointer;font-family:var(--f-data);font-size:11px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;transition:all .25s;box-shadow:0 0 20px rgba(14,165,233,.3)}
+.btn-submit:hover:not(:disabled){filter:brightness(1.1);box-shadow:0 0 30px rgba(14,165,233,.45)}
+.btn-submit:disabled{opacity:.45;cursor:not-allowed}
+.btn-submit.success{background:#059669;box-shadow:0 0 20px rgba(16,185,129,.3)}
+
+.form-note{margin-top:12px;font-family:var(--f-data);font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);text-align:center;line-height:1.6}
+
+/* SUCCESS STATE */
+.success-screen{display:none;padding:48px 28px;text-align:center}
+.success-screen.show{display:block}
+.success-icon{width:56px;height:56px;border-radius:50%;background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.3);display:flex;align-items:center;justify-content:center;font-size:22px;margin:0 auto 20px}
+.success-title{font-family:var(--f-display);font-size:28px;letter-spacing:.08em;color:white;margin-bottom:10px}
+.success-body{font-family:var(--f-serif);font-size:15px;color:var(--steel);line-height:1.65;margin-bottom:24px}
+.success-ref{font-family:var(--f-data);font-size:10px;letter-spacing:.15em;color:var(--cobalt);border:1px solid var(--cobalt-hi);padding:6px 16px;border-radius:2px;display:inline-block;margin-bottom:28px;background:var(--cobalt-lo)}
+.btn-platform{display:inline-flex;align-items:center;gap:8px;padding:12px 24px;background:var(--cobalt);color:white;border:none;border-radius:3px;cursor:pointer;font-family:var(--f-data);font-size:11px;letter-spacing:.12em;text-transform:uppercase;transition:all .2s}
+.btn-platform:hover{filter:brightness(1.1)}
+
+/* PANEL SWITCH */
+.form-panel{display:none}.form-panel.active{display:block}
+
+@media(max-width:900px){.page{flex-direction:column;padding:80px 24px 40px}.left{flex:none}.inp-grid{grid-template-columns:1fr}.slot-grid{grid-template-columns:1fr 1fr}.nav{padding:0 24px}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.page>*{animation:fadeUp .6s ease forwards}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="landing.html" class="nav-back">← Back</a>
+  <div class="nav-logo">
+    <div class="nav-wordmark">PREXUS</div>
+    <div class="nav-product">Intelligence Platform</div>
+  </div>
+  <div class="nav-skip">Already registered? <a href="index.html">Sign In →</a></div>
+</nav>
+
+<div class="page">
+
+  <!-- LEFT INFO -->
+  <div class="left">
+    <div class="left-eyebrow">Guided Demonstration</div>
+    <h1 class="left-h1">See the Platform<br/>in Action</h1>
+    <p class="left-body">
+      A 45-minute guided session with a Prexus analyst. We walk through a real
+      asset portfolio, live satellite feeds, and a Monte Carlo scenario analysis
+      tailored to your organization.
+    </p>
+
+    <div class="demo-feature">
+      <div class="demo-feature-icon">⬡</div>
+      <div><div class="demo-feature-title">Live Risk Scoring</div><div class="demo-feature-desc">We score your assets in real time against current satellite and climate data.</div></div>
+    </div>
+    <div class="demo-feature">
+      <div class="demo-feature-icon">⚡</div>
+      <div><div class="demo-feature-title">Compound Event Walkthrough</div><div class="demo-feature-desc">See how fire-climate compound events propagate through the risk chain.</div></div>
+    </div>
+    <div class="demo-feature">
+      <div class="demo-feature-icon">◉</div>
+      <div><div class="demo-feature-title">Scenario Modeling</div><div class="demo-feature-desc">Run Monte Carlo simulations across all IPCC SSP pathways live.</div></div>
+    </div>
+    <div class="demo-feature">
+      <div class="demo-feature-icon">✦</div>
+      <div><div class="demo-feature-title">AI Intelligence Assistant</div><div class="demo-feature-desc">Ask the AI questions about your portfolio in natural language.</div></div>
+    </div>
+
+    <div class="demo-quote">
+      <p class="demo-quote-text">"The session lasts 45 minutes. By the end you will have a complete risk picture of at least three of your assets and a stress-tested scenario for each."</p>
+      <div class="demo-quote-attr">Prexus Analyst Team · Climate Risk Division</div>
+    </div>
+  </div>
+
+  <!-- RIGHT FORM -->
+  <div class="right">
+    <div class="form-card">
+
+      <!-- Tabs: Demo | Register -->
+      <div class="form-tabs">
+        <button class="form-tab active" id="tab-demo" onclick="switchTab('demo')">Book Demo</button>
+        <button class="form-tab" id="tab-register" onclick="switchTab('register')">Register Account</button>
+      </div>
+
+      <!-- DEMO PANEL -->
+      <div class="form-panel active" id="panel-demo">
+        <div class="form-body">
+          <div id="demo-error" class="form-error"></div>
+
+          <div class="form-section-label">Contact Details</div>
+          <div class="inp-grid">
+            <div class="field"><label>Full Name <span class="req">*</span></label><input id="d-name" type="text" placeholder="Dr. Priya Sharma" class="inp"/></div>
+            <div class="field"><label>Job Title <span class="req">*</span></label><input id="d-title" type="text" placeholder="Director of Risk" class="inp"/></div>
+          </div>
+          <div class="field"><label>Official Email <span class="req">*</span></label><input id="d-email" type="email" placeholder="p.sharma@ministry.gov" class="inp"/></div>
+          <div class="inp-grid">
+            <div class="field"><label>Organization <span class="req">*</span></label><input id="d-org" type="text" placeholder="Ministry of Finance" class="inp"/></div>
+            <div class="field"><label>Organization Type <span class="req">*</span></label>
+              <select id="d-type" class="inp">
+                <option value="">Select type…</option>
+                <option>Government Department</option>
+                <option>Government Agency / PSU</option>
+                <option>State-Owned Enterprise</option>
+                <option>Regulated Public Company</option>
+                <option>Research Institution</option>
+                <option>Private Institution</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-section-label">Modules of Interest</div>
+          <div class="module-select">
+            <div class="module-opt selected" id="mod-met" onclick="toggleModule('met')"><span class="module-opt-icon">🌩</span>Meteorium</div>
+            <div class="module-opt locked" id="mod-hlt" title="Requires procurement"><span class="module-opt-icon">⚕</span>Healtho</div>
+            <div class="module-opt locked" id="mod-rak" title="Requires clearance"><span class="module-opt-icon">⊕</span>Raksha</div>
+            <div class="module-opt locked" id="mod-art" title="In development"><span class="module-opt-icon">📈</span>Artha</div>
+          </div>
+
+          <div class="form-section-label">Preferred Time Slot</div>
+          <div class="slot-grid" id="slot-grid">
+            <div class="slot" onclick="selectSlot(this)">Mon 10:00 IST</div>
+            <div class="slot" onclick="selectSlot(this)">Mon 15:00 IST</div>
+            <div class="slot taken">Tue 10:00 IST</div>
+            <div class="slot" onclick="selectSlot(this)">Tue 15:00 IST</div>
+            <div class="slot" onclick="selectSlot(this)">Wed 11:00 IST</div>
+            <div class="slot" onclick="selectSlot(this)">Wed 16:00 IST</div>
+            <div class="slot taken">Thu 10:00 IST</div>
+            <div class="slot" onclick="selectSlot(this)">Thu 14:00 IST</div>
+            <div class="slot" onclick="selectSlot(this)">Fri 10:00 IST</div>
+          </div>
+
+          <div class="field" style="margin-top:14px"><label>Additional Context</label><textarea class="inp" id="d-context" rows="2" placeholder="Which assets or regions are you most focused on?" style="resize:none;line-height:1.5"></textarea></div>
+
+          <div class="divider-line"></div>
+          <button class="btn-submit" id="demo-btn" onclick="submitDemo()">
+            Request Demonstration
+          </button>
+          <p class="form-note">Confirmation within 24 hours · No commitment required<br/>Complimentary for qualified institutions</p>
+        </div>
+
+        <!-- SUCCESS -->
+        <div class="success-screen" id="demo-success">
+          <div class="success-icon">✓</div>
+          <div class="success-title">Request Received</div>
+          <p class="success-body">Your demonstration request has been logged. A Prexus analyst will confirm your session within 24 hours at your official email address.</p>
+          <div class="success-ref" id="demo-ref">REF: —</div>
+          <br/>
+          <a href="index.html" class="btn-platform">Explore the Platform →</a>
+        </div>
+      </div>
+
+      <!-- REGISTER PANEL -->
+      <div class="form-panel" id="panel-register">
+        <div class="form-body">
+          <div id="reg-error" class="form-error"></div>
+
+          <div class="form-section-label">Account Credentials</div>
+          <div class="field"><label>Email Address <span class="req">*</span></label><input id="r-email" type="email" placeholder="you@institution.gov" class="inp"/></div>
+          <div class="inp-grid">
+            <div class="field"><label>Password <span class="req">*</span></label><input id="r-pass" type="password" placeholder="min. 6 characters" class="inp" style="letter-spacing:.3em"/></div>
+            <div class="field"><label>Full Name <span class="req">*</span></label><input id="r-name" type="text" placeholder="Full Name" class="inp"/></div>
+          </div>
+
+          <div class="form-section-label">Organization</div>
+          <div class="inp-grid">
+            <div class="field"><label>Organization Name <span class="req">*</span></label><input id="r-org" type="text" placeholder="Ministry / Institution" class="inp"/></div>
+            <div class="field"><label>Organization Type <span class="req">*</span></label>
+              <select id="r-type" class="inp">
+                <option value="">Select…</option>
+                <option>Government Department</option>
+                <option>Government Agency / PSU</option>
+                <option>State-Owned Enterprise</option>
+                <option>Regulated Public Company</option>
+                <option>Research Institution</option>
+                <option>Private Institution</option>
+              </select>
+            </div>
+          </div>
+          <div class="inp-grid">
+            <div class="field"><label>Country</label><input id="r-country" type="text" placeholder="India" class="inp"/></div>
+            <div class="field"><label>Official Domain</label><input id="r-domain" type="text" placeholder="ministry.gov.in" class="inp" style="font-family:var(--f-data)"/></div>
+          </div>
+
+          <div class="divider-line"></div>
+          <button class="btn-submit" id="reg-btn" onclick="submitRegister()">
+            Create Account &amp; Access Platform
+          </button>
+          <p class="form-note">By registering you accept the Prexus MSA and Data Processing Agreement<br/>Your session will be remembered on this device</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+// ── API base ──────────────────────────────
+const API = window.API_BASE || 'https://prexus-intelligence.onrender.com';
+
+// ── Tab switching ─────────────────────────
+function switchTab(tab) {
+  document.querySelectorAll('.form-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.form-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  document.getElementById('panel-' + tab).classList.add('active');
+}
+
+// ── Module toggle ─────────────────────────
+const selectedModules = new Set(['met']);
+function toggleModule(mod) {
+  const el = document.getElementById('mod-' + mod);
+  if (el.classList.contains('locked')) return;
+  if (selectedModules.has(mod)) {
+    selectedModules.delete(mod);
+    el.classList.remove('selected');
+  } else {
+    selectedModules.add(mod);
+    el.classList.add('selected');
+  }
+}
+
+// ── Slot selection ────────────────────────
+let selectedSlot = '';
+function selectSlot(el) {
+  if (el.classList.contains('taken')) return;
+  document.querySelectorAll('.slot').forEach(s => s.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedSlot = el.textContent.trim();
+}
+
+// ── Demo submit ───────────────────────────
+async function submitDemo() {
+  const name  = document.getElementById('d-name').value.trim();
+  const title = document.getElementById('d-title').value.trim();
+  const email = document.getElementById('d-email').value.trim();
+  const org   = document.getElementById('d-org').value.trim();
+  const type  = document.getElementById('d-type').value;
+  const errEl = document.getElementById('demo-error');
+  const btn   = document.getElementById('demo-btn');
+
+  errEl.className = 'form-error';
+  if (!name || !title || !email || !org || !type) {
+    errEl.textContent = '✕ Please complete all required fields.';
+    errEl.className   = 'form-error show';
+    return;
+  }
+  if (!email.includes('@') || !email.includes('.')) {
+    errEl.textContent = '✕ Enter a valid official email address.';
+    errEl.className   = 'form-error show';
+    return;
+  }
+  if (!selectedSlot) {
+    errEl.textContent = '✕ Please select a preferred time slot.';
+    errEl.className   = 'form-error show';
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = 'Submitting…';
+
+  // Simulate API call (replace with real backend endpoint when built)
+  await new Promise(r => setTimeout(r, 1200));
+
+  const ref = 'PRX-DEMO-' + Date.now().toString(36).toUpperCase();
+
+  // Store demo request in localStorage for reference
+  try {
+    localStorage.setItem('prexus_demo_ref', ref);
+    localStorage.setItem('prexus_demo_email', email);
+  } catch {}
+
+  document.querySelector('#panel-demo .form-body').style.display = 'none';
+  document.getElementById('demo-ref').textContent = ref;
+  document.getElementById('demo-success').classList.add('show');
+}
+
+// ── Register submit ───────────────────────
+async function submitRegister() {
+  const email = document.getElementById('r-email').value.trim();
+  const pass  = document.getElementById('r-pass').value;
+  const name  = document.getElementById('r-name').value.trim();
+  const org   = document.getElementById('r-org').value.trim();
+  const type  = document.getElementById('r-type').value;
+  const errEl = document.getElementById('reg-error');
+  const btn   = document.getElementById('reg-btn');
+
+  errEl.className = 'form-error';
+  if (!email || !pass || !name || !org || !type) {
+    errEl.textContent = '✕ Please complete all required fields.';
+    errEl.className   = 'form-error show';
+    return;
+  }
+  if (pass.length < 6) {
+    errEl.textContent = '✕ Password must be at least 6 characters.';
+    errEl.className   = 'form-error show';
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = 'Creating account…';
+
+  try {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 30000);
+
+    const res = await fetch(API + '/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email, password: pass,
+        full_name: name,
+        org_name:  org,
+      }),
+      signal: controller.signal,
+    });
+    clearTimeout(timeout);
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      if (res.status === 409) {
+        // Already registered — redirect to sign in
+        errEl.textContent = 'Account exists. Redirecting to sign in…';
+        errEl.className = 'form-error show';
+        errEl.style.color = 'var(--amber)';
+        errEl.style.background = 'rgba(245,158,11,.08)';
+        errEl.style.borderColor = 'rgba(245,158,11,.25)';
+        setTimeout(() => { window.location.href = 'index.html'; }, 1500);
+        return;
+      }
+      throw new Error(data.error || 'Registration failed');
+    }
+
+    if (data.token) {
+      // Save session
+      localStorage.setItem('prx_token', data.token);
+      localStorage.setItem('prx_user', JSON.stringify(data.user));
+
+      // Save org data for org onboarding pre-fill
+      const orgData = {
+        orgName: org, orgType: type,
+        country: document.getElementById('r-country').value.trim() || '',
+        domain:  document.getElementById('r-domain').value.trim()  || '',
+        fullName: name, email,
+        createdAt: new Date().toISOString(),
+      };
+      localStorage.setItem(`prexus_org_${email}`, JSON.stringify(orgData));
+
+      btn.textContent = '✓ Account Created — Redirecting';
+      btn.classList.add('success');
+
+      // Go to platform — auth.js will detect session and go to org onboarding or hub
+      setTimeout(() => { window.location.href = 'index.html'; }, 900);
+    }
+  } catch (err) {
+    if (err.name === 'AbortError') {
+      errEl.textContent = '⏱ Server is waking up — please try again in a moment.';
+    } else {
+      errEl.textContent = `✕ ${err.message}`;
+    }
+    errEl.className = 'form-error show';
+    btn.disabled = false;
+    btn.textContent = 'Create Account & Access Platform';
+  }
+}
+
+// ── Check existing session ────────────────
+// If already logged in, skip this page
+try {
+  const tok = localStorage.getItem('prx_token');
+  const usr = localStorage.getItem('prx_user');
+  if (tok && usr) {
+    // Show "you're already registered" hint
+    const skip = document.querySelector('.nav-skip');
+    if (skip) skip.innerHTML = 'Signed in · <a href="index.html">Go to Platform →</a>';
+  }
+} catch {}
+</script>
+</body>
+</html>

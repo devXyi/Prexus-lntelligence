@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Meteorium — Climate Risk Intelligence</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Martian+Mono:wght@300;400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,300&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cesium.com/downloads/cesiumjs/releases/1.114/Build/Cesium/Widgets/widgets.css"/>
+<style>
+:root{
+  --void:#020912;--deep:#04101f;
+  --cobalt:#0EA5E9;--clo:rgba(14,165,233,.08);--cmd:rgba(14,165,233,.18);--chi:rgba(14,165,233,.35);
+  --ice:#E0F0FF;--steel:#7BA4C0;--ghost:#2A4A65;--phantom:#122035;
+  --amber:#F59E0B;--red:#EF4444;--green:#10B981;--orange:#F97316;
+  --wire:rgba(14,165,233,.12);--whi:rgba(14,165,233,.22);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden;font-family:'Martian Mono',monospace;font-size:12px;background:var(--void);color:var(--ice)}
+::-webkit-scrollbar{width:3px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--ghost);border-radius:2px}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 50% at 50% -10%,rgba(14,165,233,.06),transparent 60%);pointer-events:none;z-index:0}
+#shell{position:relative;z-index:1;display:grid;grid-template-rows:44px 1fr;grid-template-columns:52px 220px 1fr 300px;height:100vh}
+#topbar{grid-column:1/-1;background:rgba(2,9,18,.97);border-bottom:1px solid var(--wire);display:flex;align-items:center;padding:0 16px;backdrop-filter:blur(20px);z-index:200}
+.tb-logo{display:flex;align-items:center;gap:10px;padding-right:18px;border-right:1px solid var(--wire);margin-right:16px;text-decoration:none}
+.tb-logo:hover{opacity:.8}
+.tb-wm{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:.12em;color:#fff}
+.tb-pr{font-size:7px;letter-spacing:.28em;color:var(--cobalt);text-transform:uppercase}
+.tb-mod{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--steel)}
+.tb-sub{font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:var(--cobalt);opacity:.8}
+.tb-stat{display:flex;align-items:center;gap:14px;font-size:9px;letter-spacing:.1em;color:var(--steel);text-transform:uppercase;margin-left:16px}
+.tb-si{display:flex;align-items:center;gap:5px}
+.sd{width:5px;height:5px;border-radius:50%;flex-shrink:0;background:var(--ghost)}
+.sd.live{background:var(--green);box-shadow:0 0 6px var(--green)}
+.sd.warn{background:var(--amber);box-shadow:0 0 6px var(--amber)}
+.tb-right{margin-left:auto;display:flex;align-items:center;gap:12px}
+.tb-clock{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:.1em;color:var(--ice)}
+.tb-date{font-size:8px;letter-spacing:.14em;color:var(--steel);text-transform:uppercase}
+.tb-cls{font-size:8px;font-weight:700;letter-spacing:.18em;padding:3px 10px;border-radius:2px;background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.3);color:var(--amber);text-transform:uppercase}
+.tb-user{display:flex;align-items:center;gap:6px;font-size:10px;color:var(--steel);padding:5px 10px;border-radius:4px;border:1px solid var(--wire)}
+.tb-av{width:22px;height:22px;border-radius:50%;background:var(--cmd);border:1px solid var(--chi);display:flex;align-items:center;justify-content:center;font-size:9px;color:var(--cobalt)}
+#rail{grid-column:1;grid-row:2;background:rgba(4,16,31,.8);border-right:1px solid var(--wire);display:flex;flex-direction:column;align-items:center;padding:8px 0;gap:2px}
+.ri{width:36px;height:36px;display:flex;align-items:center;justify-content:center;border-radius:6px;cursor:pointer;color:var(--ghost);border:1px solid transparent;font-size:11px;transition:all .18s;position:relative;user-select:none}
+.ri:hover{color:var(--steel);background:var(--clo)}
+.ri.on{color:var(--cobalt);background:var(--clo);border-color:var(--whi)}
+.ri.on::before{content:'';position:absolute;left:-1px;top:50%;transform:translateY(-50%);width:2px;height:20px;background:var(--cobalt);border-radius:0 2px 2px 0}
+.rsep{width:24px;height:1px;background:var(--wire);margin:4px 0;flex-shrink:0}
+.ri-badge{position:absolute;top:-2px;right:-2px;width:10px;height:10px;border-radius:50%;background:var(--red);font-size:7px;display:flex;align-items:center;justify-content:center;color:white;font-weight:700}
+#sidebar{grid-column:2;grid-row:2;background:rgba(4,16,31,.6);border-right:1px solid var(--wire);display:flex;flex-direction:column;overflow-y:auto}
+.ss{padding:10px 0 4px}
+.sl{font-size:8px;letter-spacing:.2em;color:var(--ghost);text-transform:uppercase;padding:0 14px;margin-bottom:4px}
+.ni{display:flex;align-items:center;gap:9px;padding:7px 14px;cursor:pointer;font-size:11px;color:var(--steel);border-left:2px solid transparent;transition:all .15s;user-select:none}
+.ni:hover{color:var(--ice);background:rgba(14,165,233,.04)}
+.ni.on{color:var(--cobalt);border-left-color:var(--cobalt);background:var(--clo)}
+.ni-ic{width:14px;text-align:center;font-size:10px;flex-shrink:0}
+.nbadge{margin-left:auto;font-size:8px;font-weight:600;padding:1px 5px;border-radius:2px;background:rgba(239,68,68,.2);color:#fca5a5;border:1px solid rgba(239,68,68,.3)}
+.rl-row{display:flex;align-items:center;gap:8px;padding:5px 14px;cursor:pointer}
+.rl-row:hover{background:rgba(14,165,233,.04)}
+.rl-lbl{font-size:10.5px;color:var(--steel);flex:1}
+.tgl{position:relative;width:30px;height:16px;flex-shrink:0}
+.tgl input{opacity:0;width:0;height:0;position:absolute}
+.tgl-s{position:absolute;cursor:pointer;inset:0;background:var(--ghost);border-radius:16px;transition:.25s}
+.tgl-s::before{content:'';position:absolute;height:12px;width:12px;left:2px;bottom:2px;background:white;border-radius:50%;transition:.25s}
+.tgl input:checked+.tgl-s{background:var(--cobalt)}
+.tgl input:checked+.tgl-s::before{transform:translateX(14px)}
+.sb-bot{margin-top:auto;border-top:1px solid var(--wire);padding:10px 14px;flex-shrink:0;display:flex;align-items:center;gap:8px}
+#content{grid-column:3;grid-row:2;overflow:hidden;display:flex;flex-direction:column;position:relative}
+.mh{flex-shrink:0;padding:9px 18px;border-bottom:1px solid var(--wire);display:flex;align-items:center;gap:12px;background:rgba(4,16,31,.5);z-index:100}
+.mt{font-family:'Bebas Neue',sans-serif;font-size:19px;letter-spacing:.12em;color:white;text-transform:uppercase}
+.mhr{margin-left:auto;display:flex;align-items:center;gap:8px}
+.mb{flex:1;overflow-y:auto;overflow-x:hidden;padding:14px 18px}
+#globe-container{flex:1;position:relative;overflow:hidden}
+#globe-container canvas{width:100%!important;height:100%!important}
+#globe-controls{position:absolute;top:12px;right:12px;z-index:100;display:flex;flex-direction:column;gap:6px;align-items:flex-end}
+.map-sel{display:flex;gap:3px;background:rgba(0,0,0,.65);padding:3px;border-radius:5px;border:1px solid var(--wire);backdrop-filter:blur(8px)}
+.map-btn{padding:4px 10px;border:1px solid transparent;background:transparent;color:var(--steel);font-family:'Martian Mono',monospace;font-size:9px;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;border-radius:3px;transition:all .2s}
+.map-btn.on{background:var(--cmd);color:var(--cobalt);border-color:var(--whi)}
+.map-btn:hover:not(.on){background:var(--clo)}
+.globe-ctrl-btn{padding:5px 10px;background:rgba(0,0,0,.65);border:1px solid var(--wire);border-radius:3px;color:var(--steel);font-family:'Martian Mono',monospace;font-size:9px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;backdrop-filter:blur(8px);transition:all .2s}
+.globe-ctrl-btn:hover{border-color:var(--cobalt-hi);color:var(--cobalt)}
+.globe-ctrl-btn.primary{background:var(--cobalt);border-color:var(--cobalt);color:white}
+#globe-tooltip{position:absolute;pointer-events:none;background:rgba(4,16,31,.97);border:1px solid var(--wire);border-radius:3px;padding:10px 13px;z-index:150;min-width:210px;backdrop-filter:blur(8px);display:none;box-shadow:0 20px 40px rgba(0,0,0,.6)}
+.gt-name{font-family:'Bebas Neue',sans-serif;font-size:16px;color:white;letter-spacing:.08em;margin-bottom:3px}
+.gt-id{font-size:8px;color:var(--cobalt);letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px}
+.gt-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:8px}
+.gt-m .gt-ml{font-size:7.5px;color:var(--ghost);text-transform:uppercase;letter-spacing:.08em;margin-bottom:2px}
+.gt-m .gt-mv{font-family:'Bebas Neue',sans-serif;font-size:19px;line-height:1}
+.gt-sev{display:inline-flex;align-items:center;gap:4px;font-size:8px;font-weight:700;letter-spacing:.12em;padding:2px 8px;border-radius:2px;text-transform:uppercase}
+#timebar{position:absolute;bottom:0;left:0;right:0;z-index:100;background:rgba(2,9,18,.93);border-top:1px solid var(--wire);padding:10px 20px;backdrop-filter:blur(12px)}
+.tb-row{display:flex;align-items:center;gap:12px;margin-bottom:8px}
+.tb-year{font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--cobalt);letter-spacing:.1em;line-height:1}
+.tb-meta{font-size:9px;color:var(--steel);letter-spacing:.1em;text-transform:uppercase}
+input#tslider{width:100%;height:4px;background:var(--phantom);border-radius:2px;outline:none;-webkit-appearance:none;appearance:none;cursor:pointer}
+input#tslider::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:var(--cobalt);box-shadow:0 0 10px rgba(14,165,233,.7);cursor:pointer}
+.tb-yrs{display:flex;justify-content:space-between;margin-top:5px;font-size:8px;color:var(--phantom)}
+.rcp-bar{display:flex;align-items:center;gap:6px;margin-top:6px}
+.rcp-seg{height:3px;border-radius:1px;flex:1}
+.rcp-lbl{font-size:7px;letter-spacing:.1em;color:var(--ghost);text-transform:uppercase;white-space:nowrap}
+#rcp-prog{height:3px;background:linear-gradient(to right,var(--cobalt),var(--amber),var(--red));border-radius:2px;transition:width .4s;margin-bottom:3px}
+#rpanel{grid-column:4;grid-row:2;background:rgba(4,16,31,.7);border-left:1px solid var(--wire);display:flex;flex-direction:column;overflow:hidden}
+.rph{flex-shrink:0;padding:9px 14px;border-bottom:1px solid var(--wire);display:flex;align-items:center;gap:8px;background:rgba(0,0,0,.3)}
+.rpt{font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:white}
+.rpb{flex:1;overflow-y:auto;padding:12px}
+.rpsec{margin-bottom:16px}
+.rpsec-hd{display:flex;align-items:center;gap:8px;padding-bottom:8px;margin-bottom:10px;border-bottom:1px solid var(--wire)}
+.rpsec-t{font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--ghost);flex:1}
+.panel{background:var(--deep);border:1px solid var(--wire);border-radius:3px;position:relative;overflow:hidden;margin-bottom:12px}
+.panel::before,.panel::after{content:'';position:absolute;width:7px;height:7px;border-color:var(--chi);border-style:solid;pointer-events:none;z-index:2}
+.panel::before{top:-1px;left:-1px;border-width:1.5px 0 0 1.5px}
+.panel::after{bottom:-1px;right:-1px;border-width:0 1.5px 1.5px 0}
+.ph{padding:8px 14px;border-bottom:1px solid var(--wire);display:flex;align-items:center;gap:8px;background:rgba(0,0,0,.3)}
+.pt{font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--steel)}
+.pright{margin-left:auto;display:flex;align-items:center;gap:6px}
+.tag{display:inline-flex;align-items:center;font-size:8px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;padding:2px 7px;border-radius:2px}
+.tag.cobalt{background:var(--cmd);color:var(--cobalt);border:1px solid var(--whi)}
+.tag.green{background:rgba(16,185,129,.15);color:#6ee7b7;border:1px solid rgba(16,185,129,.3)}
+.tag.red{background:rgba(239,68,68,.15);color:#fca5a5;border:1px solid rgba(239,68,68,.3)}
+.tag.amber{background:rgba(245,158,11,.15);color:#fcd34d;border:1px solid rgba(245,158,11,.3)}
+.tag.dim{background:rgba(255,255,255,.04);color:var(--steel);border:1px solid rgba(255,255,255,.1)}
+.kpi{background:var(--deep);border:1px solid var(--wire);border-radius:3px;padding:12px 14px;position:relative;overflow:hidden}
+.kpi::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px}
+.kpi.c::after{background:var(--cobalt)}.kpi.c .kv{color:var(--cobalt)}
+.kpi.a::after{background:var(--amber)}.kpi.a .kv{color:var(--amber)}
+.kpi.r::after{background:var(--red)}.kpi.r .kv{color:var(--red)}
+.kpi.g::after{background:var(--green)}.kpi.g .kv{color:var(--green)}
+.kl{font-size:8px;letter-spacing:.16em;text-transform:uppercase;color:var(--steel);margin-bottom:5px}
+.kv{font-family:'Bebas Neue',sans-serif;font-size:28px;line-height:1;letter-spacing:.04em;margin-bottom:2px}
+.ks{font-size:9px;color:var(--ghost)}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.rb{height:3px;background:rgba(255,255,255,.06);border-radius:2px;overflow:hidden;margin-top:4px}
+.rf{height:100%;border-radius:2px}
+.dec{border-radius:3px;padding:10px 12px;border-left:3px solid;margin-bottom:8px;cursor:pointer}
+.dec.critical{background:rgba(239,68,68,.05);border-color:var(--red)}
+.dec.high{background:rgba(245,158,11,.05);border-color:var(--amber)}
+.dec.elevated{background:rgba(14,165,233,.05);border-color:var(--cobalt)}
+.dec-hd{display:flex;align-items:center;gap:8px;margin-bottom:5px}
+.dec-b{font-size:8px;font-weight:700;letter-spacing:.12em;padding:2px 6px;border-radius:2px;text-transform:uppercase;flex-shrink:0}
+.dec.critical .dec-b{background:rgba(239,68,68,.2);color:#fca5a5;border:1px solid rgba(239,68,68,.3)}
+.dec.high .dec-b{background:rgba(245,158,11,.2);color:#fcd34d;border:1px solid rgba(245,158,11,.3)}
+.dec.elevated .dec-b{background:var(--cmd);color:var(--cobalt);border:1px solid var(--whi)}
+.dec-a{font-size:10px;color:var(--ice)}
+.dec-sc{font-family:'Bebas Neue',sans-serif;font-size:18px;margin-left:auto}
+.dec.critical .dec-sc{color:var(--red)}.dec.high .dec-sc{color:var(--amber)}.dec.elevated .dec-sc{color:var(--cobalt)}
+.dec-msg{font-family:'Source Serif 4',serif;font-size:11.5px;color:var(--steel);line-height:1.55;font-style:italic;margin-bottom:6px}
+.dec-meta{display:flex;align-items:center;gap:12px;font-size:8px;color:var(--ghost)}
+.dt{width:100%;border-collapse:collapse}
+.dt th{padding:7px 12px;text-align:left;font-size:8px;letter-spacing:.14em;text-transform:uppercase;color:var(--ghost);border-bottom:1px solid var(--wire);white-space:nowrap;background:rgba(0,0,0,.35)}
+.dt td{padding:9px 12px;border-bottom:1px solid rgba(14,165,233,.07);vertical-align:middle}
+.dt tr:hover td{background:rgba(14,165,233,.03)}
+.ai-bub{padding:9px 11px;border-radius:3px;margin-bottom:8px;font-family:'Source Serif 4',serif;font-size:11.5px;line-height:1.6}
+.ai-bub.u{background:rgba(14,165,233,.08);border:1px solid var(--wire);color:var(--ice)}
+.ai-bub.b{background:rgba(0,0,0,.3);border:1px solid rgba(16,185,129,.15);color:var(--steel);font-style:italic}
+.ai-lbl{font-family:'Martian Mono',monospace;font-size:8px;letter-spacing:.12em;text-transform:uppercase;margin-bottom:5px}
+.ai-bub.u .ai-lbl{color:var(--cobalt)}.ai-bub.b .ai-lbl{color:var(--green)}
+.ai-row{display:flex;gap:6px;margin-top:8px;position:sticky;bottom:0;background:rgba(4,16,31,.95);padding:8px 0 0}
+.ai-in{flex:1;background:rgba(0,0,0,.4);border:1px solid var(--wire);color:var(--ice);font-family:'IBM Plex Sans',sans-serif;font-size:11px;padding:7px 10px;border-radius:3px;outline:none}
+.ai-in:focus{border-color:var(--chi)}
+.ai-in::placeholder{color:var(--ghost)}
+.ai-go{padding:7px 14px;background:var(--cobalt);border:none;border-radius:3px;color:white;cursor:pointer;font-size:13px;flex-shrink:0}
+.ai-go:disabled{opacity:.5;cursor:not-allowed}
+.sim-btn{width:100%;padding:11px;background:linear-gradient(135deg,#F59E0B,#EF4444);border:none;border-radius:3px;color:white;font-family:'Martian Mono',monospace;font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;box-shadow:0 0 20px rgba(245,158,11,.2);margin-bottom:10px}
+.sim-btn:disabled{opacity:.5;cursor:not-allowed}
+.sim-row{display:flex;align-items:center;gap:8px;padding:8px 10px;background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.05);border-radius:3px;margin-bottom:7px}
+.backdrop{position:fixed;inset:0;z-index:3000;background:rgba(0,0,0,.8);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:20px}
+.mbox{width:100%;max-width:560px;background:#04101f;border:1px solid var(--wire);border-radius:6px;overflow:hidden;box-shadow:0 40px 80px rgba(0,0,0,.8)}
+.mhd{padding:14px 20px;border-bottom:1px solid var(--wire);background:rgba(0,0,0,.4);display:flex;align-items:center;justify-content:space-between}
+.mt2{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:.1em;text-transform:uppercase;color:white}
+.mclose{width:28px;height:28px;background:transparent;border:1px solid var(--wire);border-radius:4px;color:var(--steel);cursor:pointer;font-size:14px;line-height:1}
+.mclose:hover{border-color:rgba(239,68,68,.4);color:var(--red)}
+.mbody{padding:20px}
+.mgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.fl label{display:block;font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--steel);margin-bottom:5px}
+.fi{width:100%;background:rgba(0,0,0,.4);border:1px solid rgba(14,165,233,.12);color:var(--ice);font-family:'IBM Plex Sans',sans-serif;font-size:13px;padding:9px 12px;border-radius:3px;outline:none}
+.fi:focus{border-color:var(--cobalt)}
+.fi::placeholder{color:var(--ghost)}
+select.fi option{background:#04101f}
+.mft{padding:12px 20px;border-top:1px solid var(--wire);display:flex;justify-content:flex-end;gap:10px;background:rgba(0,0,0,.3)}
+.btn-p{padding:10px 22px;background:var(--cobalt);border:none;border-radius:3px;color:white;cursor:pointer;font-family:'Martian Mono',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase}
+.btn-p:disabled{opacity:.5;cursor:not-allowed}
+.btn-s{padding:10px 18px;background:transparent;border:1px solid var(--wire);border-radius:3px;color:var(--steel);cursor:pointer;font-family:'Martian Mono',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase}
+.view-panel{display:none;flex:1;overflow-y:auto;padding:14px 18px}
+.view-panel.active{display:block}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+@keyframes spin{to{transform:rotate(360deg)}}
+.pulse{animation:pulse 2s infinite}
+.spinner{display:inline-block;width:12px;height:12px;border:2px solid var(--wire);border-top-color:var(--cobalt);border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle}
+.hidden{display:none!important}
+</style>
+</head>
+<body>
+<div id="shell">
+  <div id="topbar">
+    <a href="index.html" class="tb-logo"><div><div class="tb-wm">PREXUS</div><div class="tb-pr">Sovereign Intelligence</div></div></a>
+    <span style="color:var(--ghost);margin:0 6px;font-size:13px">/</span>
+    <div><div class="tb-mod">Meteorium</div><div class="tb-sub">Climate Risk Intelligence</div></div>
+    <div class="tb-stat">
+      <div class="tb-si"><div class="sd" id="api-dot"></div><span id="api-lbl">CHECKING</span></div>
+      <div class="tb-si"><div class="sd live pulse"></div><span>CESIUM 3D</span></div>
+      <div class="tb-si"><div class="sd live pulse"></div><span>RUST ENGINE</span></div>
+      <div class="tb-si"><div class="sd warn" id="alert-dot"></div><span id="alert-lbl">—</span></div>
+    </div>
+    <div class="tb-right">
+      <span class="tb-cls">FOUO // DISTRIBUTION C</span>
+      <div><div class="tb-clock" id="clock">—</div><div class="tb-date" id="dateline">—</div></div>
+      <div class="tb-user"><div class="tb-av">M</div><div style="font-size:10px;line-height:1.2"><div style="color:var(--ice)" id="uname">Operator</div><div style="font-size:8px;color:var(--ghost)" id="urole">Risk Analyst</div></div></div>
+    </div>
+  </div>
+  <div id="rail">
+    <div class="ri on" data-view="globe" title="3D Globe" style="font-size:14px">&#9673;</div>
+    <div class="ri" data-view="dashboard" title="Dashboard">&#9685;</div>
+    <div class="ri" data-view="alerts" title="Alerts" style="position:relative">!<div class="ri-badge" id="rail-badge">1</div></div>
+    <div class="ri" data-view="portfolio" title="Portfolio">P</div>
+    <div class="ri" data-view="signals" title="Signals">S</div>
+    <div class="ri" data-view="pipeline" title="Pipeline">L</div>
+    <div class="ri" data-view="sources" title="Sources">R</div>
+    <div class="rsep"></div>
+    <div class="ri" title="Back to Hub" onclick="location.href='index.html'" style="margin-top:auto">&#8592;</div>
+  </div>
+  <div id="sidebar">
+    <div class="ss"><div class="sl">Command</div>
+      <div class="ni on" data-view="globe"><span class="ni-ic">&#9673;</span><span>3D Globe · CesiumJS</span></div>
+      <div class="ni" data-view="dashboard"><span class="ni-ic">&#9685;</span><span>Intelligence Overview</span></div>
+      <div class="ni" data-view="alerts"><span class="ni-ic">!</span><span>Alert Command Center</span><span class="nbadge" id="nav-badge">1</span></div>
+    </div>
+    <div class="ss"><div class="sl">Analysis</div>
+      <div class="ni" data-view="portfolio"><span class="ni-ic">P</span><span>Asset Portfolio</span></div>
+      <div class="ni" data-view="signals"><span class="ni-ic">S</span><span>Climate Signals</span></div>
+    </div>
+    <div class="ss"><div class="sl">System</div>
+      <div class="ni" data-view="pipeline"><span class="ni-ic">L</span><span>Pipeline Architecture</span></div>
+      <div class="ni" data-view="sources"><span class="ni-ic">R</span><span>Data Source Registry</span></div>
+    </div>
+    <div class="ss"><div class="sl">Climate Risk Layers</div>
+      <div class="rl-row"><span style="font-size:10px;width:16px;text-align:center">W</span><span class="rl-lbl">Flood Zones</span><label class="tgl"><input type="checkbox" id="l-flood"><span class="tgl-s"></span></label></div>
+      <div class="rl-row"><span style="font-size:10px;width:16px;text-align:center">F</span><span class="rl-lbl">Wildfire Risk</span><label class="tgl"><input type="checkbox" id="l-wildfire"><span class="tgl-s"></span></label></div>
+      <div class="rl-row"><span style="font-size:10px;width:16px;text-align:center">D</span><span class="rl-lbl">Drought Index</span><label class="tgl"><input type="checkbox" id="l-drought"><span class="tgl-s"></span></label></div>
+      <div class="rl-row"><span style="font-size:10px;width:16px;text-align:center">H</span><span class="rl-lbl">Heat Stress</span><label class="tgl"><input type="checkbox" id="l-heat"><span class="tgl-s"></span></label></div>
+      <div class="rl-row"><span style="font-size:10px;width:16px;text-align:center">P</span><span class="rl-lbl">Political Instability</span><label class="tgl"><input type="checkbox" id="l-political"><span class="tgl-s"></span></label></div>
+      <div class="rl-row"><span style="font-size:10px;width:16px;text-align:center">C</span><span class="rl-lbl">Supply Chain</span><label class="tgl"><input type="checkbox" id="l-supply"><span class="tgl-s"></span></label></div>
+    </div>
+    <div class="sb-bot">
+      <div style="width:26px;height:26px;border-radius:50%;background:var(--cmd);border:1px solid var(--chi);display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--cobalt)">M</div>
+      <div><div style="font-size:10px;color:var(--ice)" id="sb-name">Operator</div><div style="font-size:8px;color:var(--ghost);text-transform:uppercase;letter-spacing:.08em" id="sb-org">Prexus Org</div></div>
+    </div>
+  </div>
+  <div id="content">
+    <div class="mh hidden" id="view-header"><div class="mt" id="view-title">—</div><div class="mhr"><span class="tag cobalt" id="view-tag">—</span></div></div>
+    <div id="globe-view" style="flex:1;display:flex;flex-direction:column;overflow:hidden">
+      <div id="globe-container" style="flex:1;position:relative;overflow:hidden"></div>
+      <div id="globe-controls">
+        <div class="map-sel">
+          <button class="map-btn on" data-mtype="natural">Earth</button>
+          <button class="map-btn" data-mtype="satellite">Satellite</button>
+          <button class="map-btn" data-mtype="climate">Climate</button>
+          <button class="map-btn" data-mtype="dark">Dark</button>
+        </div>
+        <button class="globe-ctrl-btn" id="globe-reset">Reset View</button>
+        <button class="globe-ctrl-btn primary" id="globe-add-btn">+ Add Asset</button>
+      </div>
+      <div id="globe-tooltip">
+        <div class="gt-name" id="tt-name"></div>
+        <div class="gt-id" id="tt-id"></div>
+        <div class="gt-grid">
+          <div class="gt-m"><div class="gt-ml">Composite</div><div class="gt-mv" id="tt-cr"></div></div>
+          <div class="gt-m"><div class="gt-ml">Physical</div><div class="gt-mv" id="tt-pr"></div></div>
+          <div class="gt-m"><div class="gt-ml">Transition</div><div class="gt-mv" id="tt-tr"></div></div>
+        </div>
+        <span class="gt-sev" id="tt-sev"></span>
+      </div>
+      <div id="timebar">
+        <div class="tb-row">
+          <div><div class="tb-year" id="time-val">2025</div><div class="tb-meta">RCP 8.5 Scenario · IPCC AR6 · Timeframe 2023-2050</div></div>
+          <div style="margin-left:auto;display:flex;align-items:center;gap:12px">
+            <div style="text-align:right"><div style="font-size:8px;color:var(--ghost);text-transform:uppercase;letter-spacing:.1em;margin-bottom:2px">Warming from baseline</div><div style="font-family:'Bebas Neue',sans-serif;font-size:16px;color:var(--amber)" id="temp-delta">+0.0&deg;C</div></div>
+            <span class="tag amber">DRAG TO EVOLVE CLIMATE</span>
+          </div>
+        </div>
+        <div id="rcp-prog" style="width:7%"></div>
+        <input id="tslider" type="range" min="2023" max="2050" value="2025"/>
+        <div class="tb-yrs"><span>2023</span><span>2025</span><span>2030</span><span>2035</span><span>2040</span><span>2045</span><span>2050</span></div>
+        <div class="rcp-bar">
+          <span class="rcp-lbl">Historical</span><div class="rcp-seg" style="background:var(--cobalt);opacity:.35;max-width:35px"></div>
+          <span class="rcp-lbl">Near-term</span><div class="rcp-seg" style="background:linear-gradient(to right,var(--cobalt),var(--amber));opacity:.5;max-width:70px"></div>
+          <span class="rcp-lbl">Mid-term</span><div class="rcp-seg" style="background:linear-gradient(to right,var(--amber),var(--orange));opacity:.6;max-width:70px"></div>
+          <span class="rcp-lbl">Long-term</span><div class="rcp-seg" style="background:linear-gradient(to right,var(--orange),var(--red));opacity:.7"></div>
+          <span class="rcp-lbl">2050</span>
+        </div>
+      </div>
+    </div>
+    <div class="view-panel" id="panel-dashboard"></div>
+    <div class="view-panel" id="panel-alerts"></div>
+    <div class="view-panel" id="panel-portfolio"></div>
+    <div class="view-panel" id="panel-signals"></div>
+    <div class="view-panel" id="panel-pipeline"></div>
+    <div class="view-panel" id="panel-sources"></div>
+  </div>
+  <div id="rpanel">
+    <div class="rph">
+      <div class="rpt">Meto AI &amp; Simulation</div>
+      <div style="margin-left:auto;display:flex;align-items:center;gap:6px;font-size:8px;color:var(--ghost)"><span class="sd pulse" id="rp-dot"></span><span id="rp-mode">SIM MODE</span></div>
+    </div>
+    <div class="rpb">
+
+      <!-- USER CONTEXT CARD -->
+      <div id="user-ctx-card" style="margin-bottom:14px;padding:10px 12px;background:rgba(14,165,233,.04);border:1px solid var(--wire);border-radius:3px;display:flex;align-items:center;gap:10px">
+        <div style="width:30px;height:30px;border-radius:50%;background:var(--cmd);border:1px solid var(--chi);display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:13px;color:var(--cobalt);flex-shrink:0" id="ctx-avatar">M</div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:10px;color:var(--ice);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" id="ctx-name">Loading...</div>
+          <div style="font-size:8px;color:var(--ghost);letter-spacing:.08em;text-transform:uppercase;margin-top:1px" id="ctx-role">—</div>
+        </div>
+        <div style="text-align:right;flex-shrink:0">
+          <div style="font-size:8px;color:var(--ghost);text-transform:uppercase;letter-spacing:.08em">Assets</div>
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:16px;color:var(--cobalt)" id="ctx-assets">8</div>
+        </div>
+      </div>
+
+      <!-- METO AI SECTION -->
+      <div class="rpsec">
+        <div class="rpsec-hd">
+          <span class="rpsec-t">Meto AI — Intelligence</span>
+          <span class="tag green" id="ai-model-badge" style="font-size:7px">CLAUDE</span>
+        </div>
+
+        <!-- MODEL SELECTOR TABS -->
+        <div style="display:flex;gap:3px;margin-bottom:10px;background:rgba(0,0,0,.3);padding:3px;border-radius:4px;border:1px solid var(--wire)">
+          <button class="model-tab active" data-model="claude" style="flex:1;padding:5px 4px;border:1px solid transparent;background:var(--cmd);color:var(--cobalt);border-color:var(--whi);font-family:'Martian Mono',monospace;font-size:8px;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;border-radius:3px;transition:all .2s">
+            <div style="font-size:9px;margin-bottom:1px">&#9670;</div>Claude
+          </button>
+          <button class="model-tab" data-model="openai" style="flex:1;padding:5px 4px;border:1px solid transparent;background:transparent;color:var(--ghost);font-family:'Martian Mono',monospace;font-size:8px;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;border-radius:3px;transition:all .2s">
+            <div style="font-size:9px;margin-bottom:1px">&#9675;</div>GPT-4
+          </button>
+          <button class="model-tab" data-model="gemini" style="flex:1;padding:5px 4px;border:1px solid transparent;background:transparent;color:var(--ghost);font-family:'Martian Mono',monospace;font-size:8px;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;border-radius:3px;transition:all .2s">
+            <div style="font-size:9px;margin-bottom:1px">&#9651;</div>Gemini
+          </button>
+        </div>
+
+        <!-- MODEL STATUS STRIP -->
+        <div id="model-status" style="margin-bottom:8px;padding:4px 8px;background:rgba(0,0,0,.3);border:1px solid var(--wire);border-radius:3px;font-size:8px;color:var(--ghost);display:flex;align-items:center;gap:6px">
+          <span class="sd live pulse"></span>
+          <span id="model-status-text">claude-sonnet-4 · via prexus backend</span>
+        </div>
+
+        <div id="ai-chat" style="max-height:240px;overflow-y:auto"></div>
+        <div class="ai-row">
+          <input class="ai-in" id="ai-input" placeholder="Ask Meto AI about risk, assets, scenarios…"/>
+          <button class="ai-go" id="ai-send">&#9654;</button>
+        </div>
+      </div>
+
+      <!-- DISASTER SIMULATION -->
+      <div class="rpsec">
+        <div class="rpsec-hd"><span class="rpsec-t">Disaster Simulation</span></div>
+        <div style="margin-bottom:8px;font-size:10px;color:var(--steel)">Target: <span style="color:var(--cobalt);font-size:9px" id="sim-target">Sao Paulo Agri Hub</span></div>
+        <button class="sim-btn" id="sim-btn">Simulate Disaster</button>
+        <div id="sim-result"></div>
+      </div>
+
+      <!-- QUICK ASSET LIST -->
+      <div class="rpsec">
+        <div class="rpsec-hd"><span class="rpsec-t" id="quick-title">Top Risk Assets</span></div>
+        <div id="quick-list"></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+<div class="backdrop hidden" id="add-modal">
+  <div class="mbox">
+    <div class="mhd"><div class="mt2">Register New Asset</div><button class="mclose" id="modal-close">&#10005;</button></div>
+    <div class="mbody">
+      <div style="margin-bottom:14px;padding:8px 12px;background:rgba(14,165,233,.05);border:1px solid var(--wire);border-radius:3px">
+        <div style="font-size:8.5px;color:var(--cobalt);letter-spacing:.12em;text-transform:uppercase;margin-bottom:3px">Auto Risk Scoring + Globe Pin</div>
+        <div style="font-size:11.5px;color:var(--steel);font-family:'Source Serif 4',serif;font-style:italic">Asset will appear on the 3D globe with risk pin and warning tab immediately after registration.</div>
+      </div>
+      <div class="mgrid">
+        <div class="fl"><label>Asset Name *</label><input class="fi" id="f-name" placeholder="Mumbai Logistics Hub"/></div>
+        <div class="fl"><label>Type</label><select class="fi" id="f-type"><option>Infrastructure</option><option>Energy</option><option>Financial</option><option>Manufacturing</option><option>Transport</option><option>Agriculture</option><option>Real Estate</option><option>Technology</option></select></div>
+        <div class="fl"><label>Country *</label><input class="fi" id="f-country" placeholder="India"/></div>
+        <div class="fl"><label>ISO Code</label><input class="fi" id="f-cc" placeholder="IND" maxlength="3"/></div>
+        <div class="fl"><label>Latitude *</label><input class="fi" id="f-lat" type="number" step="0.01" placeholder="18.93"/></div>
+        <div class="fl"><label>Longitude *</label><input class="fi" id="f-lon" type="number" step="0.01" placeholder="72.83"/></div>
+        <div class="fl"><label>Value USD millions *</label><input class="fi" id="f-val" type="number" placeholder="500"/></div>
+        <div class="fl"><label>Tier</label><select class="fi"><option>Tier 1 Critical</option><option>Tier 2 Essential</option><option>Tier 3 Standard</option></select></div>
+      </div>
+    </div>
+    <div class="mft"><button class="btn-s" id="modal-cancel">Cancel</button><button class="btn-p" id="modal-submit">Register &amp; Pin on Globe</button></div>
+  </div>
+</div>
+<script src="https://cesium.com/downloads/cesiumjs/releases/1.114/Build/Cesium/Cesium.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="modules/meteorium/globe.js"></script>
+<script>
+'use strict';
+function pct(v){return(((v||0)*100).toFixed(1))+'%';}
+function usd(v){return v>=1000?'$'+(v/1000).toFixed(1)+'B':'$'+(v|0)+'M';}
+function rc(s){if(s>=.85)return'#EF4444';if(s>=.65)return'#F59E0B';if(s>=.45)return'#F97316';if(s>=.25)return'#0EA5E9';return'#10B981';}
+function rl(s){if(s>=.85)return'CRITICAL';if(s>=.65)return'HIGH';if(s>=.45)return'ELEVATED';if(s>=.25)return'MODERATE';return'LOW';}
+function rcl(s){if(s>=.85)return'critical';if(s>=.65)return'high';if(s>=.45)return'elevated';return'nominal';}
+var ASSETS=[
+  {id:'MUM-INF-001',name:'Mumbai Port Terminal',    type:'Infrastructure',country:'India',    cc:'IND',lat:18.93, lon:72.83, val:450, cr:.71,pr:.68,tr:.44,al:2},
+  {id:'DEL-ENE-002',name:'Delhi Power Grid Node',   type:'Energy',        country:'India',    cc:'IND',lat:28.61, lon:77.20, val:280, cr:.58,pr:.55,tr:.51,al:1},
+  {id:'MUM-FIN-003',name:'BKC Financial Complex',   type:'Financial',     country:'India',    cc:'IND',lat:19.06, lon:72.87, val:1200,cr:.42,pr:.38,tr:.56,al:0},
+  {id:'CHE-MFG-004',name:'Chennai Auto Cluster',    type:'Manufacturing', country:'India',    cc:'IND',lat:13.08, lon:80.27, val:320, cr:.65,pr:.71,tr:.38,al:1},
+  {id:'SGP-TRN-005',name:'Singapore PSA Terminal',  type:'Transport',     country:'Singapore',cc:'SGP',lat:1.27,  lon:103.82,val:890, cr:.33,pr:.28,tr:.42,al:0},
+  {id:'LON-FIN-006',name:'Canary Wharf Hub',        type:'Financial',     country:'UK',       cc:'GBR',lat:51.51, lon:-0.02, val:2100,cr:.28,pr:.24,tr:.38,al:0},
+  {id:'SHA-MFG-007',name:'Shanghai Industrial Zone',type:'Manufacturing', country:'China',    cc:'CHN',lat:31.23, lon:121.47,val:640, cr:.61,pr:.66,tr:.48,al:1},
+  {id:'SAO-AGR-008',name:'Sao Paulo Agri Hub',      type:'Agriculture',  country:'Brazil',   cc:'BRA',lat:-23.55,lon:-46.63,val:190, cr:.87,pr:.91,tr:.35,al:3},
+];
+var ALERTS=[
+  {id:'AL-001',asset:'SAO-AGR-008',name:'Sao Paulo Agri Hub',   sev:'CRITICAL',type:'PHYSICAL',  msg:'Fire-climate compound. Drought 82%, fire 87%, heat 74%. Damage amplifier 3.1x.',score:.87,src:'FIRMS+ERA5',ts:'09:14Z'},
+  {id:'AL-002',asset:'MUM-INF-001',name:'Mumbai Port Terminal', sev:'HIGH',    type:'PHYSICAL',  msg:'Monsoon anomaly +147% above baseline. Flood susceptibility elevated.',score:.71,src:'ERA5',ts:'08:57Z'},
+  {id:'AL-003',asset:'CHE-MFG-004',name:'Chennai Auto Cluster', sev:'HIGH',    type:'PHYSICAL',  msg:'Heat stress 68% over 7 days. Temperature anomaly +2.4C above ECMWF.',score:.65,src:'ECMWF',ts:'08:41Z'},
+  {id:'AL-004',asset:'SHA-MFG-007',name:'Shanghai Industrial',  sev:'ELEVATED',type:'TRANSITION',msg:'Carbon policy risk 0.71. CO2 intensity elevated under SSP2-4.5.',score:.61,src:'Carbon Monitor',ts:'08:22Z'},
+  {id:'AL-005',asset:'DEL-ENE-002',name:'Delhi Power Grid',     sev:'ELEVATED',type:'PHYSICAL',  msg:'Extreme heat probability 52%. Grid demand surge risk in peak summer.',score:.58,src:'ECMWF',ts:'07:55Z'},
+];
+var STATE={view:'globe',time:2025,globe:null,apiOnline:false,layers:{flood:false,wildfire:false,drought:false,heat:false,political:false,supply:false}};
+(function(){function tick(){var n=new Date();document.getElementById('clock').textContent=n.toISOString().slice(11,19)+' UTC';document.getElementById('dateline').textContent=n.toISOString().slice(0,10).replace(/-/g,'\xB7');}tick();setInterval(tick,1000);})();
+(function(){try{var u=JSON.parse(localStorage.getItem('prx_user')||'{}');var o=JSON.parse(localStorage.getItem('prexus_org_'+(u.email||''))||'{}');var nm=u.full_name||o.fullName||'Operator';document.getElementById('uname').textContent=nm;document.getElementById('urole').textContent=o.role||'Risk Analyst';document.getElementById('sb-name').textContent=nm;document.getElementById('sb-org').textContent=o.orgName||'Prexus Org';}catch(e){}})();
+var CRIT=ALERTS.filter(function(a){return a.sev==='CRITICAL';}).length;
+document.getElementById('rail-badge').textContent=CRIT;
+document.getElementById('nav-badge').textContent=CRIT;
+document.getElementById('alert-dot').className=CRIT>0?'sd warn':'sd live';
+document.getElementById('alert-lbl').textContent=CRIT>0?CRIT+' CRITICAL':'ALL NOMINAL';
+fetch('https://prexus-intelligence.onrender.com/health',{signal:AbortSignal.timeout(5000)}).then(function(r){if(r.ok){STATE.apiOnline=true;document.getElementById('api-dot').className='sd live';document.getElementById('api-lbl').textContent='API ONLINE';document.getElementById('rp-dot').className='sd live pulse';document.getElementById('rp-mode').textContent='API LIVE';}}).catch(function(){document.getElementById('api-dot').className='sd';document.getElementById('api-lbl').textContent='SIM MODE';});
+function initGlobe(){
+  if(STATE.globe||typeof MeteoGlobe==='undefined')return;
+  STATE.globe=new MeteoGlobe(document.getElementById('globe-container'),ASSETS,{
+    onHover:function(asset,pos){
+      var tip=document.getElementById('globe-tooltip');
+      if(!asset){tip.style.display='none';return;}
+      var rs=window.GlobeRiskScore(asset.cr);
+      document.getElementById('tt-name').textContent=asset.name;
+      document.getElementById('tt-id').textContent=asset.id+' \xB7 '+asset.country+' \xB7 '+asset.type;
+      document.getElementById('tt-cr').textContent=pct(asset.cr);document.getElementById('tt-cr').style.color=rs.col;
+      document.getElementById('tt-pr').textContent=pct(asset.pr);document.getElementById('tt-pr').style.color=rc(asset.pr);
+      document.getElementById('tt-tr').textContent=pct(asset.tr);document.getElementById('tt-tr').style.color=rc(asset.tr);
+      var sv=document.getElementById('tt-sev');sv.textContent=rs.label;sv.style.background=rs.col+'22';sv.style.border='1px solid '+rs.col+'55';sv.style.color=rs.col;
+      if(pos){tip.style.left=(pos.x+16)+'px';tip.style.top=(pos.y-32)+'px';}
+      tip.style.display='block';
+    },
+    onSelect:function(asset){document.getElementById('sim-target').textContent=asset.name;}
+  });
+  STATE.globe.init();
+}
+function navigate(v){
+  STATE.view=v;
+  document.querySelectorAll('.ri[data-view],.ni[data-view]').forEach(function(el){el.classList.toggle('on',el.dataset.view===v);});
+  var gv=document.getElementById('globe-view');
+  var vh=document.getElementById('view-header');
+  document.querySelectorAll('.view-panel').forEach(function(p){p.classList.remove('active');});
+  if(v==='globe'){gv.style.display='flex';vh.classList.add('hidden');initGlobe();}
+  else{gv.style.display='none';vh.classList.remove('hidden');var tp=document.getElementById('panel-'+v);if(tp){tp.classList.add('active');renderPanel(v,tp);}document.getElementById('view-title').textContent={dashboard:'Intelligence Overview',alerts:'Alert Command Center',portfolio:'Asset Portfolio',signals:'Climate Signals',pipeline:'Pipeline Architecture',sources:'Data Source Registry'}[v]||v;document.getElementById('view-tag').textContent=v.toUpperCase();}
+}
+function renderPanel(v,el){
+  el.innerHTML='';
+  if(v==='dashboard')buildDash(el);
+  else if(v==='alerts')buildAlerts(el);
+  else if(v==='portfolio')buildPortfolio(el);
+  else if(v==='signals')buildSignals(el);
+  else if(v==='pipeline')buildPipeline(el);
+  else if(v==='sources')buildSources(el);
+}
+document.querySelectorAll('[data-view]').forEach(function(el){el.addEventListener('click',function(){navigate(el.dataset.view);});});
+document.querySelectorAll('.map-btn').forEach(function(btn){btn.addEventListener('click',function(){document.querySelectorAll('.map-btn').forEach(function(b){b.classList.remove('on');});btn.classList.add('on');});});
+document.getElementById('globe-reset').addEventListener('click',function(){if(STATE.globe)STATE.globe.flyToGlobal();});
+document.getElementById('globe-add-btn').addEventListener('click',function(){document.getElementById('add-modal').classList.remove('hidden');});
+function syncLayers(){var nl={flood:document.getElementById('l-flood').checked,wildfire:document.getElementById('l-wildfire').checked,drought:document.getElementById('l-drought').checked,heat:document.getElementById('l-heat').checked,political:document.getElementById('l-political').checked,supply:document.getElementById('l-supply').checked};STATE.layers=nl;if(STATE.globe)STATE.globe.setLayers(nl);}
+['l-flood','l-wildfire','l-drought','l-heat','l-political','l-supply'].forEach(function(id){document.getElementById(id).addEventListener('change',syncLayers);});
+document.querySelectorAll('.rl-row').forEach(function(row){row.addEventListener('click',function(e){if(e.target.tagName!=='INPUT'){var cb=row.querySelector('input');if(cb){cb.checked=!cb.checked;syncLayers();}}});});
+document.getElementById('tslider').addEventListener('input',function(){var yr=+this.value;STATE.time=yr;document.getElementById('time-val').textContent=yr;document.getElementById('rcp-prog').style.width=Math.round((yr-2023)/27*100)+'%';document.getElementById('temp-delta').textContent='+'+(((yr-2023)/27)*3.2).toFixed(1)+'\xB0C';if(STATE.globe)STATE.globe.setTime(yr);});
+document.getElementById('modal-close').addEventListener('click',function(){document.getElementById('add-modal').classList.add('hidden');});
+document.getElementById('modal-cancel').addEventListener('click',function(){document.getElementById('add-modal').classList.add('hidden');});
+document.getElementById('add-modal').addEventListener('click',function(e){if(e.target===this)this.classList.add('hidden');});
+document.getElementById('modal-submit').addEventListener('click',function(){var n=document.getElementById('f-name').value.trim();var co=document.getElementById('f-country').value.trim();var la=document.getElementById('f-lat').value;var lo=document.getElementById('f-lon').value;var vv=document.getElementById('f-val').value;if(!n||!co||!la||!lo||!vv){alert('Fill required fields.');return;}var cr=+(Math.random()*.55+.18).toFixed(2);var tp=document.getElementById('f-type').value;var a={id:'NEW-'+tp.slice(0,3).toUpperCase()+'-'+Date.now().toString(36).toUpperCase().slice(-4),name:n,type:tp,country:co,cc:document.getElementById('f-cc').value||co.slice(0,3).toUpperCase(),lat:+la,lon:+lo,val:+vv,cr:cr,pr:+(cr*.9+Math.random()*.08).toFixed(2),tr:+(Math.random()*.45+.12).toFixed(2),al:0};ASSETS.push(a);if(STATE.globe)STATE.globe.addAsset(a);document.getElementById('add-modal').classList.add('hidden');renderQuickList();fetch('https://prexus-intelligence.onrender.com/assets',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(a)}).catch(function(){});});
+/* ─────────────────────────────────────────────────────
+   METO AI — 3-Model System
+   Routes: Claude / OpenAI GPT-4 / Gemini
+   All calls proxy through prexus backend (env keys stay server-side)
+   Falls back to direct API if backend returns non-200
+   User context pulled from localStorage on every request
+   ───────────────────────────────────────────────────── */
+
+var AI_MODEL = 'claude'; // active model
+
+var MODEL_META = {
+  claude: {
+    label: 'CLAUDE',
+    name:  'claude-sonnet-4',
+    badge: 'CLAUDE',
+    badgeClass: 'cobalt',
+    status: 'claude-sonnet-4 \xB7 via prexus backend',
+    endpoint: API_BASE + '/claude',           // backend/apps/api-gateway/claude.go
+    fallback: 'https://api.anthropic.com/v1/messages'
+  },
+  openai: {
+    label: 'GPT-4',
+    name:  'gpt-4o',
+    badge: 'GPT-4o',
+    badgeClass: 'green',
+    status: 'gpt-4o \xB7 via prexus backend',
+    endpoint: API_BASE + '/openai',           // needs openai.go in gateway
+    fallback: 'https://api.openai.com/v1/chat/completions'
+  },
+  gemini: {
+    label: 'GEMINI',
+    name:  'gemini-1.5-pro',
+    badge: 'GEMINI',
+    badgeClass: 'amber',
+    status: 'gemini-1.5-pro \xB7 via prexus backend',
+    endpoint: API_BASE + '/gemini',           // needs gemini.go in gateway
+    fallback: null
+  }
+};
+
+/* Pull full user context from localStorage */
+function getUserContext() {
+  var user = {}, org = {};
+  try { user = JSON.parse(localStorage.getItem('prx_user') || '{}'); } catch(e) {}
+  try { org  = JSON.parse(localStorage.getItem('prexus_org_' + (user.email||'')) || '{}'); } catch(e) {}
+
+  // Saved assets: the backend may persist these; locally we also track additions
+  var savedCount = ASSETS.length;
+  try {
+    var stored = JSON.parse(localStorage.getItem('prx_assets_' + (user.email||'')) || '[]');
+    if (stored.length) savedCount = stored.length;
+  } catch(e) {}
+
+  return {
+    name:    user.full_name  || org.fullName  || 'Operator',
+    role:    user.role       || org.role      || 'Risk Analyst',
+    org:     org.orgName     || org.name      || 'Prexus Organization',
+    email:   user.email      || '',
+    country: org.country     || '',
+    assets:  savedCount,
+    token:   localStorage.getItem('prx_token') || ''
+  };
+}
+
+/* Render user context card */
+function renderUserCtx() {
+  var u = getUserContext();
+  var initials = u.name.split(' ').map(function(w){return w[0]||'';}).slice(0,2).join('').toUpperCase() || 'M';
+  document.getElementById('ctx-avatar').textContent = initials;
+  document.getElementById('ctx-name').textContent   = u.name;
+  document.getElementById('ctx-role').textContent   = u.role + (u.org ? ' \xB7 ' + u.org : '');
+  document.getElementById('ctx-assets').textContent = u.assets;
+}
+renderUserCtx();
+
+/* Build rich system prompt using live user + globe state */
+function buildSystemPrompt() {
+  var u = getUserContext();
+  var critAlerts = ALERTS.filter(function(a){return a.sev==='CRITICAL';});
+  var topAsset = [].concat(ASSETS).sort(function(a,b){return b.cr-a.cr;})[0];
+  var tv = ASSETS.reduce(function(s,a){return s+a.val;},0);
+  var cr = tv > 0 ? ASSETS.reduce(function(s,a){return s+a.cr*a.val;},0)/tv : 0;
+  var activeLayerNames = Object.keys(STATE.layers).filter(function(k){return STATE.layers[k];});
+
+  return 'You are Meto AI, the climate risk intelligence assistant inside Meteorium by Prexus Intelligence. ' +
+    'You provide expert analysis on physical and transition climate risk for infrastructure assets. ' +
+    'You use IPCC AR6, NASA FIRMS, ERA5, Copernicus, and Rust Monte Carlo engines. ' +
+    'Always be concise, data-driven, and actionable. Use percentages, temperatures in Celsius. ' +
+    '\n\nUSER CONTEXT:' +
+    '\n- Name: ' + u.name +
+    '\n- Role: ' + u.role +
+    '\n- Organization: ' + u.org +
+    (u.country ? '\n- Country: ' + u.country : '') +
+    '\n\nPORTFOLIO STATE:' +
+    '\n- Total assets: ' + ASSETS.length + ' registered on globe' +
+    '\n- Portfolio value: ' + (tv >= 1000 ? '$'+(tv/1000).toFixed(1)+'B' : '$'+tv+'M') +
+    '\n- Composite risk: ' + (cr*100).toFixed(1) + '%' +
+    '\n- Active alerts: ' + ALERTS.length + ' (' + critAlerts.length + ' CRITICAL)' +
+    '\n- Highest risk: ' + (topAsset ? topAsset.name + ' at ' + (topAsset.cr*100).toFixed(1) + '%' : 'none') +
+    '\n\nGLOBE STATE:' +
+    '\n- RCP 8.5 scenario year: ' + STATE.time +
+    '\n- Projected warming vs 2023: +' + (((STATE.time-2023)/27)*3.2).toFixed(1) + 'C' +
+    (activeLayerNames.length ? '\n- Active risk layers: ' + activeLayerNames.join(', ') : '') +
+    '\n\nASSETS ON GLOBE:\n' +
+    ASSETS.map(function(a){
+      return '- ' + a.name + ' (' + a.id + '): ' + (a.cr*100).toFixed(0) + '% composite, ' +
+        a.country + ', $' + a.val + 'M' + (a.al > 0 ? ', ' + a.al + ' alert(s)' : '');
+    }).join('\n');
+}
+
+/* ── Core AI call — tries backend proxy first, then direct ── */
+function callMetoAI(model, messages, onSuccess, onError) {
+  var meta = MODEL_META[model];
+  var u = getUserContext();
+  var headers = { 'Content-Type': 'application/json' };
+  if (u.token) headers['Authorization'] = 'Bearer ' + u.token;
+
+  // Payload format backend expects (Go gateway normalizes to each provider)
+  var payload = {
+    model:    meta.name,
+    messages: messages,
+    system:   buildSystemPrompt(),
+    max_tokens: 1000
+  };
+
+  fetch(meta.endpoint, {
+    method: 'POST',
+    headers: headers,
+    body: JSON.stringify(payload),
+    signal: AbortSignal.timeout(30000)
+  })
+  .then(function(r) {
+    if (!r.ok) throw new Error('Backend ' + r.status);
+    return r.json();
+  })
+  .then(function(d) {
+    // Backend normalizes response to { text: "..." }
+    var text = d.text || (d.content && d.content[0] && d.content[0].text) || d.choices && d.choices[0] && d.choices[0].message && d.choices[0].message.content || '';
+    if (!text) throw new Error('Empty response');
+    onSuccess(text);
+  })
+  .catch(function(err) {
+    console.warn('[MetoAI] Backend failed (' + err.message + '), trying direct...');
+    // Direct fallback (only works if key is somehow available or CORS allows)
+    if (meta.fallback && model === 'claude') {
+      fetch(meta.fallback, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-20250514',
+          max_tokens: 1000,
+          system: buildSystemPrompt(),
+          messages: messages
+        }),
+        signal: AbortSignal.timeout(25000)
+      })
+      .then(function(r){ return r.json(); })
+      .then(function(d){
+        var text = d.content && d.content[0] ? d.content[0].text : '';
+        if (!text) throw new Error('No text');
+        onSuccess(text);
+      })
+      .catch(function() { onError(model); });
+    } else {
+      onError(model);
+    }
+  });
+}
+
+/* ── Chat state per model ── */
+var CHAT_STATE = {
+  claude: [],
+  openai: [],
+  gemini: []
+};
+
+function getWelcome(model) {
+  var u = getUserContext();
+  var meta = MODEL_META[model];
+  var top = [].concat(ASSETS).sort(function(a,b){return b.cr-a.cr;})[0];
+  return 'Hello ' + u.name.split(' ')[0] + '. I am Meto AI running on ' + meta.name + '. ' +
+    'Your portfolio has ' + ASSETS.length + ' assets on the globe. ' +
+    (top ? 'Highest risk: ' + top.name + ' at ' + (top.cr*100).toFixed(1) + '%. ' : '') +
+    'RCP 8.5 year is ' + STATE.time + '. Ask me anything about risk, scenarios, or assets.';
+}
+
+// Initialize welcome messages for each model
+['claude','openai','gemini'].forEach(function(m) {
+  CHAT_STATE[m] = [{ r:'b', t: getWelcome(m) }];
+});
+
+function renderChat() {
+  var msgs = CHAT_STATE[AI_MODEL];
+  var c = document.getElementById('ai-chat');
+  c.innerHTML = msgs.map(function(m) {
+    var lbl = m.r === 'u' ? 'YOU' : 'METO AI \xB7 ' + MODEL_META[AI_MODEL].label;
+    return '<div class="ai-bub ' + (m.r==='u' ? 'u' : 'b') + '">' +
+      '<div class="ai-lbl">' + lbl + '</div>' +
+      '<div style="white-space:pre-wrap">' + m.t + '</div></div>';
+  }).join('');
+  c.scrollTop = c.scrollHeight;
+}
+
+function sendAI() {
+  var inp = document.getElementById('ai-input');
+  var btn = document.getElementById('ai-send');
+  var msg = inp.value.trim();
+  if (!msg) return;
+  inp.value = ''; btn.disabled = true;
+
+  var msgs = CHAT_STATE[AI_MODEL];
+  msgs.push({ r:'u', t: msg });
+  msgs.push({ r:'b', t: '...' });
+  renderChat();
+
+  // Build messages array (last 8 for context window)
+  var history = msgs.slice(-10).filter(function(m){ return m.t !== '...'; }).slice(0,-1);
+  var apiMsgs = history.map(function(m){ return { role: m.r==='u'?'user':'assistant', content: m.t }; });
+
+  callMetoAI(
+    AI_MODEL,
+    apiMsgs,
+    function(text) {
+      msgs[msgs.length-1] = { r:'b', t: text };
+      renderChat(); btn.disabled = false;
+    },
+    function(model) {
+      var fallbackMsg = 'Meto AI backend unreachable. Check that ' + API_BASE + '/' + model + ' is running with your API keys configured. ' +
+        'Portfolio summary: ' + ASSETS.length + ' assets, ' + ALERTS.filter(function(a){return a.sev==='CRITICAL';}).length + ' critical alerts.';
+      msgs[msgs.length-1] = { r:'b', t: fallbackMsg };
+      renderChat(); btn.disabled = false;
+    }
+  );
+}
+
+document.getElementById('ai-send').addEventListener('click', sendAI);
+document.getElementById('ai-input').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendAI(); }
+});
+
+/* ── Model tab switching ── */
+document.querySelectorAll('.model-tab').forEach(function(tab) {
+  tab.addEventListener('click', function() {
+    AI_MODEL = tab.dataset.model;
+    var meta = MODEL_META[AI_MODEL];
+
+    // Update tab styles
+    document.querySelectorAll('.model-tab').forEach(function(t) {
+      var isActive = t.dataset.model === AI_MODEL;
+      t.style.background    = isActive ? 'var(--cmd)' : 'transparent';
+      t.style.color         = isActive ? 'var(--cobalt)' : 'var(--ghost)';
+      t.style.borderColor   = isActive ? 'var(--whi)' : 'transparent';
+      t.classList.toggle('active', isActive);
+    });
+
+    // Update badge
+    var badge = document.getElementById('ai-model-badge');
+    badge.textContent = meta.badge;
+    badge.className = 'tag ' + meta.badgeClass;
+    badge.style.fontSize = '7px';
+
+    // Update status strip
+    document.getElementById('model-status-text').textContent = meta.status;
+
+    // Re-render chat for this model
+    renderChat();
+  });
+});
+
+/* ── Re-render user context if localStorage changes ── */
+window.addEventListener('storage', function(e) {
+  if (e.key && (e.key.startsWith('prx_user') || e.key.startsWith('prexus_org'))) {
+    renderUserCtx();
+    // Refresh welcome message with new user name
+    ['claude','openai','gemini'].forEach(function(m) {
+      if (CHAT_STATE[m].length === 1 && CHAT_STATE[m][0].r === 'b') {
+        CHAT_STATE[m][0].t = getWelcome(m);
+      }
+    });
+    renderChat();
+  }
+});
+document.getElementById('sim-btn').addEventListener('click',function(){var btn=this;btn.disabled=true;btn.textContent='Computing...';var tgt=ASSETS.sort(function(a,b){return b.cr-a.cr;})[0];setTimeout(function(){document.getElementById('sim-result').innerHTML='<div class="sim-row"><div style="width:28px;height:28px;border-radius:6px;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.2);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0">$</div><div><div style="font-size:8px;color:var(--ghost);text-transform:uppercase;letter-spacing:.08em;margin-bottom:2px">Cost Impact (RCP yr '+STATE.time+')</div><div style="font-size:11px;color:var(--ice);font-weight:500">'+usd(tgt.val*tgt.cr*(1.8+Math.random()*.8)*(1+(STATE.time-2023)*.012))+'</div></div></div><div class="sim-row"><div style="width:28px;height:28px;border-radius:6px;background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.2);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0">!</div><div><div style="font-size:8px;color:var(--ghost);text-transform:uppercase;letter-spacing:.08em;margin-bottom:2px">Infrastructure Damage</div><div style="font-size:11px;color:var(--amber);font-weight:500">'+(tgt.cr>.6?'Severe':'Moderate')+'</div></div></div><div class="sim-row"><div style="width:28px;height:28px;border-radius:6px;background:rgba(14,165,233,.1);border:1px solid rgba(14,165,233,.2);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0">+</div><div><div style="font-size:8px;color:var(--ghost);text-transform:uppercase;letter-spacing:.08em;margin-bottom:2px">Insurance Premium Increase</div><div style="font-size:11px;color:var(--cobalt);font-weight:500">+'+Math.round((150+tgt.cr*250)*(1+(STATE.time-2023)*.018))+'%</div></div></div><div style="margin-top:8px;padding:8px 10px;background:rgba(14,165,233,.04);border:1px solid var(--wire);border-radius:3px"><div style="font-size:8px;color:var(--cobalt);letter-spacing:.12em;text-transform:uppercase;margin-bottom:4px">RCP 8.5 Recommended Actions</div><div style="font-size:10.5px;color:var(--steel);line-height:1.7">Elevate critical infrastructure above flood line<br>Relocate vulnerable operations upland<br>Increase insurance coverage<br>Deploy early warning sensor array</div></div>';btn.disabled=false;btn.textContent='Simulate Disaster';},1600);});
+function renderQuickList(){document.getElementById('quick-title').textContent='Top Risk Assets \xB7 '+ASSETS.length;document.getElementById('quick-list').innerHTML=[].concat(ASSETS).sort(function(a,b){return b.cr-a.cr;}).slice(0,5).map(function(a){return '<div style="display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid rgba(14,165,233,.07);cursor:pointer" onclick="if(STATE.globe)STATE.globe.flyToAsset(ASSETS.find(function(x){return x.id===\''+a.id+'\'}))"><div style="width:4px;height:28px;border-radius:2px;background:'+rc(a.cr)+';flex-shrink:0"></div><div style="flex:1"><div style="font-size:10px;color:var(--ice);font-weight:500;margin-bottom:1px">'+a.name+'</div><div style="font-size:8px;color:var(--ghost);letter-spacing:.06em;text-transform:uppercase">'+a.id+' \xB7 '+a.country+'</div></div><div style="text-align:right"><div style="font-family:\'Bebas Neue\',sans-serif;font-size:16px;color:'+rc(a.cr)+'">'+pct(a.cr)+'</div><span style="font-size:8px;font-weight:600;letter-spacing:.1em;padding:1px 5px;border-radius:2px;background:'+rc(a.cr)+'22;color:'+rc(a.cr)+';border:1px solid '+rc(a.cr)+'44">'+rl(a.cr)+'</span></div></div>';}).join('');}
+renderQuickList();renderChat();
+function buildDash(el){var tv=ASSETS.reduce(function(s,a){return s+a.val;},0);var cr=tv>0?ASSETS.reduce(function(s,a){return s+a.cr*a.val;},0)/tv:0;el.innerHTML='<div class="g4" style="margin-bottom:14px"><div class="kpi c"><div class="kl">Portfolio Exposure</div><div class="kv">'+usd(tv)+'</div><div class="ks">'+ASSETS.length+' on 3D globe</div></div><div class="kpi '+(cr>.65?'a':'c')+'"><div class="kl">Composite Risk</div><div class="kv">'+pct(cr)+'</div><div class="ks">IPCC AR6 value-weighted</div></div><div class="kpi '+(CRIT>0?'r':'c')+'"><div class="kl">Active Alerts</div><div class="kv">'+ALERTS.length+'</div><div class="ks">'+CRIT+' critical decisions</div></div><div class="kpi a"><div class="kl">RCP 8.5 Year</div><div class="kv">'+STATE.time+'</div><div class="ks">+'+(((STATE.time-2023)/27)*3.2).toFixed(1)+'\xB0C projected</div></div></div><div class="panel"><div class="ph"><div class="pt">Priority Alerts</div><div class="pright"><span class="tag red">'+CRIT+' CRITICAL</span></div></div>'+ALERTS.map(function(al){return '<div class="dec '+rcl(al.score)+'" style="border-radius:0;margin-bottom:0;border-top:none;border-right:none;border-bottom:1px solid var(--wire)"><div class="dec-hd"><span class="dec-b">'+al.sev+'</span><span class="dec-a">'+al.name+'</span><div class="dec-sc">'+pct(al.score)+'</div></div><div class="dec-msg">'+al.msg+'</div></div>';}).join('')+'</div>';}
+function buildAlerts(el){el.innerHTML=ALERTS.map(function(al){return '<div class="dec '+rcl(al.score)+'"><div class="dec-hd"><span class="dec-b">'+al.sev+'</span><span class="dec-a">'+al.name+'</span><span style="margin-left:auto;margin-right:8px;font-size:8.5px;color:var(--ghost);text-transform:uppercase;letter-spacing:.08em">'+al.type+' RISK</span><div class="dec-sc">'+pct(al.score)+'</div></div><div class="dec-msg">'+al.msg+'</div><div style="margin-bottom:8px"><div class="rb"><div class="rf" style="width:'+Math.round(al.score*100)+'%;background:'+(al.sev==='CRITICAL'?'var(--red)':al.sev==='HIGH'?'var(--amber)':'var(--cobalt)')+'"></div></div></div><div class="dec-meta"><span>'+al.asset+'</span><span>'+al.ts+'</span><span>'+al.src+'</span><div style="margin-left:auto;display:flex;gap:5px"><span class="tag cobalt" style="cursor:pointer" onclick="navigate(\'globe\');setTimeout(function(){if(STATE.globe)STATE.globe.flyToAsset(ASSETS.find(function(a){return a.id===\''+al.asset+'\';}));},300)">VIEW ON GLOBE</span></div></div></div>';}).join('');}
+function buildPortfolio(el){el.innerHTML='<div class="panel"><div class="ph"><div class="pt">Asset Risk Registry \xB7 '+ASSETS.length+' Assets</div><div class="pright"><button onclick="document.getElementById(\'add-modal\').classList.remove(\'hidden\')" style="padding:3px 10px;background:var(--cobalt);border:none;border-radius:3px;color:white;cursor:pointer;font-family:\'Martian Mono\',monospace;font-size:9px;letter-spacing:.1em;text-transform:uppercase">+ ADD</button></div></div><div style="overflow-x:auto"><table class="dt"><thead><tr><th>ID</th><th>Name</th><th>Type</th><th>Country</th><th>Value</th><th>Composite</th><th>Physical</th><th>Transition</th></tr></thead><tbody>'+[].concat(ASSETS).sort(function(a,b){return b.cr-a.cr;}).map(function(a){return '<tr style="cursor:pointer" onclick="navigate(\'globe\');setTimeout(function(){if(STATE.globe)STATE.globe.flyToAsset(ASSETS.find(function(x){return x.id===\''+a.id+'\'}));},300)"><td style="font-family:\'Martian Mono\',monospace;font-size:10px;color:var(--cobalt)">'+a.id+'</td><td style="font-size:11px;color:var(--ice)">'+a.name+'</td><td style="font-size:9px;color:var(--steel);text-transform:uppercase">'+a.type+'</td><td style="font-size:10px;color:var(--steel)">'+a.cc+'</td><td style="font-family:\'Bebas Neue\',sans-serif;font-size:14px;color:var(--ice)">'+usd(a.val)+'</td><td><span style="font-family:\'Bebas Neue\',sans-serif;font-size:16px;color:'+rc(a.cr)+'">'+pct(a.cr)+'</span></td><td style="font-family:\'Bebas Neue\',sans-serif;font-size:14px;color:var(--cobalt)">'+pct(a.pr)+'</td><td style="font-family:\'Bebas Neue\',sans-serif;font-size:14px;color:var(--amber)">'+pct(a.tr)+'</td></tr>';}).join('')+'</tbody></table></div></div>';}
+function buildSignals(el){el.innerHTML='<div class="panel"><div class="ph"><div class="pt">Live Climate Signal Telemetry</div></div><div style="padding:20px;text-align:center;color:var(--steel);font-size:11px;font-family:\'Source Serif 4\',serif;font-style:italic">Toggle risk layers on the sidebar to view climate signal overlays live on the 3D globe.</div><div style="padding:0 20px 20px;text-align:center"><button onclick="navigate(\'globe\')" style="padding:10px 20px;background:var(--cobalt);border:none;border-radius:3px;color:white;font-family:\'Martian Mono\',monospace;font-size:11px;cursor:pointer;letter-spacing:.1em;text-transform:uppercase">Open 3D Globe</button></div></div>';}
+function buildPipeline(el){el.innerHTML='<div class="panel"><div class="ph"><div class="pt">7-Layer Intelligence Pipeline</div><div class="pright"><span class="tag green">ALL NOMINAL</span></div></div>'+[['0','Satellite Sources','19 sources: FIRMS, ERA5, Copernicus, Carbon Monitor, Planet Labs.',['NASA','ESA','JAXA','NOAA']],['1','Telemetry Acquisition','Async workers. Redis Streams producer. APScheduler cadence.',['asyncio','httpx','Redis']],['2','Raw Telemetry Lake','Immutable store. SQLite manifest. Parquet by source + bbox.',['SQLite','Parquet']],['3','Geospatial ETL','H3 hex indexing. ERA5 tiles. FIRMS density. NDVI.',['H3','xarray','GDAL']],['4','Feature Store','Per-asset intelligence. Physical + transition + satellite.',['SQLite WAL','Fusion']],['5','Risk Computation','PhysicalScorer + TransitionScorer. Rust Monte Carlo 10k.',['Rust','PyO3','VaR']],['6','API Delivery','FastAPI + Go Gateway. Redis Streams. Provenance.',['FastAPI','Go','JWT']]].map(function(row,i){return '<div style="display:flex;align-items:flex-start;padding:12px 20px;border-bottom:'+(i<6?'1px solid var(--wire)':'none')+'"><div style="font-family:\'Bebas Neue\',sans-serif;font-size:28px;color:var(--phantom);width:44px;flex-shrink:0;line-height:1">'+row[0]+'</div><div style="display:flex;flex-direction:column;align-items:center;margin-right:14px;padding-top:6px"><div style="width:8px;height:8px;border-radius:50%;background:var(--cobalt);box-shadow:0 0 6px var(--cobalt)"></div>'+(i<6?'<div style="width:1px;height:40px;background:var(--wire);margin:4px 0"></div>':'')+'</div><div style="flex:1"><div style="font-family:\'Bebas Neue\',sans-serif;font-size:16px;letter-spacing:.08em;color:white;text-transform:uppercase;margin-bottom:2px">'+row[1]+'</div><div style="font-size:10px;color:var(--steel);line-height:1.5;margin-bottom:6px">'+row[2]+'</div><div style="display:flex;flex-wrap:wrap;gap:4px">'+row[3].map(function(p){return '<span style="font-size:8px;letter-spacing:.08em;padding:2px 6px;border-radius:2px;border:1px solid var(--wire);color:var(--ghost);text-transform:uppercase">'+p+'</span>';}).join('')+'</div></div><div style="margin-left:14px"><span class="tag green">NOMINAL</span></div></div>';}).join('')+'</div>';}
+function buildSources(el){el.innerHTML='<div class="panel"><div class="ph"><div class="pt">Telemetry Source Registry</div></div><div style="overflow-x:auto"><table class="dt"><thead><tr><th>Status</th><th>Source</th><th>Type</th><th>Latency</th><th>Key</th></tr></thead><tbody>'+[{n:'Open-Meteo ECMWF',t:'Weather',lat:18,st:'nominal',key:false},{n:'ERA5 Reanalysis',t:'Climate',lat:45,st:'nominal',key:false},{n:'NASA FIRMS VIIRS',t:'Fire',lat:62,st:'nominal',key:true},{n:'Carbon Monitor',t:'Emissions',lat:28,st:'nominal',key:false},{n:'Sentinel Hub ESA',t:'Satellite',lat:180,st:'degraded',key:true},{n:'Planet Labs',t:'Satellite',lat:null,st:'offline',key:true},{n:'CMIP6 IPCC',t:'Scenarios',lat:0,st:'nominal',key:false},{n:'Redis Streams',t:'Pipeline',lat:1,st:'nominal',key:false},{n:'Rust Monte Carlo',t:'Compute',lat:12,st:'nominal',key:false}].map(function(s){var stc=s.st==='nominal'?'var(--green)':s.st==='degraded'?'var(--amber)':'var(--red)';return '<tr><td><div style="display:flex;align-items:center;gap:6px"><div class="sd '+s.st+'"></div><span style="font-size:9px;color:'+stc+';text-transform:uppercase;letter-spacing:.06em">'+s.st+'</span></div></td><td style="font-size:11px;color:var(--ice)">'+s.n+'</td><td style="font-size:9px;color:var(--steel);text-transform:uppercase;letter-spacing:.06em">'+s.t+'</td><td style="font-family:\'Bebas Neue\',sans-serif;font-size:15px;color:var(--cobalt)">'+(s.lat!=null?s.lat+'ms':'\u2014')+'</td><td><span class="tag '+(s.key?'amber':'green')+'">'+(s.key?'API KEY':'FREE')+'</span></td></tr>';}).join('')+'</tbody></table></div></div>';}
+window.addEventListener('load',function(){navigate('globe');});
+</script>
+</body>
+</html>

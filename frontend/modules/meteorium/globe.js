@@ -748,6 +748,7 @@ MeteoGlobe.prototype.flyToGlobal = function() {
 MeteoGlobe.prototype.addAsset = function(asset) {
   this.assets.push(asset);
   this._addSingleAssetPin(asset);
+  this._addSingleWarningTab(asset);
   this._rebuildHeatmap();
 };
 
@@ -774,6 +775,32 @@ MeteoGlobe.prototype._addSingleAssetPin = function(asset) {
     }
   });
   this.assetEntities[asset.id] = entity;
+};
+
+/* ── Add warning tab for a single asset (called on addAsset after init) ── */
+MeteoGlobe.prototype._addSingleWarningTab = function(asset) {
+  if (asset.cr < 0.45) return; // Only ELEVATED and above get a tab
+  var rs = riskScore(asset.cr);
+  var billboardUrl = makeWarningBillboard(asset, rs);
+  this._billboardUrls.push(billboardUrl);
+
+  var entity = this.viewer.entities.add({
+    id: 'warn_' + asset.id,
+    position: Cesium.Cartesian3.fromDegrees(asset.lon, asset.lat, 800000 + asset.cr * 400000),
+    billboard: {
+      image: billboardUrl,
+      width: 200,
+      height: 56,
+      verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
+      horizontalOrigin: Cesium.HorizontalOrigin.CENTER,
+      heightReference: Cesium.HeightReference.NONE,
+      disableDepthTestDistance: Number.POSITIVE_INFINITY,
+      scaleByDistance: new Cesium.NearFarScalar(500000, 1.3, 15000000, 0.7),
+      translucencyByDistance: new Cesium.NearFarScalar(500000, 1.0, 18000000, 0.0),
+      show: asset.cr >= 0.65,
+    },
+  });
+  this.warningBillboards.push({ entity: entity, asset: asset, rs: rs });
 };
 
 /* ── DESTROY ── */

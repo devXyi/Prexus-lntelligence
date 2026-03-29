@@ -1,6 +1,6 @@
 /**
  * modules/meteorium/meteorium.js
- * Prexus Intelligence — Meteorium Module Orchestrator (FINAL FINAL)
+ * Prexus Intelligence — Meteorium Module Orchestrator (ULTIMATE FINAL)
  */
 
 import { store } from '../../js/store.js';
@@ -54,8 +54,7 @@ export async function initMeteorium() {
   _renderShell();
   _startClock();
 
-  // Singleton lifecycle
-  startPredictionScheduler();
+  startPredictionScheduler(); // singleton start
   initPrefetch();
 
   await _mount('dashboard');
@@ -190,7 +189,6 @@ async function _mount(id) {
   const workspace = document.getElementById('met-workspace');
   if (!workspace) return;
 
-  // ✅ Styled loader
   workspace.innerHTML = `
     <div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--text-muted);font-family:var(--font-data);font-size:9px;gap:8px">
       <span class="spinner"></span>
@@ -220,7 +218,6 @@ async function _mount(id) {
   } catch (err) {
     console.error('[meteorium] load error:', err);
 
-    // ✅ Safe error rendering (no HTML injection)
     workspace.innerHTML = '';
     const errorEl = document.createElement('div');
     errorEl.style.color = 'var(--red)';
@@ -249,8 +246,11 @@ function _navTo(id) {
 }
 
 function _setNavActive(id) {
+  const page = document.getElementById('page-meteorium');
+  if (!page) return;
+
   NAV.forEach(n => {
-    const el = document.querySelector(`[data-nav="${n.id}"]`);
+    const el = page.querySelector(`[data-nav="${n.id}"]`);
     if (el) el.classList.toggle('active', n.id === id);
   });
 }
@@ -270,5 +270,4 @@ function _startClock() {
     const el = document.getElementById('met-utc-clock');
     if (el) el.textContent = time;
   });
-} 
-
+}

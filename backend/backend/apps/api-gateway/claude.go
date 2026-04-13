@@ -5,7 +5,8 @@
 // Fixes applied:
 //   [BUG-1] http.DefaultClient had no timeout → goroutine leak on hung responses
 //   [BUG-2] json.Marshal / json.Unmarshal errors silently dropped throughout
-//   [BUG-3] No context propagation — timeout now enforced via http.Client.Timeout
+//   [BUG-3] No context propagation — context now threaded from caller end-to-end
+//   [BUG-4] Double timeout removed — caller owns the context, sub-functions use it
 
 package main
 
@@ -17,50 +18,42 @@ import (
 	"io"
 	"net/http"
 	"os"
-	"time"
 )
 
-const (
-	aiProviderTimeoutSeconds = 30
-)
+// sharedAIClient is a single HTTP client reused across all AI calls.
+// No Timeout set here — context deadline passed by the caller controls cutoff.
+// [FIX-BUG-1] Still avoids http.DefaultClient which has no timeout at all.
+var sharedAIClient = &http.Client{}
 
-// sharedAIClient is a single HTTP client with timeout reused across all AI calls.
-// [FIX-BUG-1] http.DefaultClient has no timeout; this ensures goroutines never hang.
-var sharedAIClient = &http.Client{
-	Timeout: aiProviderTimeoutSeconds * time.Second,
-}
-
-func AnalyzeProbability(prompt string, model string) (string, error) {
+// AnalyzeProbability dispatches to the correct AI provider.
+// ctx is owned by the caller (handleClaude sets a 30s deadline).
+func AnalyzeProbability(ctx context.Context, prompt string, model string) (string, error) {
 	switch model {
 	case "gemini":
-		return callGemini(prompt)
+		return callGemini(ctx, prompt)
 	case "chatgpt":
-		return callOpenAI(prompt)
+		return callOpenAI(ctx, prompt)
 	default:
-		return callClaude(prompt)
+		return callClaude(ctx, prompt)
 	}
 }
 
 // ── Claude (Anthropic) ────────────────────────────────────────────────────────
 
-func callClaude(prompt string) (string, error) {
+func callClaude(ctx context.Context, prompt string) (string, error) {
 	apiKey := os.Getenv("ANTHROPIC_API_KEY")
 	if apiKey == "" {
 		return "", fmt.Errorf("ANTHROPIC_API_KEY not set")
 	}
 
-	// [FIX-BUG-2] Marshal error checked — rare but possible if prompt contains invalid UTF-8
 	body, err := json.Marshal(map[string]interface{}{
-		"model":      "claude-sonnet-4-20250514",
+		"model":      "claude-haiku-4-5",
 		"max_tokens": 1024,
 		"messages":   []map[string]string{{"role": "user", "content": prompt}},
 	})
 	if err != nil {
 		return "", fmt.Errorf("claude: marshal request: %w", err)
 	}
-
-	ctx, cancel := context.WithTimeout(context.Background(), aiProviderTimeoutSeconds*time.Second)
-	defer cancel()
 
 	req, err := http.NewRequestWithContext(ctx, http.MethodPost,
 		"https://api.anthropic.com/v1/messages", bytes.NewBuffer(body))
@@ -77,9 +70,13 @@ func callClaude(prompt string) (string, error) {
 	}
 	defer resp.Body.Close()
 
-	b, err := io.ReadAll(io.LimitReader(resp.Body, 1<<20)) // 1 MB limit
+	b, err := io.ReadAll(io.LimitReader(resp.Body, 1<<20))
 	if err != nil {
 		return "", fmt.Errorf("claude: read response: %w", err)
+	}
+
+	if resp.StatusCode >= 400 {
+		return "", fmt.Errorf("claude: http %d: %s", resp.StatusCode, truncate(b, 200))
 	}
 
 	var result struct {
@@ -90,7 +87,6 @@ func callClaude(prompt string) (string, error) {
 			Message string `json:"message"`
 		} `json:"error,omitempty"`
 	}
-	// [FIX-BUG-2] Unmarshal error now surfaced — catches Anthropic schema changes
 	if err := json.Unmarshal(b, &result); err != nil {
 		return "", fmt.Errorf("claude: unmarshal response (status %d): %w | body: %s",
 			resp.StatusCode, err, truncate(b, 200))
@@ -107,7 +103,7 @@ func callClaude(prompt string) (string, error) {
 
 // ── Gemini (Google) ───────────────────────────────────────────────────────────
 
-func callGemini(prompt string) (string, error) {
+func callGemini(ctx context.Context, prompt string) (string, error) {
 	apiKey := os.Getenv("GEMINI_API_KEY")
 	if apiKey == "" {
 		return "", fmt.Errorf("GEMINI_API_KEY not set")
@@ -127,9 +123,6 @@ func callGemini(prompt string) (string, error) {
 		return "", fmt.Errorf("gemini: marshal request: %w", err)
 	}
 
-	ctx, cancel := context.WithTimeout(context.Background(), aiProviderTimeoutSeconds*time.Second)
-	defer cancel()
-
 	req, err := http.NewRequestWithContext(ctx, http.MethodPost, url, bytes.NewBuffer(body))
 	if err != nil {
 		return "", fmt.Errorf("gemini: create request: %w", err)
@@ -147,7 +140,10 @@ func callGemini(prompt string) (string, error) {
 		return "", fmt.Errorf("gemini: read response: %w", err)
 	}
 
-	// Check API-level error first (separate struct to avoid partial parse)
+	if resp.StatusCode >= 400 {
+		return "", fmt.Errorf("gemini: http %d: %s", resp.StatusCode, truncate(b, 200))
+	}
+
 	var errResp struct {
 		Error *struct {
 			Code    int    `json:"code"`
@@ -184,7 +180,7 @@ func callGemini(prompt string) (string, error) {
 
 // ── OpenAI (GPT-4o) ───────────────────────────────────────────────────────────
 
-func callOpenAI(prompt string) (string, error) {
+func callOpenAI(ctx context.Context, prompt string) (string, error) {
 	apiKey := os.Getenv("OPENAI_API_KEY")
 	if apiKey == "" {
 		return "", fmt.Errorf("OPENAI_API_KEY not set")
@@ -198,9 +194,6 @@ func callOpenAI(prompt string) (string, error) {
 	if err != nil {
 		return "", fmt.Errorf("openai: marshal request: %w", err)
 	}
-
-	ctx, cancel := context.WithTimeout(context.Background(), aiProviderTimeoutSeconds*time.Second)
-	defer cancel()
 
 	req, err := http.NewRequestWithContext(ctx, http.MethodPost,
 		"https://api.openai.com/v1/chat/completions", bytes.NewBuffer(body))
@@ -219,6 +212,10 @@ func callOpenAI(prompt string) (string, error) {
 	b, err := io.ReadAll(io.LimitReader(resp.Body, 1<<20))
 	if err != nil {
 		return "", fmt.Errorf("openai: read response: %w", err)
+	}
+
+	if resp.StatusCode >= 400 {
+		return "", fmt.Errorf("openai: http %d: %s", resp.StatusCode, truncate(b, 200))
 	}
 
 	var result struct {
@@ -247,7 +244,6 @@ func callOpenAI(prompt string) (string, error) {
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
-// truncate returns at most n bytes of b as a string — safe for error logging.
 func truncate(b []byte, n int) string {
 	if len(b) <= n {
 		return string(b)

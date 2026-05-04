@@ -2,9 +2,16 @@
  * modules/meteorium/sources.js
  * Prexus Intelligence — Data Source Registry
  * THE GREAT FILE · Phase 2
+ *
+ * FIXES:
+ *  - XSS: sanitizeHTML() on all source fields injected into innerHTML
+ *  - normalizeSource() — future-proofs against backend field drift
+ *  - Status-first sort (offline → degraded → nominal)
+ *  - Latency color intelligence
  */
 
 import { listSources } from '../../js/api.js';
+import { sanitizeHTML } from '../../js/utils.js';
 
 const SIM=[
   {name:'Open-Meteo ECMWF Forecast',     agency:'ECMWF / Open-Meteo', type:'Weather',    latency:1,    status:'nominal', key:false,format:'JSON',    resolution_km:9},
@@ -28,20 +35,39 @@ const SIM=[
   {name:'ISRO Resourcesat-2A LISS',       agency:'ISRO / NRSC',         type:'Satellite',  latency:48,   status:'nominal', key:true, format:'GeoTIFF', resolution_km:0.024},
 ];
 
+// ── Data normalization ────────────────────────────────────────────────────────
+function normalizeSource(s) {
+  return {
+    name:         s.name         || 'Unknown',
+    agency:       s.agency       || 'Unknown',
+    type:         s.type         || 'Unknown',
+    status:       s.status       || 'nominal',
+    latency:      s.latency      ?? s.latency_hours ?? 0,
+    resolution_km:s.resolution_km ?? s.resolution   ?? 0,
+    format:       s.format       || '—',
+    requires_key: s.key          || s.requires_key  || false,
+  };
+}
+
 export async function init(container) {
   container.innerHTML=`<div style="text-align:center;padding:20px;color:var(--text-muted);font-size:10px"><span class="spinner"></span>&nbsp;Loading registry…</div>`;
-  let sources=SIM;
-  try{ const live=await listSources(); if(live?.sources?.length)sources=live.sources; }catch{}
-  _render(container,sources);
+  let sources = SIM;
+  try { const live = await listSources(); if (live?.sources?.length) sources = live.sources; } catch {}
+  // Normalize + sort: problems first, then by latency
+  const STATUS_WEIGHT = { offline: 3, degraded: 2, nominal: 1 };
+  sources = sources
+    .map(normalizeSource)
+    .sort((a, b) => (STATUS_WEIGHT[b.status] || 0) - (STATUS_WEIGHT[a.status] || 0) || a.latency - b.latency);
+  _render(container, sources);
 }
 
 export function destroy(){}
 
 function _render(container,sources){
-  const nom=sources.filter(s=>s.status==='nominal').length;
-  const deg=sources.filter(s=>s.status==='degraded').length;
-  const off=sources.filter(s=>s.status==='offline').length;
-  const free=sources.filter(s=>!s.key&&!s.requires_key).length;
+  const nom  = sources.filter(s=>s.status==='nominal').length;
+  const deg  = sources.filter(s=>s.status==='degraded').length;
+  const off  = sources.filter(s=>s.status==='offline').length;
+  const free = sources.filter(s=>!s.key&&!s.requires_key).length;
 
   container.innerHTML=`
     <div class="met-kpi-grid" style="margin-bottom:14px">
@@ -70,24 +96,32 @@ function _render(container,sources){
 }
 
 function _srcRow(s){
-  const status=s.status||'nominal';
-  const requires=s.key||s.requires_key||false;
-  const dotCls=status==='nominal'?'live':status==='degraded'?'warn':'dead';
-  const statusTx=status==='nominal'?'var(--green)':status==='degraded'?'var(--amber)':'var(--red)';
-  const h=s.latency||s.latency_hours||0;
-  const latStr=h===0?'Static':h<1?`${Math.round(h*60)}min`:h<48?`${h.toFixed(0)}h`:`${Math.round(h/24)}d`;
-  const r=s.resolution_km||s.resolution||0;
-  const resStr=r>=100?`~${Math.round(r)}km`:r>=1?`${r.toFixed(0)}km`:`${(r*1000).toFixed(0)}m`;
+  const status   = s.status || 'nominal';
+  const requires = s.key || s.requires_key || false;
+  const dotCls   = status==='nominal'?'live':status==='degraded'?'warn':'dead';
+  const statusTx = status==='nominal'?'var(--green)':status==='degraded'?'var(--amber)':'var(--red)';
+  const h        = s.latency || 0;
+  const latStr   = h===0?'Static':h<1?`${Math.round(h*60)}min`:h<48?`${h.toFixed(0)}h`:`${Math.round(h/24)}d`;
+  const latColor = h===0?'var(--text-muted)':h<2?'var(--green)':h<24?'var(--amber)':'var(--red)';
+  const r        = s.resolution_km || 0;
+  const resStr   = r>=100?`~${Math.round(r)}km`:r>=1?`${r.toFixed(0)}km`:`${(r*1000).toFixed(0)}m`;
+
+  // FIX: sanitize all API-sourced string fields
+  const safeName   = sanitizeHTML(s.name   || '—');
+  const safeAgency = sanitizeHTML(s.agency || '—');
+  const safeType   = sanitizeHTML(s.type   || '—');
+  const safeFormat = sanitizeHTML(s.format || '—');
+  const safeStatus = sanitizeHTML(status);
+
   return `<tr style="border-bottom:1px solid rgba(14,165,233,.06);transition:background .12s"
     onmouseover="this.style.background='rgba(14,165,233,.03)'" onmouseout="this.style.background='transparent'">
-    <td style="padding:8px 10px"><div style="display:flex;align-items:center;gap:5px"><div class="status-dot ${dotCls}"></div><span style="font-size:8.5px;color:${statusTx};text-transform:uppercase;letter-spacing:.08em">${status}</span></div></td>
-    <td style="padding:8px 10px;font-size:11px;color:var(--text-primary);white-space:nowrap">${s.name}</td>
-    <td style="padding:8px 10px;font-size:9px;color:var(--text-secondary);white-space:nowrap">${s.agency||'—'}</td>
-    <td style="padding:8px 10px"><span class="tag tag-dim" style="font-size:7.5px">${s.type}</span></td>
+    <td style="padding:8px 10px"><div style="display:flex;align-items:center;gap:5px"><div class="status-dot ${dotCls}"></div><span style="font-size:8.5px;color:${statusTx};text-transform:uppercase;letter-spacing:.08em">${safeStatus}</span></div></td>
+    <td style="padding:8px 10px;font-size:11px;color:var(--text-primary);white-space:nowrap">${safeName}</td>
+    <td style="padding:8px 10px;font-size:9px;color:var(--text-secondary);white-space:nowrap">${safeAgency}</td>
+    <td style="padding:8px 10px"><span class="tag tag-dim" style="font-size:7.5px">${safeType}</span></td>
     <td style="padding:8px 10px;font-family:var(--font-display);font-size:14px;color:var(--cobalt)">${resStr}</td>
-    <td style="padding:8px 10px;font-size:9px;color:var(--text-secondary);font-family:var(--font-data)">${s.format||'—'}</td>
-    <td style="padding:8px 10px;font-family:var(--font-display);font-size:14px;color:${latStr==='Static'?'var(--text-muted)':'var(--cobalt)'}">${latStr}</td>
+    <td style="padding:8px 10px;font-size:9px;color:var(--text-secondary);font-family:var(--font-data)">${safeFormat}</td>
+    <td style="padding:8px 10px;font-family:var(--font-display);font-size:14px;color:${latColor}">${latStr}</td>
     <td style="padding:8px 10px"><span class="tag ${requires?'tag-amber':'tag-green'}">${requires?'API KEY':'FREE'}</span></td>
   </tr>`;
 }
-

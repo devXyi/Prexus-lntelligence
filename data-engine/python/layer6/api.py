@@ -3,6 +3,10 @@ layer6/api.py
 Meteorium Engine — LAYER 6: API & Intelligence Delivery
 Full FastAPI service. Orchestrates all 7 layers on each request.
 Every response includes provenance, freshness, and confidence metadata.
+
+FIXES:
+ - CORS: removed wildcard+credentials combo (invalid); explicit origin list
+ - cache_key: always initialized before use, not just inside if req.use_cache
 """
 
 import asyncio
@@ -40,11 +44,11 @@ logging.basicConfig(
 logger = logging.getLogger("meteorium.layer6")
 
 # ─── Globals ──────────────────────────────────────────────────────────────────
-_lake:     Optional[DataLake]           = None
+_lake:     Optional[DataLake]               = None
 _preproc:  Optional[GeospatialPreprocessor] = None
-_store:    Optional[FeatureStore]       = None
-_workers:  Optional[WorkerRegistry]    = None
-_engine:   Optional[RiskEngine]        = None
+_store:    Optional[FeatureStore]           = None
+_workers:  Optional[WorkerRegistry]        = None
+_engine:   Optional[RiskEngine]            = None
 _risk_cache: dict = {}   # {cache_key: (result_dict, expires_at)}
 
 
@@ -87,9 +91,16 @@ app = FastAPI(
     redoc_url   = "/redoc",
 )
 
+# FIX: wildcard origin + allow_credentials=True is an invalid CORS combo.
+# Browsers reject credentialed requests unless origin is explicitly listed.
+_ALLOWED_ORIGINS = [o.strip() for o in os.environ.get(
+    "ALLOWED_ORIGINS",
+    "https://prexus-intelligence.onrender.com,http://localhost:3000,http://localhost:5500"
+).split(",") if o.strip()]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins     = ["*"],
+    allow_origins     = _ALLOWED_ORIGINS,
     allow_credentials = True,
     allow_methods     = ["*"],
     allow_headers     = ["*"],
@@ -234,14 +245,16 @@ async def score_asset(
     """
     start = time.perf_counter()
 
+    # FIX: cache_key always initialized — was only set inside if req.use_cache
+    # but written to _risk_cache unconditionally at the end of the function.
+    cache_key = f"{req.asset_id}:{req.scenario}:{req.horizon_days}"
+
     # ── Cache check ───────────────────────────────────────────────────────────
-    if req.use_cache:
-        cache_key = f"{req.asset_id}:{req.scenario}:{req.horizon_days}"
-        if cache_key in _risk_cache:
-            cached_result, expires = _risk_cache[cache_key]
-            if time.time() < expires:
-                cached_result["from_cache"] = True
-                return cached_result
+    if req.use_cache and cache_key in _risk_cache:
+        cached_result, expires = _risk_cache[cache_key]
+        if time.time() < expires:
+            cached_result["from_cache"] = True
+            return cached_result
 
     logger.info(f"[/risk/asset] {req.asset_id} @ ({req.lat},{req.lon}) [{req.country_code}] "
                 f"scenario={req.scenario} horizon={req.horizon_days}d")
@@ -292,7 +305,8 @@ async def score_asset(
     }
 
     # Cache result
-    _risk_cache[cache_key] = (response, time.time() + RISK_CACHE_TTL_SEC)
+    if req.use_cache:
+        _risk_cache[cache_key] = (response, time.time() + RISK_CACHE_TTL_SEC)
 
     return response
 
@@ -311,7 +325,6 @@ async def score_portfolio(
     start = time.perf_counter()
     logger.info(f"[/risk/portfolio] {len(req.assets)} assets, scenario={req.scenario}")
 
-    # Score each asset
     BATCH = 10
     asset_scores = []
 

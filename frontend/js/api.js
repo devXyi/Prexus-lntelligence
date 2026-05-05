@@ -17,7 +17,7 @@ import { store } from './store.js';
 function getBase() {
   return (
     window.API_BASE ||
-    'https://prexus-intelligence.onrender.com'
+    'https://prexus-intelligence-.onrender.com'
   );
 }
 

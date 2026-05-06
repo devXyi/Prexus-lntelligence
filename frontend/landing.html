@@ -1,0 +1,1556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="theme-color" content="#020912"/>
+<title>Prexus Intelligence — Sovereign Predictive Intelligence Platform</title>
+<meta name="description" content="Planetary-scale predictive intelligence for governments, research institutions, and strategic organizations."/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Martian+Mono:wght@300;400;500&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,300;1,400&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+/* ─── @PROPERTY: GPU-animatable custom property for conic border ─── */
+@property --ba {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
+
+/* ─── TOKENS ──────────────────────────────────────────── */
+:root {
+  --void:  #020912;
+  --deep:  #03111f;
+  --panel: rgba(6,18,33,.75);
+  --cobalt:#0EA5E9;
+  --cobalt-lo:  rgba(14,165,233,.07);
+  --cobalt-mid: rgba(14,165,233,.18);
+  --cobalt-hi:  rgba(14,165,233,.32);
+  --cobalt-glow:rgba(14,165,233,.25);
+  --cobalt-pulse:rgba(14,165,233,.65);
+  --ice:  #E0F0FF;
+  --steel:#7BA4C0;
+  --muted:#2A4A65;
+  --wire-soft:  rgba(14,165,233,.07);
+  --wire:       rgba(14,165,233,.13);
+  --wire-strong:rgba(14,165,233,.22);
+  --green:#10B981; --amber:#F59E0B; --red:#EF4444;
+
+  --f-display:'Bebas Neue',sans-serif;
+  --f-data:   'Martian Mono',monospace;
+  --f-serif:  'Source Serif 4',serif;
+  --f-ui:     'IBM Plex Sans',sans-serif;
+
+  --ease-out5:   cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-out3:   cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  background:var(--void);color:var(--ice);
+  font-family:var(--f-ui);font-size:15px;line-height:1.6;
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+}
+h1,h2,h3{text-rendering:optimizeLegibility}
+svg{shape-rendering:geometricPrecision}
+a{text-decoration:none;color:inherit}
+a,button{cursor:pointer}
+::-webkit-scrollbar{width:3px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--muted);border-radius:2px}
+a:focus-visible,button:focus-visible{outline:2px solid var(--cobalt);outline-offset:3px;border-radius:2px}
+
+/* ── Noise overlay ── */
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+  opacity:.018;
+}
+
+/* Custom cursor disabled for enterprise builds */
+.cursor-outer,.cursor-inner{display:none}
+
+
+/* ─── NAV ───────────────────────────────────────────────── */
+.nav{
+  position:fixed;top:0;left:0;right:0;z-index:200;height:52px;
+  display:flex;align-items:center;padding:0 48px;
+  background:rgba(2,9,18,.88);backdrop-filter:blur(24px);
+  border-bottom:1px solid var(--wire-soft);
+  transition:border-color .35s,background .35s;
+  contain:layout paint;
+}
+.nav.scrolled{border-bottom-color:var(--wire);background:rgba(2,9,18,.96)}
+.nav-logo{display:flex;align-items:center;gap:12px;margin-right:auto}
+
+/* ── Logo breathing glow — ambient system pulse ── */
+.nav-logo svg{
+  transition:transform .35s var(--ease-spring),filter .35s ease;
+  flex-shrink:0;
+  animation:logoBreath 5s ease-in-out infinite;
+}
+.nav-logo:hover svg{
+  transform:rotate(6deg) scale(1.07);
+  filter:drop-shadow(0 0 9px rgba(14,165,233,.55));
+  animation-play-state:paused;
+}
+.nav-wordmark{font-family:var(--f-display);font-size:22px;letter-spacing:.14em;color:white;line-height:1}
+.nav-product{font-family:var(--f-data);font-size:8px;letter-spacing:.22em;color:var(--cobalt);text-transform:uppercase;opacity:.8;line-height:1}
+
+/* ── System status + UTC clock ── */
+.nav-system{
+  display:flex;align-items:center;gap:14px;
+  margin-right:24px;
+  font-family:var(--f-data);font-size:9px;letter-spacing:.1em;
+  color:var(--muted);
+}
+.nav-status{display:flex;align-items:center;gap:5px}
+.nav-status-dot{
+  width:5px;height:5px;border-radius:50%;
+  background:var(--green);
+  box-shadow:0 0 6px rgba(16,185,129,.6);
+  animation:pulseSoft 2.8s ease-in-out infinite;
+}
+.nav-status-text{
+  font-family:var(--f-data);font-size:7.5px;
+  letter-spacing:.18em;text-transform:uppercase;
+  color:rgba(16,185,129,.6);
+}
+.nav-clock{
+  font-family:var(--f-data);font-size:9px;
+  letter-spacing:.06em;color:var(--muted);
+  border-left:1px solid var(--wire-soft);padding-left:14px;
+}
+
+.nav-links{display:flex;align-items:center;gap:28px;font-family:var(--f-data);font-size:10px;letter-spacing:.08em;text-transform:uppercase}
+/* ── Animated underline on nav links ── */
+.nav-links a[data-section]{
+  color:var(--steel);transition:color .2s;
+  position:relative;padding-bottom:2px;
+}
+.nav-links a[data-section]::after{
+  content:'';position:absolute;bottom:0;
+  left:50%;right:50%;height:1px;
+  background:var(--cobalt);
+  transition:left .22s var(--ease-out3),right .22s var(--ease-out3);
+}
+.nav-links a[data-section]:hover,
+.nav-links a[data-section].active{color:var(--ice)}
+.nav-links a[data-section]:hover::after,
+.nav-links a[data-section].active::after{left:0;right:0}
+
+.nav-demo{margin-left:8px;padding:7px 16px;border:1px solid var(--wire);border-radius:3px;color:var(--steel)!important;transition:all .2s}
+.nav-demo:hover{border-color:var(--cobalt-hi);color:var(--cobalt)!important;background:var(--cobalt-lo)}
+.nav-register{margin-left:8px;padding:7px 16px;border:1px solid var(--cobalt-hi);border-radius:3px;background:var(--cobalt-lo);color:var(--cobalt)!important;transition:all .2s}
+.nav-register:hover{background:rgba(14,165,233,.13);box-shadow:0 0 16px rgba(14,165,233,.22)}
+
+/* ─── HERO ──────────────────────────────────────────────── */
+.hero{
+  min-height:100vh;position:relative;overflow:hidden;
+  display:flex;flex-direction:column;
+  align-items:flex-start;justify-content:center;
+  padding:120px 48px 100px;
+  contain:layout;
+}
+
+#hero-canvas{
+  position:absolute;inset:0;width:100%;height:100%;
+  pointer-events:none;
+}
+
+/* ── Scan line: slow sweep — signals system is actively reading ── */
+.hero-scanline{
+  position:absolute;left:0;right:0;height:1px;
+  background:linear-gradient(90deg, transparent 0%, rgba(14,165,233,.12) 20%, rgba(14,165,233,.22) 50%, rgba(14,165,233,.12) 80%, transparent 100%);
+  pointer-events:none;z-index:3;
+  animation:scanDown 10s linear infinite;
+  will-change:transform;
+}
+
+/* ── Faint horizontal scanlines texture — CRT/terminal feel ── */
+.hero-scanlines{
+  position:absolute;inset:0;pointer-events:none;z-index:2;
+  opacity:.02;
+  background:repeating-linear-gradient(
+    to bottom,
+    transparent 0px,transparent 3px,
+    rgba(0,0,0,.035) 3px,rgba(0,0,0,.035) 4px
+  );
+}
+
+/* ── Subtle coordinate grid — topographic data feel ── */
+.hero-grid{
+  position:absolute;inset:0;pointer-events:none;z-index:1;
+  background-image:
+    linear-gradient(var(--wire-soft) 1px, transparent 1px),
+    linear-gradient(90deg, var(--wire-soft) 1px, transparent 1px);
+  background-size:80px 80px;
+  opacity:.35;
+  mask-image:radial-gradient(ellipse 80% 80% at 50% 50%, black 40%, transparent 100%);
+}
+
+.hero-mesh{
+  position:absolute;inset:0;pointer-events:none;
+  opacity:.3;
+  background:
+    radial-gradient(ellipse 55% 65% at 25% 45%, rgba(14,165,233,.055) 0%, transparent 60%),
+    radial-gradient(ellipse 35% 40% at 75% 20%, rgba(14,165,233,.03)  0%, transparent 50%),
+    radial-gradient(ellipse 50% 70% at 85% 80%, rgba(14,165,233,.02)  0%, transparent 55%);
+  transition:transform .12s ease;
+}
+
+.hero-vignette{
+  position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(to top, var(--void) 0%, transparent 30%);
+  z-index:1;
+}
+
+/* Hero content — driven by parallax JS via CSS transform */
+.hero-content{
+  position:relative;z-index:4;max-width:860px;
+  transition:transform .1s ease;
+  will-change:transform;
+}
+
+.hero-eyebrow{
+  font-family:var(--f-data);font-size:10px;
+  letter-spacing:.28em;text-transform:uppercase;color:var(--cobalt);
+  margin-bottom:28px;display:flex;align-items:center;gap:10px;
+  opacity:0;animation:fadeUp .8s .1s var(--ease-out5) forwards;
+}
+.eyebrow-line{width:32px;height:1px;background:var(--cobalt);opacity:.5}
+.eyebrow-cursor{
+  display:inline-block;width:1px;height:11px;
+  background:var(--cobalt);margin-left:4px;
+  animation:blink .9s step-end infinite;
+}
+
+.hero-h1{
+  font-family:var(--f-ui);
+  font-weight:500;
+  font-size:clamp(48px,8vw,96px);
+  line-height:.95;letter-spacing:.06em;text-transform:uppercase;
+  color:white;margin-bottom:36px;
+}
+.h1-line{display:block;overflow:hidden}
+.h1-line-inner{
+  display:block;opacity:0;transform:translateY(110%);
+  animation:lineSlide .85s var(--ease-out5) forwards;
+}
+.h1-line:nth-child(1) .h1-line-inner{animation-delay:.25s}
+.h1-line:nth-child(2) .h1-line-inner{animation-delay:.40s}
+.h1-line:nth-child(3) .h1-line-inner{animation-delay:.55s}
+.h1-stroke{
+  color:transparent;
+  -webkit-text-stroke:1.5px rgba(14,165,233,.6);
+  text-shadow:0 0 60px rgba(14,165,233,.2);
+}
+
+.hero-body{
+  font-family:var(--f-ui);font-size:16px;font-weight:300;
+  color:#9FB8CC;line-height:1.75;max-width:480px;margin-bottom:48px;
+  opacity:0;animation:fadeUp .9s .65s var(--ease-out5) forwards;
+}
+.hero-actions{
+  display:flex;align-items:center;gap:16px;
+  opacity:0;animation:fadeUp .9s .75s var(--ease-out5) forwards;
+}
+.hero-tagline{
+  margin-top:20px;font-family:var(--f-data);font-size:9px;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--muted);
+  opacity:0;animation:fadeUp .9s .9s var(--ease-out5) forwards;
+}
+
+.hero-stats{
+  position:absolute;bottom:0;left:0;right:0;
+  display:flex;
+  border-top:1px solid var(--wire-soft);
+  opacity:0;animation:fadeUp .9s 1.0s var(--ease-out5) forwards;
+  z-index:4;
+}
+.hero-stat{
+  flex:1;padding:18px 24px;
+  border-right:1px solid var(--wire-soft);
+  background:rgba(3,17,31,.8);backdrop-filter:blur(16px);
+  transition:background .25s;
+}
+.hero-stat:hover{background:rgba(14,165,233,.06)}
+.hero-stat:last-child{border-right:none}
+.hero-stat-val{
+  font-family:var(--f-display);font-size:28px;
+  color:var(--cobalt);letter-spacing:.06em;line-height:1;margin-bottom:3px;
+}
+/* Glitch class applied on count-up completion */
+.hero-stat-val.glitch{animation:glitch .35s steps(1) forwards}
+.hero-stat-label{
+  font-family:var(--f-data);font-size:8px;
+  letter-spacing:.18em;text-transform:uppercase;color:var(--muted);
+}
+
+/* ─── BUTTONS ───────────────────────────────────────────── */
+.btn-primary{
+  position:relative;overflow:hidden;
+  display:inline-flex;align-items:center;gap:8px;
+  padding:13px 28px;
+  background:var(--cobalt);color:white;border:none;
+  border-radius:3px;cursor:pointer;
+  font-family:var(--f-data);font-size:11px;font-weight:500;
+  letter-spacing:.12em;text-transform:uppercase;
+  transition:filter .25s,box-shadow .25s,transform .2s var(--ease-spring);
+  box-shadow:0 0 16px rgba(14,165,233,.3);
+}
+.btn-primary::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(110deg,transparent 30%,rgba(255,255,255,.14) 50%,transparent 70%);
+  transform:translateX(-150%);transition:transform .5s ease;
+}
+.btn-primary:hover{filter:brightness(1.1);box-shadow:0 0 24px rgba(14,165,233,.4);transform:translateY(-1px)}
+.btn-primary:hover::after{transform:translateX(150%)}
+.btn-primary:active{transform:scale(.98) translateY(0)}
+
+.btn-secondary{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:13px 24px;background:transparent;color:var(--steel);
+  border:1px solid var(--wire);border-radius:3px;cursor:pointer;
+  font-family:var(--f-data);font-size:11px;
+  letter-spacing:.12em;text-transform:uppercase;
+  transition:border-color .25s,color .25s,background .25s,transform .2s var(--ease-spring);
+}
+.btn-secondary:hover{border-color:var(--cobalt-hi);color:var(--ice);background:var(--cobalt-lo)}
+.btn-secondary:active{transform:scale(.98)}
+
+/* ─── COMPLIANCE BAR ─────────────────────────────────────── */
+.compliance-bar{
+  font-family:var(--f-data);font-size:8px;
+  letter-spacing:.2em;text-transform:uppercase;
+  color:var(--muted);text-align:center;padding:10px 48px;
+  border-top:1px solid var(--wire-soft);
+  background:rgba(2,9,18,.9);
+}
+
+/* ─── NAV CLASSIFICATION ─────────────────────────────────── */
+.nav-classification{
+  font-family:var(--f-data);font-size:7.5px;
+  letter-spacing:.2em;text-transform:uppercase;
+  color:rgba(245,158,11,.45);
+  border:1px solid rgba(245,158,11,.12);
+  background:rgba(245,158,11,.04);
+  padding:3px 10px;border-radius:2px;margin-right:20px;
+}
+
+/* ─── AUDIT LOG ──────────────────────────────────────────── */
+.audit-section{
+  padding:0;
+  border-bottom:1px solid var(--wire-soft);
+  background:rgba(3,11,22,.95);
+}
+.audit-inner{
+  max-width:1100px;margin:0 auto;padding:0 48px;
+  display:flex;align-items:stretch;gap:0;
+}
+.audit-label{
+  font-family:var(--f-data);font-size:7.5px;letter-spacing:.22em;
+  text-transform:uppercase;color:var(--muted);
+  padding:10px 20px 10px 0;
+  border-right:1px solid var(--wire-soft);
+  display:flex;align-items:center;white-space:nowrap;
+  flex-shrink:0;
+}
+.audit-log{
+  display:flex;align-items:center;gap:0;
+  overflow:hidden;flex:1;
+  padding-left:20px;
+}
+.audit-entry{
+  font-family:var(--f-data);font-size:9px;letter-spacing:.04em;
+  color:rgba(16,185,129,.45);padding:10px 28px 10px 0;
+  white-space:nowrap;border-right:1px solid var(--wire-soft);
+  margin-right:28px;
+  transition:color .2s;
+}
+.audit-entry:hover{color:rgba(16,185,129,.7)}
+.audit-entry .audit-ts{color:var(--muted);margin-right:8px}
+.audit-entry .audit-ok{color:rgba(16,185,129,.7)}
+.audit-entry .audit-warn{color:rgba(245,158,11,.6)}
+
+/* ─── STAT SOURCE ────────────────────────────────────────── */
+.hero-stat-source{
+  font-family:var(--f-data);font-size:7px;letter-spacing:.1em;
+  color:rgba(42,74,101,.8);text-transform:uppercase;margin-top:3px;
+}
+
+/* ─── CLASSIFICATION ─────────────────────────────────────── */
+.cls-strip{
+  background:rgba(16,185,129,.06);
+  border-top:1px solid rgba(16,185,129,.12);
+  border-bottom:1px solid rgba(16,185,129,.12);
+  padding:8px 0;text-align:center;
+  font-family:var(--f-data);font-size:9px;
+  letter-spacing:.25em;text-transform:uppercase;color:rgba(16,185,129,.6);
+}
+
+/* ─── TICKER ─────────────────────────────────────────────── */
+.ticker-section{
+  border-bottom:1px solid var(--wire-soft);
+  padding:14px 0;overflow:hidden;
+  background:rgba(3,17,31,.6);
+  contain:paint layout;
+}
+.ticker-track{
+  display:flex;white-space:nowrap;
+  will-change:transform;
+  animation:ticker 38s linear infinite;
+}
+.ticker-section:hover .ticker-track{animation-play-state:paused}
+.ticker-item{
+  flex-shrink:0;padding:0 32px;
+  font-family:var(--f-data);font-size:11px;letter-spacing:.08em;
+  display:flex;align-items:center;gap:8px;
+  border-right:1px solid var(--wire-soft);
+}
+.ticker-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0}
+
+/* ─── SECTION BASE ───────────────────────────────────────── */
+.section{max-width:1100px;margin:0 auto;padding:100px 48px}
+.section-eyebrow{
+  font-family:var(--f-data);font-size:9px;
+  letter-spacing:.28em;text-transform:uppercase;color:var(--cobalt);
+  margin-bottom:16px;display:flex;align-items:center;gap:10px;
+}
+.section-eyebrow::before{content:'';display:block;width:24px;height:1px;background:var(--cobalt);opacity:.5}
+.section-h2{
+  font-family:var(--f-display);
+  font-size:clamp(32px,5vw,54px);
+  letter-spacing:.04em;text-transform:uppercase;color:white;
+  margin-bottom:20px;line-height:1.05;
+}
+.section-lead{
+  font-family:var(--f-serif);font-size:17px;font-weight:300;
+  color:var(--steel);line-height:1.75;max-width:640px;
+}
+.divider{max-width:1100px;margin:0 auto;height:1px;background:var(--wire-soft)}
+
+/* ─── NEED CARDS ─────────────────────────────────────────── */
+.need-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px;margin-top:48px;border:1px solid var(--wire-soft);border-radius:4px;overflow:hidden}
+.need-card{
+  padding:32px 30px;
+  background:rgba(3,17,31,.5);
+  position:relative;overflow:hidden;
+  transition:background .25s;
+}
+.need-card:hover{background:rgba(14,165,233,.05)}
+.need-card:nth-child(1),.need-card:nth-child(2){border-bottom:1px solid var(--wire-soft)}
+.need-card:nth-child(1),.need-card:nth-child(3){border-right:1px solid var(--wire-soft)}
+.need-card::before,.need-card::after{
+  content:'';position:absolute;width:8px;height:8px;
+  border-color:var(--cobalt-hi);border-style:solid;
+  opacity:0;transition:opacity .25s;
+}
+.need-card::before{top:-1px;left:-1px;border-width:1.5px 0 0 1.5px}
+.need-card::after{bottom:-1px;right:-1px;border-width:0 1.5px 1.5px 0}
+.need-card:hover::before,.need-card:hover::after{opacity:1}
+.need-num{font-family:var(--f-display);font-size:52px;color:rgba(14,165,233,.07);line-height:1;margin-bottom:8px}
+.need-title{font-family:var(--f-display);font-size:20px;letter-spacing:.08em;text-transform:uppercase;color:white;margin-bottom:12px}
+.need-body{font-family:var(--f-serif);font-size:15px;font-weight:300;color:var(--steel);line-height:1.7}
+
+/* ─── PIPELINE ───────────────────────────────────────────── */
+.pipeline-section{
+  padding:100px 0;
+  background:
+    radial-gradient(ellipse 60% 50% at 50% 0%, rgba(14,165,233,.04) 0%, transparent 55%),
+    var(--deep);
+  border-top:1px solid var(--wire-soft);
+  border-bottom:1px solid var(--wire-soft);
+}
+.pipeline-inner{max-width:1100px;margin:0 auto;padding:0 48px}
+.pipeline-grid{
+  display:grid;grid-template-columns:1fr 1fr;
+  margin-top:48px;
+  border:1px solid var(--wire);border-radius:4px;
+  overflow:hidden;position:relative;
+  background:rgba(2,9,18,.6);
+  backdrop-filter:blur(8px);
+  contain:paint;
+}
+/* ── Pipeline spine: multiple staggered pulses ──
+   Three runners with different delays create continuous
+   data flow rather than single punctuated pulse.
+   ── */
+.pipeline-spine{
+  position:absolute;left:50%;top:0;bottom:0;width:1px;
+  transform:translateX(-50%);overflow:hidden;
+  pointer-events:none;z-index:2;
+}
+.pipeline-spine::before{content:'';position:absolute;inset:0;background:var(--wire)}
+.spine-pulse{
+  position:absolute;
+  width:100%;height:100px;top:0;
+  background:linear-gradient(to bottom,transparent,rgba(14,165,233,.6),transparent);
+  will-change:transform;
+  animation:flowDown 4s ease-in-out infinite;
+}
+.spine-pulse:nth-child(2){animation-delay:1.5s;opacity:.65}
+.spine-pulse:nth-child(3){animation-delay:2.9s;opacity:.4}
+
+.layer-item{
+  display:flex;align-items:flex-start;
+  padding:20px 24px;
+  border-right:1px solid var(--wire-soft);
+  border-bottom:1px solid var(--wire-soft);
+  transition:background .2s;position:relative;z-index:1;
+}
+.layer-item:hover{background:rgba(14,165,233,.04)}
+.layer-item:nth-child(even){border-right:none}
+.layer-item:nth-last-child(-n+2){border-bottom:none}
+.layer-item.full{grid-column:1/-1;border-right:none}
+.layer-num{
+  font-family:var(--f-data);font-size:11px;
+  color:rgba(14,165,233,.25);line-height:1;
+  width:32px;flex-shrink:0;margin-right:12px;
+  padding-top:2px;letter-spacing:.08em;
+}
+.layer-num::before{content:'L';opacity:.5}
+.layer-dot{
+  position:absolute;top:21px;left:55px;
+  width:6px;height:6px;border-radius:50%;
+  background:var(--cobalt);flex-shrink:0;
+  animation:pulseSoft 2.8s ease-in-out infinite;
+}
+.layer-item:nth-child(1) .layer-dot{animation-delay:0s}
+.layer-item:nth-child(2) .layer-dot{animation-delay:.4s}
+.layer-item:nth-child(3) .layer-dot{animation-delay:.8s}
+.layer-item:nth-child(4) .layer-dot{animation-delay:1.2s}
+.layer-item:nth-child(5) .layer-dot{animation-delay:1.6s}
+.layer-item:nth-child(6) .layer-dot{animation-delay:2.0s}
+.layer-item:nth-child(7) .layer-dot{animation-delay:2.4s}
+.layer-content{padding-left:20px}
+.layer-name{font-family:var(--f-data);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ice);margin-bottom:5px}
+.layer-desc{font-family:var(--f-data);font-size:9.5px;color:var(--muted);letter-spacing:.03em;line-height:1.6}
+.layer-pills{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px}
+.layer-pill{
+  font-family:var(--f-data);font-size:7.5px;letter-spacing:.1em;
+  padding:2px 6px;border-radius:2px;
+  border:1px solid var(--wire-soft);color:var(--muted);text-transform:uppercase;
+}
+
+/* ─── CAPABILITIES ───────────────────────────────────────── */
+.cap-section-bg{
+  background:
+    radial-gradient(ellipse 50% 60% at 80% 50%, rgba(14,165,233,.04) 0%, transparent 55%),
+    transparent;
+}
+.cap-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:16px;margin-top:48px;
+  perspective:1200px;
+}
+/* ── Card: animated conic border on hover ──
+   @property --ba lets CSS animate conic-gradient rotation.
+   ::before = border layer (z-index -1, inset -1px)
+   ::after  = solid background mask (z-index -1, inset 1px)
+   Hover removes static border, reveals spinning gradient border.
+   ── */
+.cap-card{
+  padding:28px;border-radius:4px;
+  background:var(--panel);backdrop-filter:blur(12px);
+  border:1px solid var(--wire-soft);
+  box-shadow:0 4px 24px rgba(0,0,0,.32),inset 0 1px 0 rgba(255,255,255,.03);
+  position:relative;z-index:0;overflow:hidden;
+  transition:
+    transform .15s ease,
+    box-shadow .25s ease,
+    border-color .25s ease;
+}
+.cap-card::before{
+  content:'';
+  position:absolute;inset:-1px;border-radius:5px;
+  background:conic-gradient(
+    from var(--ba),
+    transparent 20%,
+    rgba(14,165,233,.45) 40%,
+    rgba(14,165,233,.1) 50%,
+    transparent 65%
+  );
+  z-index:-1;
+  opacity:0;
+  transition:opacity .3s ease;
+  animation:spinBorder 4s linear infinite paused;
+}
+.cap-card::after{
+  content:'';
+  position:absolute;inset:1px;border-radius:3px;
+  background:var(--panel);
+  z-index:-1;
+}
+.cap-card:hover{
+  box-shadow:0 12px 40px rgba(0,0,0,.45), 0 0 30px rgba(14,165,233,.08);
+  border-color:transparent;
+}
+.cap-card:hover::before{opacity:1;animation-play-state:running}
+.cap-card:hover .cap-icon svg{
+  transform:scale(1.08);
+  filter:drop-shadow(0 0 8px rgba(14,165,233,.45));
+}
+.cap-card.returning{
+  transition:transform .6s var(--ease-out3),box-shadow .25s,border-color .25s;
+}
+.cap-icon{
+  width:40px;height:40px;border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  margin-bottom:18px;color:var(--cobalt);
+  background:rgba(14,165,233,.07);
+  border:1px solid rgba(14,165,233,.15);
+}
+.cap-icon svg{
+  stroke-width:1.1;vector-effect:non-scaling-stroke;
+  transition:transform .3s var(--ease-spring),filter .3s ease;
+}
+.cap-name{font-family:var(--f-display);font-size:16px;letter-spacing:.08em;text-transform:uppercase;color:white;margin-bottom:10px}
+.cap-body{font-family:var(--f-serif);font-size:14px;font-weight:300;color:var(--steel);line-height:1.65}
+
+/* ─── MODULES ────────────────────────────────────────────── */
+.modules-section{
+  padding:100px 0;
+  background:
+    radial-gradient(ellipse 70% 50% at 20% 60%, rgba(14,165,233,.035) 0%, transparent 55%),
+    var(--deep);
+  border-top:1px solid var(--wire-soft);
+  border-bottom:1px solid var(--wire-soft);
+}
+.modules-inner{max-width:1100px;margin:0 auto;padding:0 48px}
+.modules-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:48px}
+.module-card{
+  padding:20px;border:1px solid var(--wire-soft);border-radius:4px;
+  background:rgba(2,9,18,.65);backdrop-filter:blur(8px);
+  position:relative;overflow:hidden;
+  box-shadow:0 4px 20px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.025);
+  transition:border-color .25s,background .25s,box-shadow .25s;
+}
+.module-card.active{border-color:rgba(14,165,233,.24);background:rgba(14,165,233,.05)}
+.module-card.active:hover{border-color:rgba(14,165,233,.38);box-shadow:0 8px 32px rgba(0,0,0,.35),0 0 20px rgba(14,165,233,.07)}
+.module-card.locked{opacity:.48}
+.module-card:not(.locked):hover{border-color:var(--wire);background:rgba(14,165,233,.06)}
+.module-card:not(.locked):hover .module-icon svg{
+  transform:scale(1.06);
+  filter:drop-shadow(0 0 7px rgba(14,165,233,.38));
+}
+.module-icon svg{stroke-width:1.1;vector-effect:non-scaling-stroke;transition:transform .3s var(--ease-spring),filter .3s ease}
+.module-status{
+  position:absolute;top:12px;right:12px;
+  font-family:var(--f-data);font-size:7px;
+  letter-spacing:.12em;text-transform:uppercase;
+  padding:2px 6px;border-radius:2px;
+}
+.module-status.auth{background:rgba(16,185,129,.12);color:rgba(16,185,129,.8);border:1px solid rgba(16,185,129,.2)}
+.module-status.lock{background:rgba(255,255,255,.02);color:var(--muted);border:1px solid var(--wire-soft)}
+.module-icon{margin-bottom:12px;display:flex;color:var(--cobalt);line-height:1}
+.module-name{font-family:var(--f-display);font-size:17px;letter-spacing:.06em;text-transform:uppercase;color:white;margin-bottom:5px}
+.module-tagline{font-family:var(--f-data);font-size:9px;letter-spacing:.12em;color:var(--cobalt);text-transform:uppercase;margin-bottom:8px}
+.module-desc{font-size:12.5px;color:var(--steel);line-height:1.55;font-family:var(--f-serif);font-style:italic}
+
+/* ─── BRIEF ──────────────────────────────────────────────── */
+.brief-section{padding:100px 0}
+.brief-inner{max-width:1100px;margin:0 auto;padding:0 48px;display:grid;grid-template-columns:1fr 360px;gap:64px}
+.brief-doc{font-family:var(--f-serif);font-size:16px;font-weight:300;color:var(--steel);line-height:1.9}
+.brief-doc p{margin-bottom:20px}
+.brief-doc strong{color:var(--ice);font-weight:400}
+.brief-doc em{color:var(--cobalt);font-style:normal}
+.brief-aside{display:flex;flex-direction:column;gap:12px}
+.brief-fact{
+  padding:16px 20px;
+  border:1px solid var(--wire-soft);border-radius:4px;
+  background:rgba(4,16,31,.6);backdrop-filter:blur(8px);
+  border-left:3px solid rgba(14,165,233,.4);
+  box-shadow:0 4px 20px rgba(0,0,0,.22),inset 0 1px 0 rgba(255,255,255,.02);
+  transition:border-left-color .3s,box-shadow .3s;
+}
+.brief-fact:hover{border-left-color:rgba(14,165,233,.7);box-shadow:0 6px 28px rgba(0,0,0,.32)}
+.brief-fact-val{font-family:var(--f-display);font-size:32px;color:var(--cobalt);letter-spacing:.04em;line-height:1;margin-bottom:4px}
+.brief-fact-label{font-family:var(--f-data);font-size:8.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+
+/* ─── CTA ────────────────────────────────────────────────── */
+.cta-section{
+  padding:120px 48px;text-align:center;
+  position:relative;overflow:hidden;
+  border-top:1px solid var(--wire-soft);
+  background:
+    radial-gradient(ellipse 70% 60% at 50% 100%, rgba(14,165,233,.055) 0%, transparent 60%),
+    var(--void);
+}
+.cta-tag{
+  display:inline-block;
+  font-family:var(--f-data);font-size:9px;
+  letter-spacing:.28em;text-transform:uppercase;color:var(--cobalt);
+  margin-bottom:24px;
+  border:1px solid rgba(14,165,233,.22);padding:5px 14px;
+  border-radius:2px;background:rgba(14,165,233,.05);
+}
+.cta-h2{font-family:var(--f-display);font-size:clamp(38px,6vw,72px);letter-spacing:.04em;text-transform:uppercase;color:white;margin-bottom:20px;line-height:1}
+.cta-body{font-family:var(--f-serif);font-size:17px;font-weight:300;color:var(--steel);max-width:520px;margin:0 auto 40px;line-height:1.75}
+.cta-actions{display:flex;align-items:center;justify-content:center;gap:16px;position:relative;z-index:2}
+.cta-note{margin-top:24px;font-family:var(--f-data);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+
+/* ─── FOOTER ─────────────────────────────────────────────── */
+footer{padding:48px;border-top:1px solid var(--wire-soft);background:var(--deep)}
+.footer-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between}
+.footer-logo{font-family:var(--f-display);font-size:20px;letter-spacing:.14em;color:white}
+.footer-links{display:flex;gap:24px;font-family:var(--f-data);font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.footer-links a{transition:color .2s}
+.footer-links a:hover{color:var(--steel)}
+.footer-meta{font-family:var(--f-data);font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);text-align:right}
+
+/* ─── REVEAL ─────────────────────────────────────────────── */
+.reveal{
+  opacity:0;transform:translateY(24px);
+  transition:opacity .6s var(--ease-out5),transform .6s var(--ease-out5);
+}
+.reveal.visible{opacity:1;transform:translateY(0)}
+
+/* ─── KEYFRAMES ──────────────────────────────────────────── */
+@keyframes lineSlide{
+  from{opacity:0;transform:translateY(110%)}
+  to{opacity:1;transform:translateY(0)}
+}
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(20px)}
+  to{opacity:1;transform:translateY(0)}
+}
+@keyframes ticker{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+@keyframes pulseSoft{
+  0%,100%{opacity:.8;box-shadow:0 0 4px rgba(14,165,233,.4)}
+  50%{opacity:1;box-shadow:0 0 10px rgba(14,165,233,.75)}
+}
+@keyframes flowDown{
+  0%  {transform:translateY(-100px);opacity:0}
+  8%  {opacity:1}
+  92% {opacity:1}
+  100%{transform:translateY(1200px);opacity:0}
+}
+@keyframes spinBorder{to{--ba:360deg}}
+@keyframes logoBreath{
+  0%,100%{filter:drop-shadow(0 0 3px rgba(14,165,233,.2))}
+  50%    {filter:drop-shadow(0 0 8px rgba(14,165,233,.38))}
+}
+/* ── scanDown: horizontal line sweeps full hero height ──
+   Translates via transform (compositor only, no reflow)
+   ── */
+@keyframes scanDown{
+  0%  {transform:translateY(0);opacity:0}
+  3%  {opacity:1}
+  97% {opacity:1}
+  100%{transform:translateY(100vh);opacity:0}
+}
+/* ── glitch: brief digital artifact on count-up complete ──
+   Uses clip-path + translate — both compositor properties.
+   ── */
+@keyframes glitch{
+  0%  {clip-path:inset(0 0 95% 0);transform:translate(-2px,0);color:var(--ice)}
+  15% {clip-path:inset(30% 0 50% 0);transform:translate(2px,0)}
+  30% {clip-path:inset(75% 0 5% 0);transform:translate(-1px,0)}
+  45% {clip-path:inset(0);transform:translate(0);color:var(--cobalt)}
+  100%{clip-path:inset(0);transform:translate(0);color:var(--cobalt)}
+}
+
+/* ─── RESPONSIVE ─────────────────────────────────────────── */
+@media(max-width:900px){
+  .hero{padding:100px 24px 100px}
+  .need-grid{grid-template-columns:1fr}
+  .need-card:nth-child(1),.need-card:nth-child(3){border-right:none}
+  .need-card:nth-child(2){border-bottom:1px solid var(--wire-soft)}
+  .cap-grid{grid-template-columns:1fr 1fr}
+  .modules-row{grid-template-columns:1fr 1fr}
+  .pipeline-grid{grid-template-columns:1fr}
+  .pipeline-spine{display:none}
+  .layer-item:nth-child(even){border-right:1px solid var(--wire-soft)}
+  .layer-item.full{grid-column:1}
+  .brief-inner{grid-template-columns:1fr}
+  .section{padding:64px 24px}
+  .nav{padding:0 24px}
+  .cta-section{padding:80px 24px}
+  .footer-inner{flex-direction:column;gap:24px;text-align:center}
+  .footer-meta{text-align:center}
+  .hero-stats{position:static;margin-top:48px;border-top:none;border:1px solid var(--wire-soft);border-radius:4px;overflow:hidden}
+  .nav-system{display:none}
+  .hero-grid{display:none}
+}
+@media(max-width:600px){
+  .cap-grid,.modules-row{grid-template-columns:1fr}
+  .nav-links a:not(.nav-register):not(.nav-demo){display:none}
+}
+
+/* ─── MOTION SAFETY ──────────────────────────────────────── */
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  .h1-line-inner{opacity:1;transform:none}
+  .hero-eyebrow,.hero-body,.hero-actions,.hero-tagline,.hero-stats{opacity:1;transform:none}
+  .eyebrow-cursor,.hero-scanline{display:none}
+}
+</style>
+</head>
+<body>
+
+<!-- Custom cursor: outer ring lags ~1 frame, inner dot is precise -->
+<div class="cursor-outer" id="cursor-outer" aria-hidden="true"></div>
+<div class="cursor-inner" id="cursor-inner" aria-hidden="true"></div>
+
+<!-- ═══════════════ NAV ═══════════════ -->
+<nav class="nav" id="nav">
+  <div class="nav-logo">
+    <svg width="28" height="28" viewBox="0 0 30 30" fill="none">
+      <polygon points="15,1.5 27,8.75 27,21.25 15,28.5 3,21.25 3,8.75" stroke="#0EA5E9" stroke-width="1.2" fill="none"/>
+      <polygon points="15,8 21.5,11.75 21.5,18.25 15,22 8.5,18.25 8.5,11.75" stroke="#0EA5E9" stroke-width="0.7" fill="none" opacity="0.45"/>
+      <line x1="15" y1="1.5"  x2="15"  y2="8"    stroke="#0EA5E9" stroke-width="0.6" opacity="0.4"/>
+      <line x1="15" y1="22"   x2="15"  y2="28.5"  stroke="#0EA5E9" stroke-width="0.6" opacity="0.4"/>
+      <line x1="3"  y1="8.75" x2="8.5" y2="11.75" stroke="#0EA5E9" stroke-width="0.6" opacity="0.25"/>
+      <line x1="27" y1="8.75" x2="21.5" y2="11.75" stroke="#0EA5E9" stroke-width="0.6" opacity="0.25"/>
+      <line x1="3"  y1="21.25" x2="8.5"  y2="18.25" stroke="#0EA5E9" stroke-width="0.6" opacity="0.25"/>
+      <line x1="27" y1="21.25" x2="21.5" y2="18.25" stroke="#0EA5E9" stroke-width="0.6" opacity="0.25"/>
+      <circle cx="15" cy="15" r="2.4" fill="#0EA5E9"/>
+    </svg>
+    <div>
+      <div class="nav-wordmark">PREXUS</div>
+      <div class="nav-product">Intelligence Platform</div>
+    </div>
+  </div>
+  <!-- System status + live UTC clock -->
+  <div class="nav-system">
+    <div class="nav-status">
+      <div class="nav-status-dot"></div>
+      <span class="nav-status-text">NOMINAL</span>
+    </div>
+    <div class="nav-clock" id="nav-clock">--:--:-- UTC</div>
+  </div>
+  <div class="nav-links">
+    <a href="#architecture" data-section="architecture">Architecture</a>
+    <a href="#capabilities" data-section="capabilities">Capabilities</a>
+    <a href="#modules" data-section="modules">Modules</a>
+    <div class="nav-classification">Internal System · Access Logged</div>
+    <a href="demo.html" class="nav-demo">Schedule Briefing</a>
+    <a href="index.html" class="nav-register">Request Access →</a>
+  </div>
+</nav>
+
+<!-- ═══════════════ HERO ═══════════════ -->
+<section class="hero">
+  <canvas id="hero-canvas" aria-hidden="true"></canvas>
+  <div class="hero-grid" aria-hidden="true"></div>
+  <div class="hero-scanlines" aria-hidden="true"></div>
+  <div class="hero-scanline" aria-hidden="true"></div>
+  <div class="hero-mesh"></div>
+  <div class="hero-vignette"></div>
+
+  <div class="hero-content">
+    <div class="hero-eyebrow">
+      <span class="eyebrow-line"></span>
+      Sovereign Predictive Intelligence
+      <span class="eyebrow-cursor" aria-hidden="true"></span>
+    </div>
+
+    <h1 class="hero-h1">
+      <span class="h1-line"><span class="h1-line-inner">Predictive</span></span>
+      <span class="h1-line"><span class="h1-line-inner h1-stroke">Intelligence</span></span>
+      <span class="h1-line"><span class="h1-line-inner">Infrastructure</span></span>
+    </h1>
+
+    <p class="hero-body">
+      Prexus integrates satellite telemetry, climate reanalysis, epidemiological signals,
+      and geopolitical data into a unified intelligence command environment.
+      Designed for institutions that cannot afford to be surprised.
+    </p>
+    <div class="hero-actions">
+      <a href="index.html" class="btn-primary">Request Access →</a>
+      <a href="demo.html" class="btn-secondary">Schedule Briefing</a>
+    </div>
+    <p class="hero-tagline">Climate Intelligence · Health Risk · Strategic Intelligence · Economic Signals</p>
+  </div>
+
+  <div class="hero-stats">
+    <div class="hero-stat"><div class="hero-stat-val" data-count="19">19</div><div class="hero-stat-label">Data Sources (Verified)</div><div class="hero-stat-source">ERA5 / NASA FIRMS</div></div>
+    <div class="hero-stat"><div class="hero-stat-val" data-count="7">7</div><div class="hero-stat-label">Pipeline Layers</div><div class="hero-stat-source">Auditable · No Black Boxes</div></div>
+    <div class="hero-stat"><div class="hero-stat-val" data-count="10K">10K</div><div class="hero-stat-label">Monte Carlo Draws</div><div class="hero-stat-source">IPCC AR6 Calibrated</div></div>
+    <div class="hero-stat"><div class="hero-stat-val" data-count="12ms">12ms</div><div class="hero-stat-label">Rust Engine</div><div class="hero-stat-source">PyO3 · VaR/CVaR</div></div>
+    <div class="hero-stat"><div class="hero-stat-val" data-count="4">4</div><div class="hero-stat-label">Intelligence Modules</div><div class="hero-stat-source">Last Updated: <span id="stat-utc">--:-- UTC</span></div></div>
+  </div>
+</section>
+
+<!-- COMPLIANCE BAR -->
+<div class="compliance-bar">
+  SOC 2 Type II &nbsp;·&nbsp; ISO 27001 &nbsp;·&nbsp; GDPR &nbsp;·&nbsp; RBI Compliant &nbsp;·&nbsp; Data Residency India/EU &nbsp;·&nbsp; TLS 1.3 &nbsp;·&nbsp; AES-256 &nbsp;·&nbsp; Zero-Trust Architecture
+</div>
+
+<!-- AUDIT TRACE -->
+<div class="audit-section">
+  <div class="audit-inner">
+    <div class="audit-label">Audit Trace</div>
+    <div class="audit-log">
+      <div class="audit-entry"><span class="audit-ts" id="audit-ts1">--:--:--</span><span class="audit-ok">✓</span> Risk Engine Updated</div>
+      <div class="audit-entry"><span class="audit-ts" id="audit-ts2">--:--:--</span><span class="audit-ok">✓</span> Satellite Sync Completed</div>
+      <div class="audit-entry"><span class="audit-ts" id="audit-ts3">--:--:--</span><span class="audit-ok">✓</span> Monte Carlo Execution Complete · 10,000 draws</div>
+      <div class="audit-entry"><span class="audit-ts" id="audit-ts4">--:--:--</span><span class="audit-warn">⚑</span> ERA5 Layer Refresh · ETA 3 min</div>
+      <div class="audit-entry"><span class="audit-ts" id="audit-ts5">--:--:--</span><span class="audit-ok">✓</span> JWT Auth Validated · Session Active</div>
+    </div>
+  </div>
+</div>
+
+<!-- CLASSIFICATION -->
+<div class="cls-strip">FOUO // Sensitive But Unclassified // Authorized Distribution Only // Prexus v2.0</div>
+
+<!-- TICKER -->
+<div class="ticker-section" aria-label="Live intelligence feed">
+  <div class="ticker-track">
+    <div class="ticker-item"><div class="ticker-dot" style="background:#EF4444;box-shadow:0 0 4px #EF4444"></div><span style="color:#7BA4C0">FIRE DETECTION ·</span>&nbsp;São Paulo Basin · 87% probability · FIRMS VIIRS 375m</div>
+    <div class="ticker-item"><div class="ticker-dot" style="background:#F59E0B;box-shadow:0 0 4px #F59E0B"></div><span style="color:#7BA4C0">TEMP ANOMALY ·</span>&nbsp;Deccan Plateau · +2.4°C above ERA5 baseline</div>
+    <div class="ticker-item"><div class="ticker-dot" style="background:#0EA5E9;box-shadow:0 0 4px #0EA5E9"></div><span style="color:#7BA4C0">FLOOD SIGNAL ·</span>&nbsp;Mumbai Coastal · +147% precipitation anomaly</div>
+    <div class="ticker-item"><div class="ticker-dot" style="background:#8B5CF6;box-shadow:0 0 4px #8B5CF6"></div><span style="color:#7BA4C0">TRANSITION RISK ·</span>&nbsp;Shanghai Industrial · CO₂ intensity 0.68 norm</div>
+    <div class="ticker-item"><div class="ticker-dot" style="background:#10B981;box-shadow:0 0 4px #10B981"></div><span style="color:#7BA4C0">PIPELINE ·</span>&nbsp;All 7 layers nominal · Redis queue active</div>
+    <div class="ticker-item"><div class="ticker-dot" style="background:#EF4444;box-shadow:0 0 4px #EF4444"></div><span style="color:#7BA4C0">COMPOUND EVENT ·</span>&nbsp;Fire-Climate Chain · Amplifier 3.1× active</div>
+    <div class="ticker-item"><div class="ticker-dot" style="background:#EF4444;box-shadow:0 0 4px #EF4444"></div><span style="color:#7BA4C0">FIRE DETECTION ·</span>&nbsp;São Paulo Basin · 87% probability · FIRMS VIIRS 375m</div>
+    <div class="ticker-item"><div class="ticker-dot" style="background:#F59E0B;box-shadow:0 0 4px #F59E0B"></div><span style="color:#7BA4C0">TEMP ANOMALY ·</span>&nbsp;Deccan Plateau · +2.4°C above ERA5 baseline</div>
+    <div class="ticker-item"><div class="ticker-dot" style="background:#0EA5E9;box-shadow:0 0 4px #0EA5E9"></div><span style="color:#7BA4C0">FLOOD SIGNAL ·</span>&nbsp;Mumbai Coastal · +147% precipitation anomaly</div>
+    <div class="ticker-item"><div class="ticker-dot" style="background:#8B5CF6;box-shadow:0 0 4px #8B5CF6"></div><span style="color:#7BA4C0">TRANSITION RISK ·</span>&nbsp;Shanghai Industrial · CO₂ intensity 0.68 norm</div>
+    <div class="ticker-item"><div class="ticker-dot" style="background:#10B981;box-shadow:0 0 4px #10B981"></div><span style="color:#7BA4C0">PIPELINE ·</span>&nbsp;All 7 layers nominal · Redis queue active</div>
+    <div class="ticker-item"><div class="ticker-dot" style="background:#EF4444;box-shadow:0 0 4px #EF4444"></div><span style="color:#7BA4C0">COMPOUND EVENT ·</span>&nbsp;Fire-Climate Chain · Amplifier 3.1× active</div>
+  </div>
+</div>
+
+<!-- NEED -->
+<section class="section" id="need">
+  <div class="section-eyebrow">The Intelligence Imperative</div>
+  <h2 class="section-h2">Why Predictive<br/>Intelligence Matters</h2>
+  <p class="section-lead reveal">Modern civilization operates within interconnected systems evolving faster than traditional analysis can interpret. Institutions that rely on reactive decision-making are perpetually behind.</p>
+  <div class="need-grid">
+    <div class="need-card reveal"><div class="need-num">01</div><div class="need-title">Climate Risk is Financial Risk</div><div class="need-body">Physical hazards — wildfire, drought, flood, extreme heat — are no longer tail risks. Organizations without asset-level climate intelligence are operating blind.</div></div>
+    <div class="need-card reveal"><div class="need-num">02</div><div class="need-title">Compound Events Multiply Damage</div><div class="need-body">When drought, heat, and fire co-occur, damage multipliers reach 2.5–3.5×. No single-hazard model captures this. Prexus detects and amplifies compound signals in real time.</div></div>
+    <div class="need-card reveal"><div class="need-num">03</div><div class="need-title">Health Intelligence is Sovereign</div><div class="need-body">Epidemiological signals, outbreak vectors, and pandemic probability modeling require infrastructure that cannot depend on third-party commercial feeds.</div></div>
+    <div class="need-card reveal"><div class="need-num">04</div><div class="need-title">Data Without Fusion is Noise</div><div class="need-body">Thousands of platforms offer weather data or fire alerts in isolation. Prexus fuses satellite telemetry, climate reanalysis, and emissions signals into a single probabilistic picture.</div></div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- PIPELINE -->
+<div class="pipeline-section" id="architecture">
+  <div class="pipeline-inner">
+    <div class="section-eyebrow">System Architecture</div>
+    <h2 class="section-h2">Seven-Layer<br/>Intelligence Pipeline</h2>
+    <p class="section-lead reveal">Every risk score flows through a verifiable, inspectable seven-layer pipeline. No black boxes. Every signal has a source and a freshness timestamp.</p>
+    <div class="pipeline-grid">
+      <!-- Three staggered pulse runners instead of one — continuous data flow feel -->
+      <div class="pipeline-spine" aria-hidden="true">
+        <div class="spine-pulse"></div>
+        <div class="spine-pulse"></div>
+        <div class="spine-pulse"></div>
+      </div>
+      <div class="layer-item reveal"><div class="layer-num">0</div><div class="layer-dot"></div><div class="layer-content"><div class="layer-name">Satellite & Agency Sources</div><div class="layer-desc">19 external data sources. NASA, ESA, JAXA, ISRO, NOAA, ECMWF, Carbon Monitor, Planet Labs, Maxar.</div><div class="layer-pills"><span class="layer-pill">NASA</span><span class="layer-pill">ESA</span><span class="layer-pill">JAXA</span><span class="layer-pill">ISRO</span></div></div></div>
+      <div class="layer-item reveal"><div class="layer-num">1</div><div class="layer-dot"></div><div class="layer-content"><div class="layer-name">Telemetry Acquisition</div><div class="layer-desc">Async workers per source. Redis Streams producer. APScheduler: 1h / 3h / 24h cadences.</div><div class="layer-pills"><span class="layer-pill">asyncio</span><span class="layer-pill">Redis Streams</span><span class="layer-pill">APScheduler</span></div></div></div>
+      <div class="layer-item reveal"><div class="layer-num">2</div><div class="layer-dot"></div><div class="layer-content"><div class="layer-name">Raw Telemetry Lake</div><div class="layer-desc">Immutable object store with SQLite manifest. Every file tagged by source, bbox, time range, and SHA hash.</div><div class="layer-pills"><span class="layer-pill">Immutable</span><span class="layer-pill">SQLite WAL</span></div></div></div>
+      <div class="layer-item reveal"><div class="layer-num">3</div><div class="layer-dot"></div><div class="layer-content"><div class="layer-name">Geospatial Preprocessing</div><div class="layer-desc">H3 hexagonal indexing at resolution 7 (~5km²). ERA5 anomaly tiles. FIRMS fire density surfaces.</div><div class="layer-pills"><span class="layer-pill">H3</span><span class="layer-pill">xarray</span><span class="layer-pill">NDVI/NDWI</span></div></div></div>
+      <div class="layer-item reveal"><div class="layer-num">4</div><div class="layer-dot"></div><div class="layer-content"><div class="layer-name">Asset Feature Store</div><div class="layer-desc">Per-asset intelligence vectors. Physical + transition + satellite features. 6-hour cache with confidence decay.</div><div class="layer-pills"><span class="layer-pill">Per-asset</span><span class="layer-pill">Confidence</span><span class="layer-pill">Cache 6h</span></div></div></div>
+      <div class="layer-item reveal"><div class="layer-num">5</div><div class="layer-dot"></div><div class="layer-content"><div class="layer-name">Risk Computation Engine</div><div class="layer-desc">SignalFusion + compound event detection. Rust Monte Carlo: 10,000 draws in ~12ms via PyO3. VaR/CVaR output.</div><div class="layer-pills"><span class="layer-pill">Rust PyO3</span><span class="layer-pill">Monte Carlo</span><span class="layer-pill">IPCC AR6</span></div></div></div>
+      <div class="layer-item full reveal"><div class="layer-num">6</div><div class="layer-dot"></div><div class="layer-content"><div class="layer-name">API & Intelligence Delivery</div><div class="layer-desc">FastAPI Python engine proxied through Go gateway. Redis Streams queue. JWT authentication. 15 endpoints. Every response includes provenance, confidence, and freshness metadata.</div><div class="layer-pills"><span class="layer-pill">FastAPI</span><span class="layer-pill">Go gin</span><span class="layer-pill">Redis</span><span class="layer-pill">JWT</span></div></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- CAPABILITIES -->
+<section class="section cap-section-bg" id="capabilities">
+  <div class="section-eyebrow">Platform Capabilities</div>
+  <h2 class="section-h2">Intelligence Across<br/>Every Domain</h2>
+  <p class="section-lead reveal">Prexus delivers probabilistic intelligence across climate, health, strategic, and economic domains — all through a single unified command environment.</p>
+  <div class="cap-grid">
+    <div class="cap-card reveal">
+      <div class="cap-icon"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor"><polygon points="10,1.5 17.13,5.75 17.13,14.25 10,18.5 2.87,14.25 2.87,5.75" stroke-width="1.2"/><polygon points="10,5.5 14.06,7.75 14.06,12.25 10,14.5 5.94,12.25 5.94,7.75" opacity=".5"/><circle cx="10" cy="10" r="1.5" fill="currentColor" stroke="none"/></svg></div>
+      <div class="cap-name">Physical Risk Scoring</div>
+      <div class="cap-body">Heat, drought, fire, flood, wind — scored per asset at H3 resolution using IPCC AR6 damage functions. Satellite-confirmed signals amplify outputs.</div>
+    </div>
+    <div class="cap-card reveal">
+      <div class="cap-icon"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor"><path d="M2 17 L18 17" opacity=".35"/><path d="M2 3 L2 17" opacity=".35"/><path d="M2 14 L6 10 L10 14 L14 7 L18 3" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="14" cy="7" r="2"/><circle cx="14" cy="7" r=".8" fill="currentColor" stroke="none"/></svg></div>
+      <div class="cap-name">Compound Event Detection</div>
+      <div class="cap-body">When multiple hazards co-occur, damage is non-linear. Prexus detects compound events and applies empirically-calibrated amplifiers up to 3.5×.</div>
+    </div>
+    <div class="cap-card reveal">
+      <div class="cap-icon"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor"><path d="M2 18 L18 18" opacity=".4"/><path d="M2 2 L2 18" opacity=".4"/><path d="M3.5 15.5 Q6.5 5 10 4.5 Q13.5 5 16.5 15.5" stroke-width="1.2"/><line x1="10" y1="4.5" x2="10" y2="18" opacity=".35" stroke-dasharray="2 2"/><circle cx="10" cy="4.5" r="1.2" fill="currentColor" stroke="none"/><circle cx="6.5" cy="12.5" r=".8" fill="currentColor" stroke="none" opacity=".65"/><circle cx="13.5" cy="12.5" r=".8" fill="currentColor" stroke="none" opacity=".65"/></svg></div>
+      <div class="cap-name">Monte Carlo Simulation</div>
+      <div class="cap-body">10,000 draws per asset in ~12ms via compiled Rust. Produces VaR 95%, CVaR 95%, expected loss, and full loss histograms across all SSP scenarios.</div>
+    </div>
+    <div class="cap-card reveal">
+      <div class="cap-icon"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor"><circle cx="10" cy="10" r="2.2" fill="currentColor" stroke="none"/><circle cx="3.5" cy="5.5" r="1.4"/><circle cx="16.5" cy="5.5" r="1.4"/><circle cx="3.5" cy="14.5" r="1.4" opacity=".55"/><circle cx="16.5" cy="14.5" r="1.4" opacity=".55"/><line x1="7.8" y1="8.8" x2="4.8" y2="6.7" opacity=".65"/><line x1="12.2" y1="8.8" x2="15.2" y2="6.7" opacity=".65"/><line x1="7.8" y1="11.2" x2="4.8" y2="13.3" opacity=".35"/><line x1="12.2" y1="11.2" x2="15.2" y2="13.3" opacity=".35"/></svg></div>
+      <div class="cap-name">Epidemiological Modeling</div>
+      <div class="cap-body">Outbreak vector analysis, pandemic probability, and healthcare system stress modeling across 190+ jurisdictions. Available under Healtho module.</div>
+    </div>
+    <div class="cap-card reveal">
+      <div class="cap-icon"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor"><circle cx="10" cy="10.5" r="3.5"/><ellipse cx="10" cy="10.5" rx="8.5" ry="3.8" opacity=".4" transform="rotate(-28 10 10.5)"/><circle cx="16.5" cy="4.5" r="1.8"/><line x1="15.2" y1="4.5" x2="13.2" y2="4.5"/><line x1="16.5" y1="3.2" x2="16.5" y2="1.5"/><line x1="17.6" y1="3.7" x2="19" y2="2.8"/></svg></div>
+      <div class="cap-name">Satellite Intelligence</div>
+      <div class="cap-body">NDVI vegetation stress, NDWI flood inundation, NBR burn scars from Sentinel-2. SAR cloud-penetrating flood mapping. Planet Labs daily coverage.</div>
+    </div>
+    <div class="cap-card reveal">
+      <div class="cap-icon"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor"><circle cx="2.5" cy="5" r="1.2" fill="currentColor" stroke="none" opacity=".55"/><circle cx="2.5" cy="10" r="1.2" fill="currentColor" stroke="none" opacity=".55"/><circle cx="2.5" cy="15" r="1.2" fill="currentColor" stroke="none" opacity=".55"/><circle cx="9.5" cy="7" r="1.5"/><circle cx="9.5" cy="13" r="1.5"/><circle cx="17.5" cy="10" r="2.2" fill="currentColor" stroke="none"/><line x1="3.7" y1="5.1" x2="8" y2="6.4" opacity=".5"/><line x1="3.7" y1="9.9" x2="8" y2="7.6" opacity=".5"/><line x1="3.7" y1="10.1" x2="8" y2="12.4" opacity=".5"/><line x1="3.7" y1="14.9" x2="8" y2="13.6" opacity=".5"/><line x1="11" y1="7" x2="15.3" y2="9.4" opacity=".65"/><line x1="11" y1="13" x2="15.3" y2="10.6" opacity=".65"/></svg></div>
+      <div class="cap-name">AI Intelligence Layer</div>
+      <div class="cap-body">Context-aware AI assistant with full portfolio state. Ask questions across all modules. Decisions, not data.</div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- MODULES -->
+<div class="modules-section" id="modules">
+  <div class="modules-inner">
+    <div class="section-eyebrow">Platform Modules</div>
+    <h2 class="section-h2">The Prexus<br/>Product Suite</h2>
+    <p class="section-lead reveal">Each module is an independent intelligence environment built on the same seven-layer pipeline. Authorization requirements vary by module sensitivity.</p>
+    <div class="modules-row">
+      <div class="module-card active reveal">
+        <span class="module-status auth">Level 2 Access</span>
+        <span class="module-icon"><svg width="26" height="26" viewBox="0 0 26 26" fill="none" stroke="currentColor"><circle cx="13" cy="13" r="4.5" stroke-width="1.2"/><circle cx="13" cy="13" r="8.5" opacity=".45" stroke-dasharray="3.5 4.5"/><circle cx="13" cy="13" r="11.5" opacity=".22" stroke-dasharray="2 6"/><circle cx="13" cy="4.5" r="1.5" fill="currentColor" stroke="none" opacity=".85"/><circle cx="13" cy="13" r="1.6" fill="currentColor" stroke="none"/></svg></span>
+        <div class="module-name">Meteorium</div>
+        <div class="module-tagline">Climate Risk Intelligence</div>
+        <div class="module-desc">Physical and transition climate risk at asset resolution. 7-layer pipeline from satellite to decision. Currently in public testing.</div>
+      </div>
+      <div class="module-card locked reveal">
+        <span class="module-status lock">Restricted · Level 4</span>
+        <span class="module-icon"><svg width="26" height="26" viewBox="0 0 26 26" fill="none" stroke="currentColor"><circle cx="13" cy="13" r="11" opacity=".35"/><path d="M2 13 L6 13 L8.5 7 L11 19 L13 9.5 L15 15.5 L17.5 13 L24 13" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        <div class="module-name">Healtho</div>
+        <div class="module-tagline">Health Risk Intelligence</div>
+        <div class="module-desc">Epidemiological forecasting across 190+ jurisdictions. Pandemic probability modeling.</div>
+      </div>
+      <div class="module-card locked reveal">
+        <span class="module-status lock">Restricted · Level 5</span>
+        <span class="module-icon"><svg width="26" height="26" viewBox="0 0 26 26" fill="none" stroke="currentColor"><path d="M13 2 L22 5.8 L22 13.5 C22 18 18 22 13 24 C8 22 4 18 4 13.5 L4 5.8 Z" stroke-width="1.1"/><circle cx="13" cy="13.5" r="3.5" opacity=".65"/><line x1="13" y1="7.5" x2="13" y2="10" opacity=".55"/><line x1="13" y1="17" x2="13" y2="19.5" opacity=".55"/><line x1="7" y1="13.5" x2="9.5" y2="13.5" opacity=".55"/><line x1="16.5" y1="13.5" x2="19" y2="13.5" opacity=".55"/><circle cx="13" cy="13.5" r="1.1" fill="currentColor" stroke="none"/></svg></span>
+        <div class="module-name">Raksha</div>
+        <div class="module-tagline">Strategic Intelligence</div>
+        <div class="module-desc">Asset movement, geopolitical threat vectors, and conflict risk modeling. Defense cleared only.</div>
+      </div>
+      <div class="module-card locked reveal">
+        <span class="module-status lock">In Development</span>
+        <span class="module-icon"><svg width="26" height="26" viewBox="0 0 26 26" fill="none" stroke="currentColor"><path d="M2 24 L24 24" opacity=".35"/><rect x="3" y="17" width="4" height="7" rx=".5"/><rect x="10" y="12" width="4" height="12" rx=".5" opacity=".75"/><rect x="17" y="7" width="4" height="17" rx=".5" opacity=".5"/><path d="M5 17 L12 12 L19 7" opacity=".35" stroke-dasharray="1.5 2"/></svg></span>
+        <div class="module-name">Artha</div>
+        <div class="module-tagline">Economic Intelligence</div>
+        <div class="module-desc">Macro-economic signal fusion, trade flow disruption modeling, and supply chain stress mapping.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- BRIEF -->
+<section class="brief-section">
+  <div class="brief-inner">
+    <div class="reveal">
+      <div class="section-eyebrow">Intelligence Brief</div>
+      <h2 class="section-h2" style="font-size:clamp(28px,4vw,44px)">The Planetary<br/>Nervous System</h2>
+      <div class="brief-doc">
+        <p>The coming decades will require institutions capable of understanding <strong>planetary-scale systems in real time.</strong> Climate monitoring, distributed sensing infrastructure, and space-based observation networks form the foundation of future decision architecture.</p>
+        <p>Prexus is built on a single insight: <em>data without fusion is noise.</em> Thousands of platforms offer weather feeds, fire alerts, or CO₂ readings in isolation. None synthesize them into a coherent risk picture.</p>
+        <p>When our fusion engine detects a <strong>compound fire-climate event</strong> — drought at 0.82, fire probability at 87%, heat stress at 74% — it doesn't issue three separate alerts. It computes a propagation chain, applies an empirically-calibrated damage amplifier, and presents a single decision.</p>
+        <p><em>Satellites are the eyes. The brain is what interprets them.</em> Prexus is the brain.</p>
+      </div>
+    </div>
+    <div class="brief-aside reveal">
+      <div class="brief-fact"><div class="brief-fact-val" data-count="3.1×">3.1×</div><div class="brief-fact-label">Max compound event damage amplifier</div></div>
+      <div class="brief-fact"><div class="brief-fact-val" data-count="10K">10K</div><div class="brief-fact-label">Monte Carlo draws per asset score</div></div>
+      <div class="brief-fact"><div class="brief-fact-val" data-count="12ms">12ms</div><div class="brief-fact-label">Rust engine latency via PyO3</div></div>
+      <div class="brief-fact"><div class="brief-fact-val" data-count="19">19</div><div class="brief-fact-label">Layer 0 data sources registered</div></div>
+      <div class="brief-fact"><div class="brief-fact-val" data-count="4">4</div><div class="brief-fact-label">Intelligence modules in the suite</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="cta-tag">By Authorization Only · Early Access Program</div>
+  <h2 class="cta-h2 reveal">Join the<br/>Intelligence Network</h2>
+  <p class="cta-body reveal">Prexus is available to verified government departments, research institutions, and regulated enterprises. Register to access the platform or book a guided demonstration.</p>
+  <div class="cta-actions reveal">
+    <a href="index.html" class="btn-primary" style="font-size:12px;padding:14px 32px">Request Access →</a>
+    <a href="demo.html" class="btn-secondary" style="font-size:12px;padding:14px 24px">Schedule Briefing</a>
+  </div>
+  <p class="cta-note reveal">TLS 1.3 · AES-256 · SOC 2 Type II · ISO 27001 · Zero-Trust Architecture</p>
+</section>
+
+<footer>
+  <div class="footer-inner">
+    <div><div class="footer-logo">PREXUS</div><div style="font-family:var(--f-data);font-size:8px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-top:4px">Sovereign Intelligence Platform</div></div>
+    <div class="footer-links"><a href="#architecture">Architecture</a><a href="#capabilities">Capabilities</a><a href="#modules">Modules</a><a href="demo.html">Schedule Briefing</a><a href="index.html">Request Access</a></div>
+    <div class="footer-meta"><div>© 2026 Prexus Systems</div><div style="margin-top:4px">Research Infrastructure Initiative</div></div>
+  </div>
+</footer>
+
+<script>
+'use strict';
+
+/* ═══════════════════════════════════════════════════════════
+   CANVAS — Optimized Particle Network
+
+   PERF IMPROVEMENTS vs original:
+   1. Squared-distance check gates the sqrt — skips ~85% of pairs
+   2. Connections batched into 5 alpha-quantized paths. One ctx.stroke()
+      per bucket instead of one per line. Reduces GPU state changes
+      from ~150–200 calls/frame to 5.
+   3. frame-delta normalization via `dt/16.67` — physics consistent
+      at any frame rate, no jitter at 120Hz or slowdowns at 30Hz
+   4. Resize debounced + nodes remapped proportionally — no cold
+      reinit that resets the field every window resize
+   5. Pauses on document.hidden (tab switched) not just on out-of-viewport
+   6. Data pulse packets — bright dots travel along connections at
+      random intervals, selling the "live data flow" narrative
+   ═══════════════════════════════════════════════════════════ */
+(function initCanvas() {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  const canvas  = document.getElementById('hero-canvas');
+  const ctx     = canvas.getContext('2d');
+  const hero    = canvas.parentElement;
+  const isMobile = window.matchMedia('(max-width: 768px)').matches;
+
+  const NODES        = isMobile ? 22 : 38;
+  const CONN_DIST    = isMobile ? 100 : 120;
+  const CONN_DIST_SQ = CONN_DIST * CONN_DIST;
+  const MOUSE_DIST   = 100;
+  const MOUSE_DIST_SQ = MOUSE_DIST * MOUSE_DIST;
+  const BUCKETS      = 5; // alpha quantization buckets for batching
+
+  let mouse    = { x: -999, y: -999 };
+  let nodes    = [];
+  let pulses   = [];     // data-packet animations
+  let rafId    = null;
+  let visible  = true;
+  let lastTime = 0;
+  let pulseAccum = 0;
+
+  // ── Init: set canvas size and spawn nodes ──
+  function initNodes() {
+    canvas.width  = hero.offsetWidth;
+    canvas.height = hero.offsetHeight;
+    nodes = Array.from({ length: NODES }, () => ({
+      x:  Math.random() * canvas.width,
+      y:  Math.random() * canvas.height,
+      vx: (Math.random() - .5) * .28,
+      vy: (Math.random() - .5) * .28,
+      r:  Math.random() * 1.2 + .5,
+      op: Math.random() * .18 + .08,
+    }));
+  }
+
+  // ── Resize: remap existing node positions proportionally ──
+  // Avoids the cold-reset that resets the field on every resize
+  function onResize() {
+    const w = hero.offsetWidth, h = hero.offsetHeight;
+    if (canvas.width > 0 && canvas.height > 0) {
+      const sx = w / canvas.width, sy = h / canvas.height;
+      nodes.forEach(n => { n.x *= sx; n.y *= sy; });
+    }
+    canvas.width = w;
+    canvas.height = h;
+  }
+
+  // ── Pick a connected pair for a pulse ──
+  function connectedPair() {
+    for (let t = 0; t < 20; t++) {
+      const i = (Math.random() * nodes.length) | 0;
+      const j = (Math.random() * nodes.length) | 0;
+      if (i === j) continue;
+      const dx = nodes[i].x - nodes[j].x, dy = nodes[i].y - nodes[j].y;
+      if (dx*dx + dy*dy < CONN_DIST_SQ) return [i, j];
+    }
+    return null;
+  }
+
+  function draw(now) {
+    rafId = requestAnimationFrame(draw);
+    if (!visible || document.hidden) return;
+
+    const dt   = Math.min(now - lastTime, 50); // clamp at 50ms
+    lastTime   = now;
+    const step = dt / 16.667; // normalize to 60fps baseline
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // ─ Update nodes ─
+    nodes.forEach(n => {
+      const dx = n.x - mouse.x, dy = n.y - mouse.y;
+      const md2 = dx*dx + dy*dy;
+      if (md2 < MOUSE_DIST_SQ && md2 > 0) {
+        const md    = Math.sqrt(md2);
+        const force = (MOUSE_DIST - md) / MOUSE_DIST * .4 * step;
+        n.vx += (dx / md) * force;
+        n.vy += (dy / md) * force;
+      }
+      // Velocity damping — frame-rate independent
+      const damp = Math.pow(.995, step);
+      n.vx *= damp; n.vy *= damp;
+      // Speed clamp
+      const spd2 = n.vx*n.vx + n.vy*n.vy;
+      if (spd2 > .36) { const s = Math.sqrt(spd2); n.vx = n.vx/s*.6; n.vy = n.vy/s*.6; }
+      n.x += n.vx * step; n.y += n.vy * step;
+      // Wrap
+      if (n.x < -10) n.x = canvas.width + 10;
+      if (n.x > canvas.width  + 10) n.x = -10;
+      if (n.y < -10) n.y = canvas.height + 10;
+      if (n.y > canvas.height + 10) n.y = -10;
+    });
+
+    // ─ Connections — batched by alpha bucket ─
+    // Group all line segments by quantized alpha, draw each bucket in
+    // one ctx.stroke() call — reduces GPU state flushes by ~97%
+    const paths = Array.from({ length: BUCKETS }, () => []);
+    for (let i = 0; i < nodes.length; i++) {
+      for (let j = i + 1; j < nodes.length; j++) {
+        const dx = nodes[i].x - nodes[j].x, dy = nodes[i].y - nodes[j].y;
+        const d2 = dx*dx + dy*dy;
+        if (d2 < CONN_DIST_SQ) {
+          const ratio  = 1 - Math.sqrt(d2) / CONN_DIST; // 0–1, near=1
+          const bucket = Math.min((ratio * BUCKETS) | 0, BUCKETS - 1);
+          paths[bucket].push(nodes[i].x, nodes[i].y, nodes[j].x, nodes[j].y);
+        }
+      }
+    }
+    ctx.lineWidth = .6;
+    for (let b = 0; b < BUCKETS; b++) {
+      if (!paths[b].length) continue;
+      const alpha = ((b + .5) / BUCKETS) * .1;
+      ctx.strokeStyle = `rgba(14,165,233,${alpha.toFixed(3)})`;
+      ctx.beginPath();
+      for (let k = 0; k < paths[b].length; k += 4) {
+        ctx.moveTo(paths[b][k], paths[b][k+1]);
+        ctx.lineTo(paths[b][k+2], paths[b][k+3]);
+      }
+      ctx.stroke();
+    }
+
+    // ─ Data pulses: bright dots travel along connection lines ─
+    // Fires every ~2.2s. Creates the sense of live packets moving
+    // through the network without adding any noise.
+    pulseAccum += dt;
+    if (pulseAccum > 2200) {
+      pulseAccum = 0;
+      const pair = connectedPair();
+      if (pair) pulses.push({ a: pair[0], b: pair[1], t: 0 });
+    }
+    pulses = pulses.filter(p => {
+      p.t += dt / 600; // 600ms travel duration
+      if (p.t >= 1) return false;
+      const na = nodes[p.a], nb = nodes[p.b];
+      const px = na.x + (nb.x - na.x) * p.t;
+      const py = na.y + (nb.y - na.y) * p.t;
+      const a  = Math.sin(p.t * Math.PI); // fade-in/out arc
+      // Core dot
+      ctx.beginPath();
+      ctx.arc(px, py, 2.2, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(14,165,233,${(a * .85).toFixed(2)})`;
+      ctx.fill();
+      // Soft outer glow — single larger circle, no createRadialGradient
+      ctx.beginPath();
+      ctx.arc(px, py, 6, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(14,165,233,${(a * .18).toFixed(2)})`;
+      ctx.fill();
+      return true;
+    });
+
+    // ─ Nodes ─
+    nodes.forEach(n => {
+      ctx.beginPath();
+      ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(14,165,233,${n.op})`;
+      ctx.fill();
+    });
+  }
+
+  // Visibility: pause fully when tab is hidden or hero scrolled away
+  new IntersectionObserver(([e]) => { visible = e.isIntersecting; }).observe(hero);
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden) lastTime = performance.now();
+  });
+
+  initNodes();
+  lastTime = performance.now();
+  rafId = requestAnimationFrame(draw);
+
+  // Debounced resize: remap nodes, don't reinit the whole field
+  let resizeTimer;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(onResize, 150);
+  }, { passive: true });
+
+  hero.addEventListener('mousemove', e => {
+    const r = hero.getBoundingClientRect();
+    mouse.x = e.clientX - r.left;
+    mouse.y = e.clientY - r.top;
+  }, { passive: true });
+  hero.addEventListener('mouseleave', () => { mouse.x = -999; mouse.y = -999; });
+})();
+
+/* ═══════════════════════════════════════════════════════════
+   COUNT-UP — easeOutQuart + glitch completion effect
+   The glitch class briefly clips the element into fragments
+   before snapping to final value — reads as "data resolving".
+   ═══════════════════════════════════════════════════════════ */
+function initCountUp() {
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (!e.isIntersecting) return;
+      const el  = e.target;
+      const raw = el.dataset.count;
+      const m   = raw.match(/^([\d.]+)(.*)$/);
+      if (!m) return;
+      const target = parseFloat(m[1]);
+      const suffix = m[2];
+      const isFloat = m[1].includes('.');
+      const dur  = 1100;
+      const t0   = performance.now();
+      function frame(now) {
+        const t  = Math.min((now - t0) / dur, 1);
+        const e_ = 1 - Math.pow(1 - t, 4); // easeOutQuart
+        el.textContent = (isFloat ? (e_ * target).toFixed(1) : Math.floor(e_ * target)) + suffix;
+        if (t < 1) {
+          requestAnimationFrame(frame);
+        } else {
+          el.textContent = raw;
+          // Glitch: brief digital artifact signals "lock-in"
+          el.classList.add('glitch');
+          setTimeout(() => el.classList.remove('glitch'), 360);
+        }
+      }
+      requestAnimationFrame(frame);
+      obs.unobserve(el);
+    });
+  }, { threshold: .6 });
+  document.querySelectorAll('[data-count]').forEach(el => obs.observe(el));
+}
+
+/* ═══════════════════════════════════════════════════════════
+   STAT FLICKER — ambient live-data feel
+   Hero stat values occasionally flicker by ±1 unit for ~80ms.
+   Subtle but sells the "these numbers are being refreshed"
+   narrative without being distracting.
+   ═══════════════════════════════════════════════════════════ */
+function initStatFlicker() {
+  document.querySelectorAll('.hero-stat-val[data-count]').forEach(el => {
+    const base = el.dataset.count;
+    const m    = base.match(/^(\d+)([^.].*)$/);
+    if (!m || base.includes('ms') || base.includes('.')) return;
+    const num    = parseInt(m[1]);
+    const suffix = m[2] || '';
+    // Stagger flicker intervals so all stats don't fire together
+    const interval = 3500 + Math.random() * 3000;
+    setInterval(() => {
+      if (!document.hidden) {
+        const delta = Math.random() > .5 ? 1 : -1;
+        el.textContent = (num + delta) + suffix;
+        setTimeout(() => { el.textContent = base; }, 80);
+      }
+    }, interval);
+  });
+}
+
+/* ═══════════════════════════════════════════════════════════
+   MAGNETIC 3D TILT — cap-cards
+   Lerp loop gives smooth spring-follow feel without a
+   physics library. `will-change` applied only while active.
+   ═══════════════════════════════════════════════════════════ */
+function initMagnetic() {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const MAX = 5;
+  document.querySelectorAll('.cap-card').forEach(card => {
+    let tx = 0, ty = 0, cx = 0, cy = 0, raf = null;
+    const lerp = (a, b, t) => a + (b - a) * t;
+    function loop() {
+      cx = lerp(cx, tx, .1);
+      cy = lerp(cy, ty, .1);
+      card.style.transform = `translateY(-3px) scale(1.01) rotateX(${cx}deg) rotateY(${cy}deg)`;
+      raf = requestAnimationFrame(loop);
+    }
+    card.addEventListener('mouseenter', () => {
+      card.classList.remove('returning');
+      card.style.willChange = 'transform';
+      loop();
+    });
+    card.addEventListener('mousemove', e => {
+      const r = card.getBoundingClientRect();
+      tx = -((e.clientY - r.top  - r.height / 2) / (r.height / 2)) * MAX;
+      ty =  ((e.clientX - r.left - r.width  / 2) / (r.width  / 2)) * MAX;
+    });
+    card.addEventListener('mouseleave', () => {
+      cancelAnimationFrame(raf);
+      tx = 0; ty = 0;
+      card.classList.add('returning');
+      card.style.transform = '';
+      card.style.willChange = '';
+    });
+  });
+}
+
+/* ═══════════════════════════════════════════════════════════
+   REVEAL — sequential stagger per grid container
+   ═══════════════════════════════════════════════════════════ */
+function initReveal() {
+  document.querySelectorAll('.need-grid,.cap-grid,.modules-row,.pipeline-grid,.brief-inner,.cta-section').forEach(g => {
+    g.querySelectorAll('.reveal').forEach((el, i) => {
+      el.style.transitionDelay = `${i * .07}s`;
+    });
+  });
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        obs.unobserve(e.target);
+      }
+    });
+  }, { threshold: .1, rootMargin: '0px 0px -40px 0px' });
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+}
+
+/* ═══════════════════════════════════════════════════════════
+   HERO PARALLAX — subtle depth on mouse move
+   Content shifts opposite to mouse (foreground layer).
+   Mesh shifts same direction (background layer).
+   Max offset intentionally tiny (4px / 8px) — authority
+   comes from restraint; this should feel like depth, not
+   a cartoon effect.
+   ═══════════════════════════════════════════════════════════ */
+function initParallax() {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const hero    = document.querySelector('.hero');
+  const content = document.querySelector('.hero-content');
+  const mesh    = document.querySelector('.hero-mesh');
+  let active    = false;
+
+  hero.addEventListener('mousemove', e => {
+    if (!active) return;
+    const r  = hero.getBoundingClientRect();
+    const cx = (e.clientX - r.left) / r.width  - .5; // -0.5 to 0.5
+    const cy = (e.clientY - r.top)  / r.height - .5;
+    content.style.transform = `translate(${cx * -4}px, ${cy * -3}px)`;
+    mesh.style.transform    = `translate(${cx *  8}px, ${cy *  6}px)`;
+  }, { passive: true });
+  hero.addEventListener('mouseenter', () => { active = true; });
+  hero.addEventListener('mouseleave', () => {
+    active = false;
+    content.style.transform = '';
+    mesh.style.transform    = '';
+  });
+}
+
+/* ═══════════════════════════════════════════════════════════
+   CUSTOM CURSOR
+   Two-layer: inner dot tracks precisely (direct DOM style write
+   on mousemove). Outer ring set via the same handler but uses
+   CSS transition to lag slightly — gives the ring a "following"
+   inertia feel that communicates precision without physics.
+   ═══════════════════════════════════════════════════════════ */
+function initCursor() {
+  const isFine = window.matchMedia('(pointer: fine)').matches;
+  if (!isFine) return;
+
+  const outer = document.getElementById('cursor-outer');
+  const inner = document.getElementById('cursor-inner');
+
+  let ox = 0, oy = 0; // outer current
+  let tx = 0, ty = 0; // target
+  let raf;
+
+  // Inner follows exactly
+  document.addEventListener('mousemove', e => {
+    tx = e.clientX; ty = e.clientY;
+    inner.style.left = tx + 'px';
+    inner.style.top  = ty + 'px';
+  }, { passive: true });
+
+  // Outer lerps to inner — "lag" effect
+  function loop() {
+    ox += (tx - ox) * .18;
+    oy += (ty - oy) * .18;
+    outer.style.left = ox + 'px';
+    outer.style.top  = oy + 'px';
+    raf = requestAnimationFrame(loop);
+  }
+  loop();
+
+  // Expand ring on interactive elements
+  document.querySelectorAll('a, button, .cap-card, .module-card, .hero-stat').forEach(el => {
+    el.addEventListener('mouseenter', () => outer.classList.add('hovering'),    { passive: true });
+    el.addEventListener('mouseleave', () => outer.classList.remove('hovering'), { passive: true });
+  });
+  document.addEventListener('mousedown', () => outer.classList.add('clicking'),    { passive: true });
+  document.addEventListener('mouseup',   () => outer.classList.remove('clicking'), { passive: true });
+}
+
+/* ═══════════════════════════════════════════════════════════
+   NAV — scroll state + active section + live UTC clock
+   The clock runs on a 1s setInterval and writes directly to
+   a text node — no DOM reflow, negligible cost.
+   ═══════════════════════════════════════════════════════════ */
+function initNav() {
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 20);
+  }, { passive: true });
+
+  // Active section tracking
+  const links  = document.querySelectorAll('.nav-links a[data-section]');
+  const secObs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        links.forEach(a => a.classList.toggle('active', a.dataset.section === e.target.id));
+      }
+    });
+  }, { threshold: .4 });
+  ['architecture', 'capabilities', 'modules'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) secObs.observe(el);
+  });
+
+  // UTC clock — pad with leading zeros, format HH:MM:SS UTC
+  const clockEl = document.getElementById('nav-clock');
+  if (clockEl) {
+    const pad = n => String(n).padStart(2, '0');
+    function tick() {
+      const d = new Date();
+      clockEl.textContent =
+        `${pad(d.getUTCHours())}:${pad(d.getUTCMinutes())}:${pad(d.getUTCSeconds())} UTC`;
+    }
+    tick();
+    setInterval(tick, 1000);
+  }
+}
+
+/* ─── Boot ──────────────────────────────────────────────── */
+function initAuditLog() {
+  const pad = n => String(n).padStart(2,'0');
+  const offsets = [0, 3, 22, 36, 58]; // seconds ago
+  const ids = ['audit-ts1','audit-ts2','audit-ts3','audit-ts4','audit-ts5'];
+  function setTimes() {
+    const now = new Date();
+    ids.forEach((id, i) => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const t = new Date(now - offsets[i] * 1000);
+      el.textContent = `${pad(t.getUTCHours())}:${pad(t.getUTCMinutes())}:${pad(t.getUTCSeconds())}`;
+    });
+    const statUtc = document.getElementById('stat-utc');
+    if (statUtc) {
+      statUtc.textContent = `${pad(now.getUTCHours())}:${pad(now.getUTCMinutes())} UTC`;
+    }
+  }
+  setTimes();
+  setInterval(setTimes, 1000);
+}
+/* ─── Boot ──────────────────────────────────────────────── */
+document.addEventListener('DOMContentLoaded', () => {
+  initReveal();
+  initCountUp();
+  initNav();
+  initParallax();
+  // Stat flicker starts after initial count-up (~1.5s buffer)
+  setTimeout(initStatFlicker, 1500);
+  // Audit log timestamps
+  initAuditLog();
+});
+</script>
+</body>
+</html>

@@ -167,6 +167,7 @@ func main() {
 	r.GET("/health", RateLimitMiddleware(), handleHealth)
 	r.POST("/register", RateLimitMiddleware(), handleRegister)
 	r.POST("/login", RateLimitMiddleware(), handleLogin)
+	r.POST("/login/google", RateLimitMiddleware(), handleGoogleLogin)
 
 	// ── Protected Routes (Auth + RBAC) ────────────────────
 	auth := r.Group("/", AuthMiddleware())

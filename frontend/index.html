@@ -74,6 +74,12 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
 .btn-auth{width:100%;padding:14px;background:var(--cobalt);color:white;border:none;border-radius:8px;cursor:pointer;font-family:var(--font-data);font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;transition:var(--transition);box-shadow:0 0 20px rgba(14,165,233,.3)}
 .btn-auth:hover:not(:disabled){filter:brightness(1.12);box-shadow:0 0 32px rgba(14,165,233,.5)}
 .btn-auth:disabled{opacity:.5;cursor:not-allowed}
+.auth-divider{display:flex;align-items:center;gap:10px;margin:4px 0}
+.auth-divider::before,.auth-divider::after{content:'';flex:1;height:1px;background:rgba(255,255,255,.08)}
+.auth-divider span{font-family:var(--font-data);font-size:9px;letter-spacing:.12em;color:var(--ghost);text-transform:uppercase}
+.btn-google{width:100%;padding:12px 14px;background:rgba(255,255,255,.02);color:var(--ice);border:1px solid rgba(255,255,255,.14);border-radius:8px;cursor:pointer;font-family:var(--font-data);font-size:10px;letter-spacing:.1em;text-transform:uppercase;transition:var(--transition);display:flex;align-items:center;justify-content:center;gap:8px}
+.btn-google:hover:not(:disabled){border-color:rgba(14,165,233,.4);background:rgba(14,165,233,.08)}
+.btn-google:disabled{opacity:.5;cursor:not-allowed}
 .btn-ghost{background:transparent;border:1px solid var(--border);color:var(--steel);padding:8px 18px;border-radius:10px;cursor:pointer;font-family:var(--font-data);font-size:10px;letter-spacing:.12em;text-transform:uppercase;transition:var(--transition)}
 .btn-ghost:hover{border-color:rgba(14,165,233,.3);color:var(--ice)}
 
@@ -263,6 +269,11 @@ select.inp-field option{background:#04101f}
             <input type="password" id="authPassword" placeholder="PASSWORD" required minlength="6" class="inp" style="letter-spacing:.3em"/>
             <div id="authError" class="error-box"></div>
             <button type="submit" id="authBtn" class="btn-auth">Sign In</button>
+            <div class="auth-divider"><span>or</span></div>
+            <button type="button" id="googleSignInBtn" class="btn-google" onclick="startGoogleSignIn()">
+              <i class="fa-brands fa-google" style="font-size:12px"></i>Continue with Google
+            </button>
+            <p id="googleSignInHint" style="display:none;font-family:var(--font-data);font-size:8.5px;letter-spacing:.08em;color:var(--ghost);text-transform:uppercase;text-align:center;margin-top:2px"></p>
           </form>
         </div>
 
@@ -584,8 +595,10 @@ select.inp-field option{background:#04101f}
 
 
 <!-- ═══ SCRIPTS ═══ -->
+<script src="https://accounts.google.com/gsi/client" async defer></script>
 <script>
 const API = 'https://prexus-intelligence.onrender.com';
+const GOOGLE_CLIENT_ID = window.PRX_GOOGLE_CLIENT_ID || '';
 let currentPage = 'auth';
 let authMode = 'login';
 let sessionUser = null;
@@ -640,6 +653,107 @@ function setAuthMode(mode) {
   const icon = document.getElementById('authIconI');
   icon.className = mode === 'login' ? 'fa-solid fa-lock auth-icon' : 'fa-solid fa-user-plus auth-icon';
   document.getElementById('authError').className = 'error-box';
+}
+
+function setGoogleHint(message) {
+  const hint = document.getElementById('googleSignInHint');
+  if (!hint) return;
+  hint.textContent = message || '';
+  hint.style.display = message ? 'block' : 'none';
+}
+
+function parseJwtPayload(token) {
+  const payload = token.split('.')[1];
+  const normalized = payload.replace(/-/g, '+').replace(/_/g, '/');
+  const decoded = atob(normalized + '='.repeat((4 - normalized.length % 4) % 4));
+  return JSON.parse(decoded);
+}
+
+async function completeGoogleSignIn(idToken) {
+  const errEl = document.getElementById('authError');
+  const btn = document.getElementById('googleSignInBtn');
+  errEl.className = 'error-box';
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fa-brands fa-google" style="font-size:12px"></i>Authenticating…';
+
+  try {
+    let userData = null;
+
+    if (apiOnline) {
+      const res = await fetch(API + '/login/google', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ credential: idToken }),
+        signal: AbortSignal.timeout(10000),
+      });
+      if (res.ok) {
+        userData = await res.json();
+      } else {
+        const fallbackErr = await res.json().catch(() => ({}));
+        throw new Error(fallbackErr.error || 'Google sign-in failed');
+      }
+    } else {
+      const payload = parseJwtPayload(idToken);
+      userData = {
+        token: 'sim_google_' + Date.now(),
+        user: {
+          id: 'usr_google_sim',
+          email: payload.email || '',
+          full_name: payload.name || payload.given_name || '',
+          org_name: '',
+          role: 'user',
+        },
+      };
+    }
+
+    if (!userData?.token || !userData?.user?.email) {
+      throw new Error('Invalid sign-in response');
+    }
+
+    localStorage.setItem('prx_token', userData.token);
+    localStorage.setItem('prx_user', JSON.stringify(userData.user));
+    sessionUser = userData.user;
+
+    const org = localStorage.getItem(`prexus_org_${sessionUser.email}`);
+    if (org) {
+      document.getElementById('hubOrgName').textContent = JSON.parse(org).orgName;
+      navigate('hub');
+    } else {
+      if (sessionUser.full_name) {
+        const fn = document.getElementById('orgFullName');
+        if (fn) fn.value = sessionUser.full_name;
+      }
+      navigate('org');
+    }
+  } catch (err) {
+    errEl.textContent = '✕ ' + (err.message || 'Google sign-in failed. Please try again.');
+    errEl.className = 'error-box show';
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fa-brands fa-google" style="font-size:12px"></i>Continue with Google';
+  }
+}
+
+function startGoogleSignIn() {
+  if (!window.google?.accounts?.id) {
+    setGoogleHint('Google services not loaded. Refresh and try again.');
+    return;
+  }
+  if (!GOOGLE_CLIENT_ID) {
+    setGoogleHint('Google sign-in is temporarily unavailable.');
+    return;
+  }
+  setGoogleHint('');
+  window.google.accounts.id.initialize({
+    client_id: GOOGLE_CLIENT_ID,
+    callback: (response) => {
+      if (!response?.credential) return;
+      completeGoogleSignIn(response.credential);
+    },
+    ux_mode: 'popup',
+    auto_select: false,
+  });
+  window.google.accounts.id.prompt();
 }
 
 /* ─── AUTH SUBMIT ─── */
@@ -794,8 +908,13 @@ document.addEventListener('DOMContentLoaded', async () => {
   initCookies();
   checkApi(); // non-blocking
 
+  if (!GOOGLE_CLIENT_ID) {
+    setGoogleHint('Set PRX_GOOGLE_CLIENT_ID to enable Google sign-in.');
+  }
+
   const token = localStorage.getItem('prx_token');
   const user  = localStorage.getItem('prx_user');
+  const hash  = (window.location.hash || '').toLowerCase();
 
   if (token && user) {
     try { sessionUser = JSON.parse(user); } catch(_) {}
@@ -815,8 +934,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   }
   navigate('auth');
+  if (hash === '#register') setAuthMode('register');
+  if (hash === '#signin') setAuthMode('login');
 });
 </script>
 </body>
 </html>
-

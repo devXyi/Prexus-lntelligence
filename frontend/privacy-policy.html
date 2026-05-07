@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="theme-color" content="#080808"/>
+<title>Prexus Intelligence — Sovereign Governance Charter</title>
+<meta name="description" content="Prexus Intelligence Sovereign Infrastructure, Security & Operational Governance Charter."/>
+
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Martian+Mono:wght@300;400;500&family=Source+Serif+4:wght@300;400;600&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+
+<style>
+:root{
+  --void:#080808;
+  --deep:#0d0d0d;
+  --ice:#E8D9C8;
+  --muted:#8A9BAD;
+  --wire:rgba(232,217,200,.12);
+  --wire-soft:rgba(232,217,200,.05);
+  --green:#10B981;
+
+  --f-display:'Bebas Neue',sans-serif;
+  --f-data:'Martian Mono',monospace;
+  --f-serif:'Source Serif 4',serif;
+  --f-ui:'IBM Plex Sans',sans-serif;
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  background:var(--void);
+  color:var(--ice);
+  font-family:var(--f-ui);
+  line-height:1.75;
+  overflow-x:hidden;
+}
+
+a{text-decoration:none;color:inherit}
+
+body::before{
+  content:'';
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  opacity:.02;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+}
+
+.nav{
+  position:fixed;
+  top:0;
+  left:0;
+  right:0;
+  height:58px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 40px;
+  background:rgba(8,8,8,.92);
+  backdrop-filter:blur(24px);
+  border-bottom:1px solid var(--wire-soft);
+  z-index:1000;
+}
+
+.nav-logo{
+  display:flex;
+  flex-direction:column;
+}
+
+.nav-wordmark{
+  font-family:var(--f-display);
+  font-size:24px;
+  letter-spacing:.18em;
+}
+
+.nav-sub{
+  font-family:var(--f-data);
+  font-size:7px;
+  letter-spacing:.24em;
+  text-transform:uppercase;
+  color:rgba(232,217,200,.35);
+}
+
+.nav-right{
+  font-family:var(--f-data);
+  font-size:8px;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  color:rgba(16,185,129,.65);
+}
+
+.hero{
+  padding:180px 48px 100px;
+  border-bottom:1px solid var(--wire-soft);
+  background:
+    radial-gradient(circle at top, rgba(232,217,200,.04), transparent 55%),
+    var(--void);
+}
+
+.hero-eyebrow{
+  font-family:var(--f-data);
+  font-size:9px;
+  letter-spacing:.28em;
+  text-transform:uppercase;
+  color:rgba(232,217,200,.4);
+  margin-bottom:20px;
+}
+
+.hero h1{
+  font-family:var(--f-display);
+  font-size:clamp(58px,8vw,110px);
+  line-height:.9;
+  letter-spacing:.04em;
+  text-transform:uppercase;
+  margin-bottom:28px;
+}
+
+.hero p{
+  max-width:720px;
+  color:rgba(232,217,200,.5);
+  font-size:17px;
+}
+
+.classification{
+  padding:10px 48px;
+  border-top:1px solid rgba(16,185,129,.12);
+  border-bottom:1px solid rgba(16,185,129,.12);
+  background:rgba(16,185,129,.04);
+  font-family:var(--f-data);
+  font-size:8px;
+  letter-spacing:.24em;
+  text-transform:uppercase;
+  color:rgba(16,185,129,.55);
+  text-align:center;
+}
+
+.container{
+  max-width:1100px;
+  margin:0 auto;
+  padding:90px 48px;
+}
+
+.section{
+  margin-bottom:90px;
+  border-bottom:1px solid var(--wire-soft);
+  padding-bottom:60px;
+}
+
+.section:last-child{
+  border-bottom:none;
+}
+
+.section-number{
+  font-family:var(--f-data);
+  font-size:10px;
+  letter-spacing:.2em;
+  color:rgba(232,217,200,.25);
+  margin-bottom:14px;
+}
+
+.section-title{
+  font-family:var(--f-display);
+  font-size:42px;
+  letter-spacing:.05em;
+  text-transform:uppercase;
+  margin-bottom:24px;
+}
+
+.section-body{
+  max-width:900px;
+  color:rgba(232,217,200,.5);
+  font-size:15px;
+  font-family:var(--f-serif);
+}
+
+.section-body p{
+  margin-bottom:18px;
+}
+
+.section-body ul{
+  margin:20px 0 20px 24px;
+}
+
+.section-body li{
+  margin-bottom:12px;
+}
+
+.highlight{
+  color:var(--ice);
+}
+
+.notice{
+  margin-top:28px;
+  border-left:2px solid rgba(232,217,200,.2);
+  background:rgba(232,217,200,.03);
+  padding:20px 24px;
+  font-family:var(--f-data);
+  font-size:10px;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  color:rgba(232,217,200,.58);
+}
+
+.footer{
+  padding:40px 48px;
+  border-top:1px solid var(--wire-soft);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.footer-left{
+  font-family:var(--f-display);
+  font-size:22px;
+  letter-spacing:.18em;
+}
+
+.footer-right{
+  font-family:var(--f-data);
+  font-size:8px;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+  color:rgba(232,217,200,.28);
+  text-align:right;
+}
+
+@media(max-width:768px){
+  .hero{padding:150px 24px 80px}
+  .container{padding:70px 24px}
+  .nav{padding:0 24px}
+  .footer{padding:32px 24px;flex-direction:column;gap:18px;text-align:center}
+  .hero h1{font-size:56px}
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="index.html" class="nav-logo">
+    <div class="nav-wordmark">PREXUS</div>
+    <div class="nav-sub">Sovereign Intelligence Platform</div>
+  </a>
+
+  <div class="nav-right">Authorized Infrastructure</div>
+</nav>
+
+<section class="hero">
+  <div class="hero-eyebrow">Sovereign Governance Charter</div>
+  <h1>Privacy.<br/>Security.<br/>Authority.</h1>
+  <p>
+    Prexus Intelligence operates as a sovereign-grade intelligence infrastructure environment designed for governments, strategic institutions, regulated enterprises, and authorized operational entities functioning within high-security and mission-critical environments.
+  </p>
+</section>
+
+<div class="classification">
+  Authorized Distribution Only · Sovereign Infrastructure Governance · Prexus Intelligence
+</div>
+
+<div class="container">
+
+  <section class="section">
+    <div class="section-number">01 · Operational Status</div>
+    <h2 class="section-title">Sovereign Infrastructure Environment</h2>
+    <div class="section-body">
+      <p>
+        Prexus Intelligence operates as a controlled sovereign-style intelligence infrastructure environment. Access to Prexus systems is conditional, continuously evaluated, compartmentalized, and subject to institutional governance enforcement.
+      </p>
+
+      <p>
+        Prexus is not a public social network, unrestricted software environment, or anonymous operational platform. Every identity, institution, operator, and deployment environment entering Prexus infrastructure does so under governed authority.
+      </p>
+
+      <div class="notice">
+        Access is granted. Access is never assumed.
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-number">02 · Identity & Authorization</div>
+    <h2 class="section-title">Continuous Trust Validation</h2>
+    <div class="section-body">
+      <p>
+        All entities entering Prexus infrastructure are classified under defined operational roles including Authorized Operators, Institutional Personnel, Governmental Entities, Restricted Guests, or Approved Strategic Partners.
+      </p>
+
+      <ul>
+        <li>Identity validation may occur continuously.</li>
+        <li>Infrastructure trust scoring may dynamically evolve.</li>
+        <li>Behavioral anomalies may trigger autonomous restriction protocols.</li>
+        <li>Cross-domain movement may be restricted without notice.</li>
+      </ul>
+
+      <p>
+        No identity is guaranteed unrestricted visibility inside Prexus infrastructure.
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-number">03 · Sovereign Data Separation</div>
+    <h2 class="section-title">Client-Controlled Intelligence</h2>
+    <div class="section-body">
+      <p>
+        Institutional and sovereign operational datasets processed inside Prexus environments remain under the authority of the deploying governmental, institutional, or authorized enterprise entity.
+      </p>
+
+      <p>
+        Prexus does not claim ownership over sovereign operational data, mission directives, classified institutional intelligence, or client-controlled strategic information.
+      </p>
+
+      <p>
+        Prexus retains ownership exclusively over its core infrastructure architecture, orchestration systems, predictive engines, analytical frameworks, and security environments.
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-number">04 · Raksha Strategic Environment</div>
+    <h2 class="section-title">Operational Separation Doctrine</h2>
+    <div class="section-body">
+      <p>
+        Raksha is a restricted strategic operational environment available exclusively to authorized governmental departments, sovereign defense agencies, and approved institutional operators.
+      </p>
+
+      <p>
+        Raksha provides secure orchestration architecture, autonomous systems coordination environments, tactical simulation frameworks, encrypted synchronization systems, and sovereign operational tooling.
+      </p>
+
+      <p>
+        Prexus does not initiate tactical actions, supervise sovereign decisions, authorize operational deployment, define engagement protocols, or participate in command authority structures.
+      </p>
+
+      <div class="notice">
+        Operational authority remains exclusively with the deploying sovereign entity.
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-number">05 · Zero-Visibility Model</div>
+    <h2 class="section-title">Compartmentalized Operational Isolation</h2>
+    <div class="section-body">
+      <p>
+        Unless explicitly required by lawful agreement or infrastructure protection obligations, Prexus does not inspect sovereign mission payloads, review tactical intent, monitor operational execution, or access classified strategic directives generated within Raksha-controlled environments.
+      </p>
+
+      <ul>
+        <li>Operational datasets remain within sovereign deployment boundaries.</li>
+        <li>Mission environments may remain fully compartmentalized.</li>
+        <li>Infrastructure telemetry collection is minimized by design.</li>
+        <li>System-level logging exists solely for integrity preservation.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-number">06 · Autonomous Enforcement</div>
+    <h2 class="section-title">Security Before Accessibility</h2>
+    <div class="section-body">
+      <p>
+        If anomalous behavior, hostile intrusion attempts, infrastructure manipulation, unauthorized extraction activity, or identity compromise is detected, Prexus may autonomously activate containment mechanisms.
+      </p>
+
+      <ul>
+        <li>Credential revocation</li>
+        <li>Environment isolation</li>
+        <li>Forensic preservation</li>
+        <li>Synchronization suspension</li>
+        <li>Cross-domain lockdown</li>
+        <li>Emergency segmentation protocols</li>
+      </ul>
+
+      <p>
+        Protection of sovereign operational integrity takes precedence over uninterrupted access continuity.
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-number">07 · Jurisdictional Governance</div>
+    <h2 class="section-title">Regional Operational Compliance</h2>
+    <div class="section-body">
+      <p>
+        Entities operating within North America, South America, Europe, Asia, Africa, Oceania, and associated sovereign jurisdictions acknowledge that operational access to Prexus infrastructure remains subject to:
+      </p>
+
+      <ul>
+        <li>Applicable sovereign law</li>
+        <li>Cybersecurity frameworks</li>
+        <li>Export controls</li>
+        <li>Strategic sanctions regulations</li>
+        <li>Institutional authorization requirements</li>
+      </ul>
+
+      <p>
+        Prexus reserves autonomous authority regarding operational eligibility, trust classification, infrastructure segmentation, and platform protection measures.
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-number">08 · Final Acknowledgement</div>
+    <h2 class="section-title">Conditional Institutional Trust</h2>
+    <div class="section-body">
+      <p>
+        By accessing, integrating, licensing, evaluating, deploying, or operating within Prexus infrastructure environments, all entities acknowledge and accept the sovereign operational nature of the platform and all governance, security, jurisdictional, and enforcement standards defined within this Charter.
+      </p>
+
+      <div class="notice">
+        PREXUS INTELLIGENCE · Predict Beyond Systems.
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<footer class="footer">
+  <div class="footer-left">PREXUS</div>
+
+  <div class="footer-right">
+    © 2026 PREXUS SYSTEMS<br/>
+    Sovereign Intelligence Infrastructure
+  </div>
+</footer>
+
+</body>
+</html>

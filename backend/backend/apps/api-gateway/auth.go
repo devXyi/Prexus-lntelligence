@@ -5,8 +5,14 @@ package main
 
 import (
 	"context"
+	"crypto/rand"
+	"database/sql"
+	"encoding/base64"
+	"encoding/json"
+	"errors"
 	"log"
 	"net/http"
+	"net/url"
 	"os"
 	"strings"
 	"time"
@@ -34,6 +40,10 @@ type LoginRequest struct {
 	Password string `json:"password" binding:"required"`
 }
 
+type GoogleLoginRequest struct {
+	Credential string `json:"credential" binding:"required"`
+}
+
 type AuthResponse struct {
 	Token string  `json:"token"`
 	User  UserDTO `json:"user"`
@@ -52,6 +62,14 @@ type Claims struct {
 	Email  string `json:"email"`
 	Role   string `json:"role"`
 	jwt.RegisteredClaims
+}
+
+type GoogleTokenInfo struct {
+	Audience      string `json:"aud"`
+	Email         string `json:"email"`
+	EmailVerified any    `json:"email_verified"`
+	Name          string `json:"name"`
+	Subject       string `json:"sub"`
 }
 
 // ─────────────────────────────────────────────────────────────
@@ -145,6 +163,130 @@ func handleLogin(c *gin.Context) {
 
 	if bcrypt.CompareHashAndPassword([]byte(passHash), []byte(req.Password)) != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid credentials"})
+		return
+	}
+
+	token, err := issueToken(id, email, role)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Token generation failed"})
+		return
+	}
+
+	c.JSON(http.StatusOK, AuthResponse{
+		Token: token,
+		User:  UserDTO{ID: id, Email: email, FullName: fullName, OrgName: orgName, Role: role},
+	})
+}
+
+func handleGoogleConfig(c *gin.Context) {
+	clientID := strings.TrimSpace(os.Getenv("GOOGLE_CLIENT_ID"))
+	c.JSON(http.StatusOK, gin.H{
+		"enabled":   clientID != "",
+		"client_id": clientID,
+	})
+}
+
+func verifyGoogleIDToken(ctx context.Context, idToken string) (*GoogleTokenInfo, error) {
+	tokenInfoURL := "https://oauth2.googleapis.com/tokeninfo?id_token=" + url.QueryEscape(idToken)
+
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, tokenInfoURL, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	client := &http.Client{Timeout: authTimeout}
+	res, err := client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	defer res.Body.Close()
+
+	if res.StatusCode != http.StatusOK {
+		return nil, errors.New("invalid Google credential")
+	}
+
+	var info GoogleTokenInfo
+	if err := json.NewDecoder(res.Body).Decode(&info); err != nil {
+		return nil, err
+	}
+
+	if info.Email == "" || info.Subject == "" || !isGoogleEmailVerified(info.EmailVerified) {
+		return nil, errors.New("Google account must have a verified email address")
+	}
+
+	if expectedAud := strings.TrimSpace(os.Getenv("GOOGLE_CLIENT_ID")); expectedAud != "" && info.Audience != expectedAud {
+		return nil, errors.New("Google credential audience mismatch")
+	}
+
+	return &info, nil
+}
+
+func isGoogleEmailVerified(value any) bool {
+	switch v := value.(type) {
+	case bool:
+		return v
+	case string:
+		return strings.EqualFold(v, "true")
+	default:
+		return false
+	}
+}
+
+func handleGoogleLogin(c *gin.Context) {
+	var req GoogleLoginRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	ctx, cancel := context.WithTimeout(c.Request.Context(), authTimeout)
+	defer cancel()
+
+	tokenInfo, err := verifyGoogleIDToken(ctx, req.Credential)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+		return
+	}
+
+	email := normalizeEmail(tokenInfo.Email)
+
+	var id int64
+	var fullName, orgName, role string
+	err = DB.QueryRowContext(ctx,
+		`SELECT id,COALESCE(full_name,''),COALESCE(org_name,''),role
+		 FROM users WHERE email=$1`,
+		email,
+	).Scan(&id, &fullName, &orgName, &role)
+
+	if errors.Is(err, sql.ErrNoRows) {
+		role = "user"
+		fullName = strings.TrimSpace(tokenInfo.Name)
+		randomPassword := make([]byte, 32)
+		if _, randErr := rand.Read(randomPassword); randErr != nil {
+			log.Printf("google signup random generation error: %v", randErr)
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create account"})
+			return
+		}
+		hash, hashErr := bcrypt.GenerateFromPassword([]byte(base64.RawURLEncoding.EncodeToString(randomPassword)), bcrypt.DefaultCost)
+		if hashErr != nil {
+			log.Printf("google signup hash error: %v", hashErr)
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create account"})
+			return
+		}
+
+		insertErr := DB.QueryRowContext(ctx,
+			`INSERT INTO users (email,password_hash,full_name,org_name,role,created_at)
+			 VALUES ($1,$2,$3,$4,$5,$6) RETURNING id`,
+			email, string(hash), fullName, "", role, time.Now().UTC(),
+		).Scan(&id)
+		if insertErr != nil {
+			log.Printf("google signup DB error: %v", insertErr)
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create account"})
+			return
+		}
+	} else if err != nil {
+		log.Printf("google login DB error: %v", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Login failed"})
 		return
 	}
 

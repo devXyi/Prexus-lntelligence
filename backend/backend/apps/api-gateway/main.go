@@ -165,32 +165,34 @@ func main() {
 
 	// ── Public Routes ─────────────────────────────────────
 	r.GET("/health", RateLimitMiddleware(), handleHealth)
+	r.GET("/auth/google/config", RateLimitMiddleware(), handleGoogleConfig)
 	r.POST("/register", RateLimitMiddleware(), handleRegister)
 	r.POST("/login", RateLimitMiddleware(), handleLogin)
+	r.POST("/login/google", RateLimitMiddleware(), handleGoogleLogin)
 
 	// ── Protected Routes (Auth + RBAC) ────────────────────
 	auth := r.Group("/", AuthMiddleware())
 	{
 		// Assets
-		auth.GET("/assets",     RequirePermission("assets:read"),   handleGetAssets)
-		auth.POST("/assets",    RequirePermission("assets:create"), handleCreateAsset)
+		auth.GET("/assets", RequirePermission("assets:read"), handleGetAssets)
+		auth.POST("/assets", RequirePermission("assets:create"), handleCreateAsset)
 		auth.PUT("/assets/:id", RequirePermission("assets:update"), handleUpdateAsset)
 		auth.DELETE("/assets/:id", RequirePermission("assets:delete"), handleDeleteAsset)
 
 		// Risk Engine
-		auth.POST("/risk/asset",       RequirePermission("risk:run"), proxyToDataEngine("/risk/asset"))
-		auth.POST("/risk/portfolio",   RequirePermission("risk:run"), proxyToDataEngine("/risk/portfolio"))
+		auth.POST("/risk/asset", RequirePermission("risk:run"), proxyToDataEngine("/risk/asset"))
+		auth.POST("/risk/portfolio", RequirePermission("risk:run"), proxyToDataEngine("/risk/portfolio"))
 		auth.POST("/risk/stress-test", RequirePermission("risk:run"), proxyToDataEngine("/risk/stress-test"))
-		auth.GET("/risk/health",       RequirePermission("risk:run"), proxyToDataEngineGET("/risk/health"))
+		auth.GET("/risk/health", RequirePermission("risk:run"), proxyToDataEngineGET("/risk/health"))
 
 		// Data Engine — GET proxies
-		auth.GET("/sources",    RequirePermission("risk:run"), proxyToDataEngineGET("/sources"))
+		auth.GET("/sources", RequirePermission("risk:run"), proxyToDataEngineGET("/sources"))
 		auth.GET("/lake/stats", RequirePermission("risk:run"), proxyToDataEngineGET("/lake/stats"))
 		auth.GET("/lake/files", RequirePermission("risk:run"), proxyToDataEngineGET("/lake/files"))
 
 		// AI
-		auth.POST("/chat",    RateLimitMiddleware(), RequirePermission("risk:run"), proxyToDataEngine("/chat"))
-		auth.POST("/claude",  RateLimitMiddleware(), RequirePermission("risk:run"), handleClaude)
+		auth.POST("/chat", RateLimitMiddleware(), RequirePermission("risk:run"), proxyToDataEngine("/chat"))
+		auth.POST("/claude", RateLimitMiddleware(), RequirePermission("risk:run"), handleClaude)
 		auth.POST("/analyze", RateLimitMiddleware(), RequirePermission("risk:run"), proxyToDataEngine("/analyze"))
 
 		// User

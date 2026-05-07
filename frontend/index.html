@@ -598,11 +598,11 @@ select.inp-field option{background:#04101f}
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 <script>
 const API = 'https://prexus-intelligence.onrender.com';
-const GOOGLE_CLIENT_ID = window.PRX_GOOGLE_CLIENT_ID || '';
 let currentPage = 'auth';
 let authMode = 'login';
 let sessionUser = null;
 let apiOnline = false;
+let googleClientId = '';
 
 /* ─── NAVIGATE ─── */
 function navigate(page) {
@@ -739,13 +739,13 @@ function startGoogleSignIn() {
     setGoogleHint('Google services not loaded. Refresh and try again.');
     return;
   }
-  if (!GOOGLE_CLIENT_ID) {
+  if (!googleClientId) {
     setGoogleHint('Google sign-in is temporarily unavailable.');
     return;
   }
   setGoogleHint('');
   window.google.accounts.id.initialize({
-    client_id: GOOGLE_CLIENT_ID,
+    client_id: googleClientId,
     callback: (response) => {
       if (!response?.credential) return;
       completeGoogleSignIn(response.credential);
@@ -754,6 +754,22 @@ function startGoogleSignIn() {
     auto_select: false,
   });
   window.google.accounts.id.prompt();
+}
+
+async function initGoogleSignIn() {
+  try {
+    const res = await fetch(API + '/auth/google/config', { signal: AbortSignal.timeout(5000) });
+    if (!res.ok) throw new Error('config unavailable');
+    const cfg = await res.json();
+    if (cfg?.enabled && cfg?.client_id) {
+      googleClientId = String(cfg.client_id);
+      setGoogleHint('');
+    } else {
+      setGoogleHint('Google sign-in is temporarily unavailable.');
+    }
+  } catch (_) {
+    setGoogleHint('Google sign-in is temporarily unavailable.');
+  }
 }
 
 /* ─── AUTH SUBMIT ─── */
@@ -907,10 +923,7 @@ function logout() {
 document.addEventListener('DOMContentLoaded', async () => {
   initCookies();
   checkApi(); // non-blocking
-
-  if (!GOOGLE_CLIENT_ID) {
-    setGoogleHint('Set PRX_GOOGLE_CLIENT_ID to enable Google sign-in.');
-  }
+  initGoogleSignIn(); // non-blocking
 
   const token = localStorage.getItem('prx_token');
   const user  = localStorage.getItem('prx_user');

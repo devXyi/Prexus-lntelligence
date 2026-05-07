@@ -176,6 +176,14 @@ func handleLogin(c *gin.Context) {
 	})
 }
 
+func handleGoogleConfig(c *gin.Context) {
+	clientID := strings.TrimSpace(os.Getenv("GOOGLE_CLIENT_ID"))
+	c.JSON(http.StatusOK, gin.H{
+		"enabled":   clientID != "",
+		"client_id": clientID,
+	})
+}
+
 func verifyGoogleIDToken(ctx context.Context, idToken string) (*GoogleTokenInfo, error) {
 	tokenInfoURL := "https://oauth2.googleapis.com/tokeninfo?id_token=" + url.QueryEscape(idToken)
 

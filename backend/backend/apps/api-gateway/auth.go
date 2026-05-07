@@ -5,7 +5,9 @@ package main
 
 import (
 	"context"
+	"crypto/rand"
 	"database/sql"
+	"encoding/base64"
 	"encoding/json"
 	"errors"
 	"log"
@@ -65,7 +67,7 @@ type Claims struct {
 type GoogleTokenInfo struct {
 	Audience      string `json:"aud"`
 	Email         string `json:"email"`
-	EmailVerified string `json:"email_verified"`
+	EmailVerified any    `json:"email_verified"`
 	Name          string `json:"name"`
 	Subject       string `json:"sub"`
 }
@@ -192,7 +194,8 @@ func verifyGoogleIDToken(ctx context.Context, idToken string) (*GoogleTokenInfo,
 		return nil, err
 	}
 
-	res, err := http.DefaultClient.Do(req)
+	client := &http.Client{Timeout: authTimeout}
+	res, err := client.Do(req)
 	if err != nil {
 		return nil, err
 	}
@@ -207,8 +210,8 @@ func verifyGoogleIDToken(ctx context.Context, idToken string) (*GoogleTokenInfo,
 		return nil, err
 	}
 
-	if info.Email == "" || info.Subject == "" || info.EmailVerified != "true" {
-		return nil, errors.New("Google account is not eligible for sign-in")
+	if info.Email == "" || info.Subject == "" || !isGoogleEmailVerified(info.EmailVerified) {
+		return nil, errors.New("Google account must have a verified email address")
 	}
 
 	if expectedAud := strings.TrimSpace(os.Getenv("GOOGLE_CLIENT_ID")); expectedAud != "" && info.Audience != expectedAud {
@@ -216,6 +219,17 @@ func verifyGoogleIDToken(ctx context.Context, idToken string) (*GoogleTokenInfo,
 	}
 
 	return &info, nil
+}
+
+func isGoogleEmailVerified(value any) bool {
+	switch v := value.(type) {
+	case bool:
+		return v
+	case string:
+		return strings.EqualFold(v, "true")
+	default:
+		return false
+	}
 }
 
 func handleGoogleLogin(c *gin.Context) {
@@ -247,8 +261,13 @@ func handleGoogleLogin(c *gin.Context) {
 	if errors.Is(err, sql.ErrNoRows) {
 		role = "user"
 		fullName = strings.TrimSpace(tokenInfo.Name)
-		seed := "google-oauth-" + tokenInfo.Subject + "-" + time.Now().UTC().Format(time.RFC3339Nano)
-		hash, hashErr := bcrypt.GenerateFromPassword([]byte(seed), bcrypt.DefaultCost)
+		randomPassword := make([]byte, 32)
+		if _, randErr := rand.Read(randomPassword); randErr != nil {
+			log.Printf("google signup random generation error: %v", randErr)
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create account"})
+			return
+		}
+		hash, hashErr := bcrypt.GenerateFromPassword([]byte(base64.RawURLEncoding.EncodeToString(randomPassword)), bcrypt.DefaultCost)
 		if hashErr != nil {
 			log.Printf("google signup hash error: %v", hashErr)
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create account"})

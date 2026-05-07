@@ -662,11 +662,26 @@ function setGoogleHint(message) {
   hint.style.display = message ? 'block' : 'none';
 }
 
+function decodeBase64URL(value) {
+  if (!value || typeof value !== 'string') {
+    throw new Error('Invalid Base64URL value');
+  }
+  const normalized = value.replace(/-/g, '+').replace(/_/g, '/');
+  const paddingLength = (4 - (normalized.length % 4)) % 4;
+  return atob(normalized + '='.repeat(paddingLength));
+}
+
 function parseJwtPayload(token) {
-  const payload = token.split('.')[1];
-  const normalized = payload.replace(/-/g, '+').replace(/_/g, '/');
-  const decoded = atob(normalized + '='.repeat((4 - normalized.length % 4) % 4));
-  return JSON.parse(decoded);
+  const parts = String(token || '').split('.');
+  if (parts.length !== 3 || !parts[1]) {
+    throw new Error('Invalid Google token format');
+  }
+  const decoded = decodeBase64URL(parts[1]);
+  try {
+    return JSON.parse(decoded);
+  } catch {
+    throw new Error('Invalid Google token payload');
+  }
 }
 
 async function completeGoogleSignIn(idToken) {
@@ -693,7 +708,12 @@ async function completeGoogleSignIn(idToken) {
         throw new Error(fallbackErr.error || 'Google sign-in failed');
       }
     } else {
-      const payload = parseJwtPayload(idToken);
+      let payload;
+      try {
+        payload = parseJwtPayload(idToken);
+      } catch (_) {
+        throw new Error('Google token format is invalid (offline mode)');
+      }
       userData = {
         token: 'sim_google_' + Date.now(),
         user: {

@@ -79,7 +79,6 @@ body::before{
 }
 .nav.scrolled{border-bottom-color:var(--wire);background:rgba(8,8,8,.94)}
 
-/* Logo */
 .nav-logo{display:flex;align-items:center;gap:12px;margin-right:auto}
 .nav-logo-icon{
   transition:filter .35s ease;
@@ -93,7 +92,6 @@ body::before{
 .nav-wordmark{font-family:var(--f-display);font-size:22px;letter-spacing:.18em;color:var(--ice);line-height:1}
 .nav-product{font-family:var(--f-data);font-size:7.5px;letter-spacing:.22em;color:rgba(232,217,200,.35);text-transform:uppercase;line-height:1;margin-top:2px}
 
-/* System status + clock */
 .nav-system{
   display:flex;align-items:center;gap:14px;margin-right:28px;
   font-family:var(--f-data);font-size:9px;letter-spacing:.1em;color:var(--muted);
@@ -107,7 +105,6 @@ body::before{
 .nav-status-text{font-family:var(--f-data);font-size:7.5px;letter-spacing:.18em;text-transform:uppercase;color:rgba(16,185,129,.55)}
 .nav-clock{font-family:var(--f-data);font-size:9px;letter-spacing:.06em;color:var(--muted);border-left:1px solid var(--wire-soft);padding-left:14px}
 
-/* Inline nav links (desktop) */
 .nav-links{
   display:flex;align-items:center;gap:24px;
   font-family:var(--f-data);font-size:10px;letter-spacing:.08em;text-transform:uppercase;
@@ -126,7 +123,6 @@ body::before{
 .nav-links a:hover,.nav-links a.active{color:rgba(232,217,200,.7)}
 .nav-links a:hover::after,.nav-links a.active::after{left:0;right:0}
 
-/* Hamburger */
 .menu-btn{
   display:flex;flex-direction:column;justify-content:center;gap:5px;
   width:36px;height:36px;padding:8px;border-radius:3px;
@@ -146,7 +142,6 @@ body::before{
 .menu-btn.open span:nth-child(2){opacity:0;transform:scaleX(0)}
 .menu-btn.open span:nth-child(3){transform:translateY(-6px) rotate(-45deg);width:20px}
 
-/* Dropdown */
 .menu-dropdown{
   position:fixed;top:62px;right:32px;z-index:500;
   width:230px;
@@ -233,7 +228,6 @@ body::before{
   will-change:transform;transition:transform .1s ease;
 }
 
-/* ── New Logo Mark ── */
 .hero-logo-wrap{
   position:relative;width:160px;height:160px;
   display:flex;align-items:center;justify-content:center;
@@ -305,7 +299,6 @@ body::before{
   opacity:0;animation:fadeUp .9s 1.1s var(--ease-out5) forwards;
 }
 
-/* Stats bar */
 .hero-stats{
   position:absolute;bottom:0;left:0;right:0;
   display:flex;border-top:1px solid var(--wire-soft);
@@ -729,6 +722,7 @@ footer{padding:44px;border-top:1px solid var(--wire-soft);background:var(--deep)
   .cap-grid,.modules-row{grid-template-columns:1fr}
   .hero-ctas{flex-direction:column;gap:10px}
   .hero-logo-wrap{width:130px;height:130px}
+  .footer-links{flex-wrap:wrap;justify-content:center;gap:14px}
 }
 @media(prefers-reduced-motion:reduce){
   *,*::before,*::after{animation:none!important;transition:none!important}
@@ -741,9 +735,7 @@ footer{padding:44px;border-top:1px solid var(--wire-soft);background:var(--deep)
 
 <!-- ════════════ NAV ════════════ -->
 <nav class="nav" id="nav">
-
-  <!-- Logo -->
-  <a href="index.html" class="nav-logo">
+  <a href="landing.html" class="nav-logo">
     <div class="nav-logo-icon">
       <img src="logo.png" alt="Prexus" style="width:32px;height:32px;object-fit:contain;display:block"/>
     </div>
@@ -753,7 +745,6 @@ footer{padding:44px;border-top:1px solid var(--wire-soft);background:var(--deep)
     </div>
   </a>
 
-  <!-- System status + clock -->
   <div class="nav-system">
     <div class="nav-status">
       <div class="nav-status-dot"></div>
@@ -762,31 +753,29 @@ footer{padding:44px;border-top:1px solid var(--wire-soft);background:var(--deep)
     <div class="nav-clock" id="nav-clock">--:--:-- UTC</div>
   </div>
 
-  <!-- Section links (desktop) -->
   <div class="nav-links">
     <a href="#architecture" data-section="architecture">Architecture</a>
     <a href="#capabilities" data-section="capabilities">Capabilities</a>
     <a href="#modules"      data-section="modules">Modules</a>
   </div>
 
-  <!-- Hamburger -->
   <button class="menu-btn" id="menu-btn" aria-label="Open menu" aria-expanded="false">
     <span></span><span></span><span></span>
   </button>
 </nav>
 
-<!-- Backdrop -->
 <div class="menu-backdrop" id="menu-backdrop"></div>
 
-<!-- Dropdown -->
+<!-- ════════════ DROPDOWN — all links audited ════════════ -->
 <nav class="menu-dropdown" id="menu-dropdown" aria-hidden="true">
-  <a href="auth.html"          class="menu-item">Registration <span class="arr">→</span></a>
-  <a href="auth.html#signin"   class="menu-item">Sign In      <span class="arr">→</span></a>
-  <a href="demo.html"          class="menu-item">Book Demo    <span class="arr">→</span></a>
+  <a href="index.html"           class="menu-item">Registration     <span class="arr">→</span></a>
+  <a href="index.html#signin"    class="menu-item">Sign In          <span class="arr">→</span></a>
+  <a href="demo.html"            class="menu-item">Book Demo        <span class="arr">→</span></a>
   <div class="menu-divider"></div>
   <div class="menu-section-label">Be Prexisian</div>
-  <a href="pricing.html"  class="menu-item sub">Plans &amp; Pricing <span class="arr">→</span></a>
-  <a href="careers.html"  class="menu-item sub">Careers           <span class="arr">→</span></a>
+  <a href="pricing.html"         class="menu-item sub">Plans &amp; Pricing  <span class="arr">→</span></a>
+  <a href="careers.html"         class="menu-item sub">Careers              <span class="arr">→</span></a>
+  <a href="privacy-policy.html"  class="menu-item sub">Privacy Policy        <span class="arr">→</span></a>
 </nav>
 
 <!-- ════════════ HERO ════════════ -->
@@ -799,8 +788,6 @@ footer{padding:44px;border-top:1px solid var(--wire-soft);background:var(--deep)
   <div class="hero-vignette"></div>
 
   <div class="hero-content">
-
-    <!-- New logo mark (centered) -->
     <div class="hero-logo-wrap" aria-hidden="true">
       <div class="hero-logo-ring"></div>
       <img src="logo.png" alt="Prexus" style="width:100%;height:100%;object-fit:contain;display:block"/>
@@ -825,8 +812,8 @@ footer{padding:44px;border-top:1px solid var(--wire-soft);background:var(--deep)
     </p>
 
     <div class="hero-actions">
-      <a href="demo.html"  class="btn-primary">Book a Demo →</a>
-      <a href="auth.html"  class="btn-secondary">Request Access</a>
+      <a href="demo.html"   class="btn-primary">Book a Demo →</a>
+      <a href="index.html"  class="btn-secondary">Request Access</a>
     </div>
 
     <p class="hero-tagline">Climate Intelligence · Health Risk · Strategic Intelligence · Economic Signals</p>
@@ -870,7 +857,6 @@ footer{padding:44px;border-top:1px solid var(--wire-soft);background:var(--deep)
     <div class="ticker-item"><div class="ticker-dot" style="background:#8B5CF6;box-shadow:0 0 4px #8B5CF6"></div><span style="color:var(--steel)">TRANSITION RISK ·</span>&nbsp;Shanghai Industrial · CO₂ intensity 0.68 norm</div>
     <div class="ticker-item"><div class="ticker-dot" style="background:#10B981;box-shadow:0 0 4px #10B981"></div><span style="color:var(--steel)">PIPELINE ·</span>&nbsp;All 7 layers nominal · Redis queue active</div>
     <div class="ticker-item"><div class="ticker-dot" style="background:#EF4444;box-shadow:0 0 4px #EF4444"></div><span style="color:var(--steel)">COMPOUND EVENT ·</span>&nbsp;Fire-Climate Chain · Amplifier 3.1× active</div>
-    <!-- duplicate for seamless loop -->
     <div class="ticker-item"><div class="ticker-dot" style="background:#EF4444;box-shadow:0 0 4px #EF4444"></div><span style="color:var(--steel)">FIRE DETECTION ·</span>&nbsp;São Paulo Basin · 87% probability · FIRMS VIIRS 375m</div>
     <div class="ticker-item"><div class="ticker-dot" style="background:#F59E0B;box-shadow:0 0 4px #F59E0B"></div><span style="color:var(--steel)">TEMP ANOMALY ·</span>&nbsp;Deccan Plateau · +2.4°C above ERA5 baseline</div>
     <div class="ticker-item"><div class="ticker-dot" style="background:#0EA5E9;box-shadow:0 0 4px #0EA5E9"></div><span style="color:var(--steel)">FLOOD SIGNAL ·</span>&nbsp;Mumbai Coastal · +147% precipitation anomaly</div>
@@ -1001,8 +987,8 @@ footer{padding:44px;border-top:1px solid var(--wire-soft);background:var(--deep)
   <h2 class="cta-h2 reveal">Join the<br/>Intelligence Network</h2>
   <p class="cta-body reveal">Prexus is available to verified government departments, research institutions, and regulated enterprises. Register for access or book a guided demonstration.</p>
   <div class="cta-actions reveal">
-    <a href="demo.html"  class="btn-primary"  style="font-size:11px;padding:14px 30px">Book a Demo →</a>
-    <a href="auth.html"  class="btn-secondary" style="font-size:11px;padding:13px 22px">Request Access</a>
+    <a href="demo.html"   class="btn-primary"  style="font-size:11px;padding:14px 30px">Book a Demo →</a>
+    <a href="index.html"  class="btn-secondary" style="font-size:11px;padding:13px 22px">Request Access</a>
   </div>
   <p class="cta-note reveal">TLS 1.3 · AES-256 · SOC 2 Type II · ISO 27001 · Zero-Trust Architecture</p>
 </section>
@@ -1020,6 +1006,7 @@ footer{padding:44px;border-top:1px solid var(--wire-soft);background:var(--deep)
       <a href="pricing.html">Pricing</a>
       <a href="careers.html">Careers</a>
       <a href="demo.html">Book Demo</a>
+      <a href="privacy-policy.html">Privacy Policy</a>
     </div>
     <div class="footer-meta">
       <div>© 2026 Prexus Systems</div>
@@ -1028,9 +1015,6 @@ footer{padding:44px;border-top:1px solid var(--wire-soft);background:var(--deep)
   </div>
 </footer>
 
-<!-- ══════════════════════════════════════
-     SCRIPTS
-══════════════════════════════════════ -->
 <script>
 'use strict';
 
@@ -1113,7 +1097,6 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape')closeMenu()});
       if(n.x<-10)n.x=canvas.width+10;if(n.x>canvas.width+10)n.x=-10;
       if(n.y<-10)n.y=canvas.height+10;if(n.y>canvas.height+10)n.y=-10;
     });
-    // Batched connections
     const paths=Array.from({length:BUCKETS},()=>[]);
     for(let i=0;i<nodes.length;i++){
       for(let j=i+1;j<nodes.length;j++){
@@ -1137,7 +1120,6 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape')closeMenu()});
       }
       ctx.stroke();
     }
-    // Pulses
     pulseAccum+=dt;
     if(pulseAccum>2400){pulseAccum=0;const pair=connectedPair();if(pair)pulses.push({a:pair[0],b:pair[1],t:0})}
     pulses=pulses.filter(p=>{
@@ -1279,7 +1261,6 @@ function initFlicker(){
   });
 }
 
-/* ── Boot ── */
 document.addEventListener('DOMContentLoaded',()=>{
   initReveal();initCountUp();initNav();initParallax();initMagnetic();initAudit();
   setTimeout(initFlicker,1600);

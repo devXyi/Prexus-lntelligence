@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="theme-color" content="#080808"/>
+<title>Plans &amp; Pricing — Prexus Intelligence</title>
+<meta name="description" content="Request access to Prexus Intelligence sovereign predictive intelligence platform."/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Martian+Mono:wght@300;400;500&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;1,8..60,300&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+@property --ba{syntax:'<angle>';inherits:false;initial-value:0deg}
+
+:root{
+  --void:#080808;--deep:#0d0d0d;--panel:rgba(13,13,13,.85);
+  --ice:#E8D9C8;--steel:#8A9BAD;--muted:#2E4558;
+  --wire-soft:rgba(232,217,200,.055);--wire:rgba(232,217,200,.1);--wire-strong:rgba(232,217,200,.2);
+  --green:#10B981;--amber:#F59E0B;--red:#EF4444;
+  --f-display:'Bebas Neue',sans-serif;
+  --f-data:'Martian Mono',monospace;
+  --f-serif:'Source Serif 4',serif;
+  --f-ui:'IBM Plex Sans',sans-serif;
+  --ease-out5:cubic-bezier(.16,1,.3,1);
+  --ease-spring:cubic-bezier(.34,1.56,.64,1);
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  background:var(--void);color:var(--ice);
+  font-family:var(--f-ui);font-size:15px;line-height:1.6;
+  overflow-x:hidden;-webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+}
+a{text-decoration:none;color:inherit;cursor:pointer}
+button{cursor:pointer;border:none;background:none;font-family:inherit}
+::-webkit-scrollbar{width:2px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--muted);border-radius:2px}
+
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+  opacity:.02;
+}
+
+/* ── NAV ── */
+.nav{
+  position:fixed;top:0;left:0;right:0;z-index:400;height:54px;
+  display:flex;align-items:center;padding:0 40px;
+  background:rgba(8,8,8,.82);
+  backdrop-filter:blur(28px) saturate(1.5);
+  -webkit-backdrop-filter:blur(28px) saturate(1.5);
+  border-bottom:1px solid var(--wire-soft);
+  transition:border-color .35s,background .35s;
+}
+.nav.scrolled{border-bottom-color:var(--wire);background:rgba(8,8,8,.97)}
+.nav-logo{display:flex;align-items:center;gap:12px}
+.nav-wordmark{font-family:var(--f-display);font-size:22px;letter-spacing:.18em;color:var(--ice);line-height:1}
+.nav-product{font-family:var(--f-data);font-size:7.5px;letter-spacing:.22em;color:rgba(232,217,200,.35);text-transform:uppercase;line-height:1;margin-top:2px}
+.nav-right{margin-left:auto;display:flex;align-items:center;gap:22px}
+.nav-back{
+  display:inline-flex;align-items:center;gap:7px;
+  font-family:var(--f-data);font-size:9px;letter-spacing:.14em;text-transform:uppercase;
+  color:rgba(232,217,200,.32);transition:color .2s;
+}
+.nav-back:hover{color:rgba(232,217,200,.6)}
+.nav-back svg{transition:transform .2s}
+.nav-back:hover svg{transform:translateX(-3px)}
+.nav-status{display:flex;align-items:center;gap:5px}
+.nav-status-dot{
+  width:5px;height:5px;border-radius:50%;
+  background:var(--green);box-shadow:0 0 6px rgba(16,185,129,.55);
+  animation:pulseSoft 2.8s ease-in-out infinite;
+}
+.nav-status-text{font-family:var(--f-data);font-size:7.5px;letter-spacing:.18em;text-transform:uppercase;color:rgba(16,185,129,.5)}
+
+/* ── PAGE HERO ── */
+.page-hero{
+  padding:130px 48px 70px;
+  border-bottom:1px solid var(--wire-soft);
+  background:
+    radial-gradient(ellipse 55% 70% at 15% 60%,rgba(232,217,200,.018) 0%,transparent 60%),
+    radial-gradient(ellipse 45% 60% at 85% 40%,rgba(14,165,233,.012) 0%,transparent 60%),
+    var(--deep);
+  position:relative;overflow:hidden;text-align:center;
+}
+.page-hero::before{
+  content:'';position:absolute;inset:0;pointer-events:none;
+  background-image:linear-gradient(var(--wire-soft) 1px,transparent 1px),linear-gradient(90deg,var(--wire-soft) 1px,transparent 1px);
+  background-size:80px 80px;opacity:.22;
+  mask-image:radial-gradient(ellipse 80% 100% at 50% 50%,black 20%,transparent 75%);
+}
+.page-hero-inner{max-width:680px;margin:0 auto;position:relative;z-index:1}
+.page-eyebrow{
+  display:inline-flex;align-items:center;gap:10px;
+  font-family:var(--f-data);font-size:9px;letter-spacing:.28em;
+  text-transform:uppercase;color:rgba(232,217,200,.35);margin-bottom:20px;
+}
+.page-eyebrow::before,.page-eyebrow::after{content:'';display:block;width:20px;height:1px;background:var(--ice);opacity:.18}
+.page-h1{
+  font-family:var(--f-display);font-size:clamp(48px,7vw,88px);
+  letter-spacing:.04em;text-transform:uppercase;color:var(--ice);
+  line-height:.95;margin-bottom:22px;
+}
+.page-h1 .stroke{
+  color:transparent;
+  -webkit-text-stroke:1.5px rgba(232,217,200,.35);
+}
+.page-lead{
+  font-family:var(--f-serif);font-size:15.5px;font-weight:300;
+  color:rgba(232,217,200,.42);line-height:1.8;max-width:520px;margin:0 auto;
+}
+
+/* ── CLASSIFICATION ── */
+.cls-strip{
+  background:rgba(16,185,129,.05);
+  border-top:1px solid rgba(16,185,129,.1);
+  border-bottom:1px solid rgba(16,185,129,.1);
+  padding:7px 0;text-align:center;
+  font-family:var(--f-data);font-size:8.5px;
+  letter-spacing:.25em;text-transform:uppercase;color:rgba(16,185,129,.5);
+}
+
+/* ── COMPLIANCE BAR ── */
+.compliance-bar{
+  font-family:var(--f-data);font-size:7.5px;
+  letter-spacing:.2em;text-transform:uppercase;
+  color:rgba(232,217,200,.18);text-align:center;padding:9px 48px;
+  border-bottom:1px solid var(--wire-soft);
+  background:rgba(8,8,8,.9);
+}
+
+/* ── PLANS GRID ── */
+.plans-wrap{max-width:1100px;margin:0 auto;padding:80px 48px 60px}
+.plans-label{
+  text-align:center;
+  font-family:var(--f-data);font-size:8.5px;letter-spacing:.28em;
+  text-transform:uppercase;color:rgba(232,217,200,.28);margin-bottom:48px;
+}
+
+.plans-grid{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:12px;
+}
+
+.plan-card{
+  border:1px solid var(--wire-soft);border-radius:4px;
+  background:rgba(8,8,8,.75);backdrop-filter:blur(10px);
+  padding:28px 22px 24px;position:relative;overflow:hidden;
+  display:flex;flex-direction:column;
+  transition:border-color .3s,box-shadow .3s,transform .2s var(--ease-spring);
+}
+.plan-card::before{
+  content:'';position:absolute;inset:-1px;border-radius:5px;
+  background:conic-gradient(from var(--ba),transparent 20%,rgba(232,217,200,.28) 40%,rgba(232,217,200,.06) 50%,transparent 65%);
+  z-index:-1;opacity:0;transition:opacity .35s;
+  animation:spinBorder 5s linear infinite paused;
+}
+.plan-card::after{content:'';position:absolute;inset:1px;border-radius:3px;background:rgba(8,8,8,.82);z-index:-1}
+.plan-card:hover{border-color:transparent;box-shadow:0 10px 40px rgba(0,0,0,.45),0 0 24px rgba(232,217,200,.04);transform:translateY(-3px)}
+.plan-card:hover::before{opacity:1;animation-play-state:running}
+
+/* featured */
+.plan-card.featured{
+  border-color:rgba(232,217,200,.18);
+  background:rgba(232,217,200,.03);
+  box-shadow:0 4px 32px rgba(0,0,0,.35),inset 0 1px 0 rgba(232,217,200,.06);
+}
+.plan-card.featured:hover{border-color:transparent}
+.featured-badge{
+  position:absolute;top:14px;right:14px;
+  font-family:var(--f-data);font-size:6.5px;letter-spacing:.16em;text-transform:uppercase;
+  padding:3px 8px;border-radius:2px;
+  background:rgba(232,217,200,.1);color:rgba(232,217,200,.65);
+  border:1px solid rgba(232,217,200,.18);
+}
+
+.plan-tier{
+  font-family:var(--f-data);font-size:8px;letter-spacing:.24em;
+  text-transform:uppercase;color:var(--muted);margin-bottom:12px;
+}
+.plan-name{
+  font-family:var(--f-display);font-size:26px;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--ice);line-height:1;margin-bottom:10px;
+}
+.plan-price{
+  font-family:var(--f-display);font-size:38px;letter-spacing:.04em;
+  color:var(--ice);line-height:1;margin-bottom:4px;
+}
+.plan-price .currency{font-size:18px;opacity:.5;margin-right:2px;vertical-align:top;padding-top:8px;display:inline-block}
+.plan-price .period{font-family:var(--f-data);font-size:9px;letter-spacing:.1em;opacity:.4;margin-left:3px}
+.plan-price-note{font-family:var(--f-data);font-size:8px;letter-spacing:.08em;color:var(--muted);margin-bottom:20px}
+.plan-divider{height:1px;background:var(--wire-soft);margin:16px 0}
+.plan-desc{
+  font-family:var(--f-serif);font-size:12.5px;font-weight:300;
+  color:rgba(232,217,200,.38);line-height:1.65;margin-bottom:20px;flex:1;
+}
+.plan-features{list-style:none;display:flex;flex-direction:column;gap:8px;margin-bottom:24px}
+.plan-features li{
+  display:flex;align-items:flex-start;gap:8px;
+  font-family:var(--f-data);font-size:9px;letter-spacing:.04em;
+  color:rgba(232,217,200,.4);line-height:1.5;
+}
+.plan-features li::before{
+  content:'·';color:rgba(232,217,200,.25);flex-shrink:0;margin-top:0;
+}
+.plan-features li.ok::before{content:'✓';color:rgba(16,185,129,.5)}
+.plan-features li.lock::before{content:'—';color:rgba(46,69,88,.6)}
+
+.plan-cta{
+  display:block;width:100%;padding:11px 16px;border-radius:3px;
+  font-family:var(--f-data);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;
+  text-align:center;transition:all .25s;
+  border:1px solid var(--wire);color:rgba(232,217,200,.45);background:transparent;
+}
+.plan-cta:hover{border-color:rgba(232,217,200,.3);color:var(--ice);background:rgba(232,217,200,.05)}
+.plan-cta.primary{
+  background:var(--ice);color:#080808;border-color:transparent;
+  font-weight:500;
+  box-shadow:0 0 0 1px rgba(232,217,200,.2),0 6px 20px rgba(232,217,200,.08);
+}
+.plan-cta.primary:hover{filter:brightness(1.06);box-shadow:0 0 0 1px rgba(232,217,200,.35),0 10px 28px rgba(232,217,200,.14)}
+
+/* ── ENTERPRISE BANNER ── */
+.enterprise-wrap{max-width:1100px;margin:0 auto;padding:0 48px 80px}
+.enterprise-card{
+  border:1px solid var(--wire);border-radius:4px;padding:36px 40px;
+  background:rgba(232,217,200,.018);
+  display:grid;grid-template-columns:1fr auto;gap:40px;align-items:center;
+  position:relative;overflow:hidden;
+  transition:border-color .3s,box-shadow .3s;
+}
+.enterprise-card:hover{border-color:rgba(232,217,200,.2);box-shadow:0 8px 36px rgba(0,0,0,.35)}
+.enterprise-card::before{
+  content:'';position:absolute;left:0;top:0;bottom:0;width:3px;
+  background:linear-gradient(to bottom,transparent,rgba(232,217,200,.3),transparent);
+}
+.enterprise-eyebrow{
+  font-family:var(--f-data);font-size:8px;letter-spacing:.24em;
+  text-transform:uppercase;color:var(--muted);margin-bottom:10px;
+}
+.enterprise-name{
+  font-family:var(--f-display);font-size:32px;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--ice);margin-bottom:10px;line-height:1;
+}
+.enterprise-desc{
+  font-family:var(--f-serif);font-size:14.5px;font-weight:300;
+  color:rgba(232,217,200,.42);line-height:1.75;max-width:580px;
+}
+.enterprise-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:18px}
+.enterprise-tag{
+  font-family:var(--f-data);font-size:7.5px;letter-spacing:.1em;text-transform:uppercase;
+  padding:3px 9px;border-radius:2px;border:1px solid var(--wire-soft);color:var(--muted);
+}
+.enterprise-actions{display:flex;flex-direction:column;gap:10px;align-items:flex-end}
+.enterprise-price{
+  font-family:var(--f-display);font-size:22px;letter-spacing:.06em;
+  color:rgba(232,217,200,.35);text-align:right;margin-bottom:4px;
+}
+.enterprise-price-note{
+  font-family:var(--f-data);font-size:7.5px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--muted);text-align:right;margin-bottom:14px;
+}
+
+/* ── FORM MODAL ── */
+.modal-overlay{
+  position:fixed;inset:0;z-index:800;
+  background:rgba(0,0,0,.75);
+  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  display:flex;align-items:center;justify-content:center;
+  padding:20px;opacity:0;pointer-events:none;
+  transition:opacity .3s var(--ease-out5);
+}
+.modal-overlay.open{opacity:1;pointer-events:all}
+
+.modal{
+  width:100%;max-width:560px;
+  background:rgba(10,10,10,.98);
+  border:1px solid var(--wire);border-radius:6px;
+  box-shadow:0 32px 80px rgba(0,0,0,.8),0 0 0 1px rgba(232,217,200,.04);
+  transform:translateY(20px) scale(.97);
+  transition:transform .35s var(--ease-out5);
+  overflow:hidden;
+}
+.modal-overlay.open .modal{transform:translateY(0) scale(1)}
+
+.modal-header{
+  padding:26px 28px 20px;
+  border-bottom:1px solid var(--wire-soft);
+  display:flex;align-items:flex-start;justify-content:space-between;gap:16px;
+}
+.modal-title-wrap{}
+.modal-plan-tag{
+  font-family:var(--f-data);font-size:7.5px;letter-spacing:.22em;text-transform:uppercase;
+  color:var(--muted);margin-bottom:6px;
+}
+.modal-title{
+  font-family:var(--f-display);font-size:24px;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--ice);line-height:1;
+}
+.modal-close{
+  width:30px;height:30px;display:flex;align-items:center;justify-content:center;
+  border-radius:3px;color:rgba(232,217,200,.35);flex-shrink:0;
+  transition:background .15s,color .15s;background:none;border:none;cursor:pointer;
+}
+.modal-close:hover{background:rgba(232,217,200,.07);color:var(--ice)}
+
+.modal-body{padding:24px 28px 28px;display:flex;flex-direction:column;gap:14px}
+
+.field{display:flex;flex-direction:column;gap:5px}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.field label{
+  font-family:var(--f-data);font-size:8px;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--muted);
+}
+.field label span{color:rgba(239,68,68,.6);margin-left:2px}
+.field input,.field select,.field textarea{
+  background:rgba(232,217,200,.04);
+  border:1px solid var(--wire-soft);border-radius:3px;
+  padding:11px 14px;
+  font-family:var(--f-data);font-size:10.5px;letter-spacing:.04em;
+  color:var(--ice);outline:none;
+  transition:border-color .2s,box-shadow .2s;
+  width:100%;
+}
+.field input::placeholder,.field textarea::placeholder{color:rgba(232,217,200,.2)}
+.field input:focus,.field select:focus,.field textarea:focus{
+  border-color:rgba(232,217,200,.25);
+  box-shadow:0 0 0 3px rgba(232,217,200,.04);
+}
+.field select{appearance:none;cursor:pointer;color:rgba(232,217,200,.55)}
+.field select option{background:#0d0d0d;color:var(--ice)}
+.field textarea{resize:vertical;min-height:88px;line-height:1.6;font-size:10px}
+
+.modal-footer{
+  padding:0 28px 24px;display:flex;align-items:center;justify-content:space-between;
+  gap:14px;
+}
+.modal-note{font-family:var(--f-data);font-size:7.5px;letter-spacing:.08em;color:var(--muted)}
+.modal-submit{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:12px 26px;background:var(--ice);color:#080808;
+  border:none;border-radius:3px;cursor:pointer;
+  font-family:var(--f-data);font-size:10px;font-weight:500;
+  letter-spacing:.14em;text-transform:uppercase;
+  transition:filter .2s,box-shadow .2s,transform .2s var(--ease-spring);
+  box-shadow:0 0 0 1px rgba(232,217,200,.2),0 6px 20px rgba(232,217,200,.07);
+  position:relative;overflow:hidden;
+}
+.modal-submit::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(110deg,transparent 30%,rgba(255,255,255,.14) 50%,transparent 70%);
+  transform:translateX(-150%);transition:transform .45s ease;
+}
+.modal-submit:hover{filter:brightness(1.06);transform:translateY(-1px);box-shadow:0 0 0 1px rgba(232,217,200,.35),0 10px 26px rgba(232,217,200,.12)}
+.modal-submit:hover::after{transform:translateX(150%)}
+.modal-submit:active{transform:scale(.98)}
+.modal-submit:disabled{opacity:.45;pointer-events:none}
+
+/* ── THANK YOU OVERLAY ── */
+.thankyou-overlay{
+  position:fixed;inset:0;z-index:900;
+  background:rgba(0,0,0,.8);
+  backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+  display:flex;align-items:center;justify-content:center;padding:20px;
+  opacity:0;pointer-events:none;
+  transition:opacity .35s var(--ease-out5);
+}
+.thankyou-overlay.open{opacity:1;pointer-events:all}
+
+.thankyou-card{
+  width:100%;max-width:480px;text-align:center;
+  background:rgba(10,10,10,.98);
+  border:1px solid var(--wire);border-radius:6px;
+  padding:52px 44px 44px;
+  box-shadow:0 40px 100px rgba(0,0,0,.85);
+  transform:scale(.93) translateY(16px);
+  transition:transform .45s var(--ease-out5);
+  position:relative;overflow:hidden;
+}
+.thankyou-overlay.open .thankyou-card{transform:scale(1) translateY(0)}
+.thankyou-card::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 70% 50% at 50% 0%,rgba(232,217,200,.04) 0%,transparent 60%);
+  pointer-events:none;
+}
+
+.ty-icon{
+  width:56px;height:56px;border-radius:50%;
+  background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.18);
+  display:flex;align-items:center;justify-content:center;
+  margin:0 auto 24px;
+  animation:tyPop .6s .1s var(--ease-spring) both;
+}
+.ty-icon svg{stroke:rgba(16,185,129,.75);stroke-width:1.5;fill:none}
+
+.ty-tag{
+  display:inline-block;
+  font-family:var(--f-data);font-size:7.5px;letter-spacing:.24em;text-transform:uppercase;
+  color:rgba(16,185,129,.55);border:1px solid rgba(16,185,129,.15);
+  padding:3px 10px;border-radius:2px;background:rgba(16,185,129,.04);
+  margin-bottom:18px;
+  animation:fadeUp .6s .15s var(--ease-out5) both;
+}
+.ty-h2{
+  font-family:var(--f-display);font-size:clamp(28px,5vw,44px);
+  letter-spacing:.05em;text-transform:uppercase;color:var(--ice);
+  line-height:1;margin-bottom:14px;
+  animation:fadeUp .6s .22s var(--ease-out5) both;
+}
+.ty-body{
+  font-family:var(--f-serif);font-size:14.5px;font-weight:300;
+  color:rgba(232,217,200,.42);line-height:1.8;margin-bottom:28px;
+  animation:fadeUp .6s .3s var(--ease-out5) both;
+}
+.ty-body strong{color:rgba(232,217,200,.7);font-weight:400}
+.ty-divider{height:1px;background:var(--wire-soft);margin:0 0 24px;animation:fadeUp .5s .36s var(--ease-out5) both}
+.ty-meta{
+  display:flex;justify-content:center;gap:22px;flex-wrap:wrap;
+  font-family:var(--f-data);font-size:8px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--muted);
+  animation:fadeUp .5s .4s var(--ease-out5) both;
+  margin-bottom:28px;
+}
+.ty-meta-item{display:flex;align-items:center;gap:5px}
+.ty-dot{width:4px;height:4px;border-radius:50%;background:rgba(16,185,129,.5)}
+.ty-close{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:11px 26px;
+  border:1px solid var(--wire);border-radius:3px;
+  font-family:var(--f-data);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;
+  color:rgba(232,217,200,.45);background:transparent;cursor:pointer;
+  transition:border-color .2s,color .2s,background .2s;
+  animation:fadeUp .5s .46s var(--ease-out5) both;
+}
+.ty-close:hover{border-color:rgba(232,217,200,.28);color:var(--ice);background:rgba(232,217,200,.05)}
+
+/* ── FOOTER ── */
+footer{padding:44px;border-top:1px solid var(--wire-soft);background:var(--deep)}
+.footer-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between}
+.footer-logo{font-family:var(--f-display);font-size:19px;letter-spacing:.18em;color:var(--ice)}
+.footer-links{display:flex;gap:22px;font-family:var(--f-data);font-size:8.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.footer-links a{transition:color .2s}
+.footer-links a:hover{color:rgba(232,217,200,.5)}
+.footer-meta{font-family:var(--f-data);font-size:8.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);text-align:right}
+
+/* ── REVEAL ── */
+.reveal{opacity:0;transform:translateY(20px);transition:opacity .6s var(--ease-out5),transform .6s var(--ease-out5)}
+.reveal.visible{opacity:1;transform:none}
+
+/* ── KEYFRAMES ── */
+@keyframes pulseSoft{0%,100%{opacity:.65}50%{opacity:1}}
+@keyframes spinBorder{to{--ba:360deg}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes tyPop{from{opacity:0;transform:scale(.6)}to{opacity:1;transform:scale(1)}}
+@keyframes logoBreathe{
+  0%,100%{filter:drop-shadow(0 0 12px rgba(232,217,200,.04))}
+  50%{filter:drop-shadow(0 0 24px rgba(232,217,200,.1))}
+}
+
+/* ── RESPONSIVE ── */
+@media(max-width:960px){
+  .plans-grid{grid-template-columns:1fr 1fr}
+  .enterprise-card{grid-template-columns:1fr}
+  .enterprise-actions{align-items:flex-start}
+  .enterprise-price,.enterprise-price-note{text-align:left}
+  .plans-wrap,.enterprise-wrap{padding-left:24px;padding-right:24px}
+  .page-hero{padding:100px 24px 56px}
+  .nav{padding:0 20px}
+}
+@media(max-width:600px){
+  .plans-grid{grid-template-columns:1fr}
+  .field-row{grid-template-columns:1fr}
+  .modal-footer{flex-direction:column;align-items:stretch}
+  .modal-submit{justify-content:center}
+  .footer-inner{flex-direction:column;gap:20px;text-align:center}
+  .footer-meta{text-align:center}
+  .footer-links{flex-wrap:wrap;justify-content:center;gap:14px}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  .reveal{opacity:1;transform:none}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav" id="nav">
+  <a href="landing.html" class="nav-logo">
+    <img src="logo.png" alt="Prexus" style="width:32px;height:32px;object-fit:contain;display:block"/>
+    <div style="margin-left:12px">
+      <div class="nav-wordmark">PREXUS</div>
+      <div class="nav-product">Intelligence Platform</div>
+    </div>
+  </a>
+  <div class="nav-right">
+    <div class="nav-status">
+      <div class="nav-status-dot"></div>
+      <span class="nav-status-text">NOMINAL</span>
+    </div>
+    <a href="landing.html" class="nav-back">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"><path d="M8 2L3 7L8 12"/><line x1="3" y1="7" x2="13" y2="7"/></svg>
+      Platform
+    </a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="page-hero">
+  <div class="page-hero-inner">
+    <div class="page-eyebrow">By Authorization Only</div>
+    <h1 class="page-h1">Plans &amp;<br/><span class="stroke">Pricing</span></h1>
+    <p class="page-lead">Prexus grants access to verified institutions — governments, research bodies, and regulated enterprises. Select a plan and submit your access request. We vet every application.</p>
+  </div>
+</div>
+
+<div class="cls-strip">FOUO // Early Access Program // Prexus Intelligence v2.0</div>
+<div class="compliance-bar">SOC 2 Type II &nbsp;·&nbsp; ISO 27001 &nbsp;·&nbsp; GDPR &nbsp;·&nbsp; RBI Compliant &nbsp;·&nbsp; TLS 1.3 &nbsp;·&nbsp; AES-256 &nbsp;·&nbsp; Zero-Trust</div>
+
+<!-- PLANS -->
+<div class="plans-wrap">
+  <div class="plans-label">Choose your access tier — all plans require institutional verification</div>
+
+  <div class="plans-grid">
+
+    <!-- Explorer -->
+    <div class="plan-card reveal">
+      <div class="plan-tier">Tier 01 · Research</div>
+      <div class="plan-name">Explorer</div>
+      <div class="plan-price"><span class="currency">$</span>49<span class="period">/mo</span></div>
+      <div class="plan-price-note">₹2,999 / month · annual option available</div>
+      <div class="plan-divider"></div>
+      <div class="plan-desc">For students, independent researchers, and analysts. Limited pipeline access with delayed data. Distribution-first, not revenue-first.</div>
+      <ul class="plan-features">
+        <li class="ok">Meteorium dashboard — read only</li>
+        <li class="ok">3 predictive models</li>
+        <li class="ok">Delayed telemetry (6h lag)</li>
+        <li class="ok">100 API calls / month</li>
+        <li class="ok">Community access</li>
+        <li class="lock">Real-time data streams</li>
+        <li class="lock">Monte Carlo simulation</li>
+        <li class="lock">Custom integrations</li>
+      </ul>
+      <button class="plan-cta" onclick="openModal('Explorer','$49 / month')">Request Access →</button>
+    </div>
+
+    <!-- Builder -->
+    <div class="plan-card reveal">
+      <div class="plan-tier">Tier 02 · Startup</div>
+      <div class="plan-name">Builder</div>
+      <div class="plan-price"><span class="currency">$</span>399<span class="period">/mo</span></div>
+      <div class="plan-price-note">₹24,999 / month · annual option available</div>
+      <div class="plan-divider"></div>
+      <div class="plan-desc">For startups, small trading firms, and AI research teams. First real revenue layer with real-time analytics and team collaboration.</div>
+      <ul class="plan-features">
+        <li class="ok">Real-time analytics</li>
+        <li class="ok">Portfolio simulations</li>
+        <li class="ok">Market intelligence feeds</li>
+        <li class="ok">5,000 API calls / month</li>
+        <li class="ok">Team collaboration (5 seats)</li>
+        <li class="ok">Basic AI forecasting</li>
+        <li class="lock">Dedicated support</li>
+        <li class="lock">Custom model deployment</li>
+      </ul>
+      <button class="plan-cta" onclick="openModal('Builder','$399 / month')">Request Access →</button>
+    </div>
+
+    <!-- Professional -->
+    <div class="plan-card featured reveal">
+      <div class="featured-badge">Most Selected</div>
+      <div class="plan-tier">Tier 03 · Institutional</div>
+      <div class="plan-name">Professional</div>
+      <div class="plan-price" style="font-size:28px;letter-spacing:.02em">Custom</div>
+      <div class="plan-price-note">$5K–$15K / month · quoted per scope</div>
+      <div class="plan-divider"></div>
+      <div class="plan-desc">For hedge funds, asset managers, and mid-sized enterprises. Full Meteorium access, dedicated support, and custom integrations.</div>
+      <ul class="plan-features">
+        <li class="ok">Advanced forecasting suite</li>
+        <li class="ok">Full Meteorium pipeline</li>
+        <li class="ok">Scenario simulations (all SSPs)</li>
+        <li class="ok">Unlimited API access</li>
+        <li class="ok">Custom integrations</li>
+        <li class="ok">Dedicated engineering support</li>
+        <li class="ok">Multi-region deployment</li>
+        <li class="ok">SLA guarantees</li>
+      </ul>
+      <button class="plan-cta primary" onclick="openModal('Professional','Custom — $5K–$15K/mo')">Request Access →</button>
+    </div>
+
+    <!-- Sovereign -->
+    <div class="plan-card reveal">
+      <div class="plan-tier">Tier 04 · Government</div>
+      <div class="plan-name">Sovereign</div>
+      <div class="plan-price" style="font-size:22px;letter-spacing:.02em;padding-top:6px">Contact<br/>Sales</div>
+      <div class="plan-price-note">$250K–$5M / year · multi-year contracts</div>
+      <div class="plan-divider"></div>
+      <div class="plan-desc">For sovereign governments, defense agencies, and national infrastructure bodies. Air-gapped deployment, dedicated AI architecture, classified intelligence layers.</div>
+      <ul class="plan-features">
+        <li class="ok">Dedicated infrastructure</li>
+        <li class="ok">Air-gapped deployment option</li>
+        <li class="ok">On-premise / private cloud</li>
+        <li class="ok">Classified intelligence layers</li>
+        <li class="ok">Custom AI agent deployment</li>
+        <li class="ok">National-scale risk models</li>
+        <li class="ok">Priority engineering team</li>
+        <li class="ok">Strategic simulation systems</li>
+      </ul>
+      <button class="plan-cta" onclick="openModal('Sovereign Suite','$250K–$5M / year')">Request Access →</button>
+    </div>
+
+  </div>
+</div>
+
+<!-- ENTERPRISE BANNER -->
+<div class="enterprise-wrap">
+  <div class="enterprise-card reveal">
+    <div>
+      <div class="enterprise-eyebrow">Black Division · Invitation Only</div>
+      <div class="enterprise-name">Ultra-Sovereign<br/>Intelligence</div>
+      <div class="enterprise-desc">Private predictive systems for billion-dollar hedge funds, intelligence-linked entities, and strategic governments. Closed-loop, air-gapped, and invitation-only. This division does not appear in our public catalogue.</div>
+      <div class="enterprise-tags">
+        <span class="enterprise-tag">Invitation Only</span>
+        <span class="enterprise-tag">$5M–$100M+</span>
+        <span class="enterprise-tag">Autonomous Threat Monitoring</span>
+        <span class="enterprise-tag">Ultra-custom AI Architecture</span>
+        <span class="enterprise-tag">Strategic War-Gaming</span>
+      </div>
+    </div>
+    <div class="enterprise-actions">
+      <div class="enterprise-price">$5M – $100M+</div>
+      <div class="enterprise-price-note">Custom annual contracts</div>
+      <button class="plan-cta" style="white-space:nowrap" onclick="openModal('Black Division','$5M–$100M+ custom contract')">Submit Inquiry →</button>
+    </div>
+  </div>
+</div>
+
+<!-- FORM MODAL -->
+<div class="modal-overlay" id="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title-wrap">
+        <div class="modal-plan-tag" id="modal-plan-tag">Access Request</div>
+        <div class="modal-title" id="modal-title">Request Access</div>
+      </div>
+      <button class="modal-close" onclick="closeModal()" aria-label="Close">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><line x1="2" y1="2" x2="12" y2="12"/><line x1="12" y1="2" x2="2" y2="12"/></svg>
+      </button>
+    </div>
+
+    <div class="modal-body">
+      <div class="field-row">
+        <div class="field">
+          <label>Full Name <span>*</span></label>
+          <input type="text" id="f-name" placeholder="Dr. Arjun Mehta" autocomplete="name"/>
+        </div>
+        <div class="field">
+          <label>Designation <span>*</span></label>
+          <input type="text" id="f-designation" placeholder="Deputy Director, Risk"/>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Institutional Email <span>*</span></label>
+        <input type="email" id="f-email" placeholder="a.mehta@institution.gov.in" autocomplete="email"/>
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label>Organization <span>*</span></label>
+          <input type="text" id="f-org" placeholder="Ministry of Finance, GoI"/>
+        </div>
+        <div class="field">
+          <label>Domain / Sector <span>*</span></label>
+          <select id="f-domain">
+            <option value="" disabled selected>Select domain</option>
+            <option>Government &amp; Defense</option>
+            <option>Research &amp; Academia</option>
+            <option>Asset Management</option>
+            <option>Banking &amp; Insurance</option>
+            <option>Energy &amp; Infrastructure</option>
+            <option>Climate &amp; Environmental</option>
+            <option>Healthcare &amp; Public Health</option>
+            <option>Technology &amp; AI</option>
+            <option>Sovereign Wealth</option>
+            <option>Other Regulated Enterprise</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Country / Jurisdiction <span>*</span></label>
+        <input type="text" id="f-country" placeholder="India" autocomplete="country-name"/>
+      </div>
+
+      <div class="field">
+        <label>Why do you require access? <span>*</span></label>
+        <textarea id="f-reason" placeholder="Describe your use case, specific intelligence requirements, and how Prexus will integrate into your decision infrastructure…"></textarea>
+      </div>
+
+      <div class="field">
+        <label>Selected Plan</label>
+        <input type="text" id="f-plan" readonly style="opacity:.5;cursor:default"/>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <div class="modal-note">All applications are reviewed within 48 hours.</div>
+      <button class="modal-submit" id="modal-submit" onclick="submitForm()">
+        Submit Request
+        <svg width="13" height="13" viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M2 6.5h9M7 2l4.5 4.5L7 11"/></svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- THANK YOU OVERLAY -->
+<div class="thankyou-overlay" id="thankyou-overlay">
+  <div class="thankyou-card">
+    <div class="ty-icon">
+      <svg width="24" height="24" viewBox="0 0 24 24"><polyline points="4,12 9,17 20,6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+    <div class="ty-tag">Application Received</div>
+    <h2 class="ty-h2">Thank You for<br/>Being Prexisian</h2>
+    <p class="ty-body">Your access request has been logged in our intelligence registry. Our team will verify your institutional credentials and <strong>connect with you within 48 hours</strong>.</p>
+    <div class="ty-divider"></div>
+    <div class="ty-meta">
+      <div class="ty-meta-item"><div class="ty-dot"></div><span>Application encrypted &amp; stored</span></div>
+      <div class="ty-meta-item"><div class="ty-dot"></div><span>Review within 48h</span></div>
+      <div class="ty-meta-item"><div class="ty-dot"></div><span>Credentials issued on approval</span></div>
+    </div>
+    <button class="ty-close" onclick="closeThankyou()">
+      <svg width="13" height="13" viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><path d="M8 2L3 6.5L8 11"/><line x1="3" y1="6.5" x2="12" y2="6.5"/></svg>
+      Return to Platform
+    </button>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div>
+      <div class="footer-logo">PREXUS</div>
+      <div style="font-family:var(--f-data);font-size:7.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-top:4px">Sovereign Intelligence Platform</div>
+    </div>
+    <div class="footer-links">
+      <a href="landing.html">Platform</a>
+      <a href="landing.html#architecture">Architecture</a>
+      <a href="landing.html#capabilities">Capabilities</a>
+      <a href="landing.html#modules">Modules</a>
+      <a href="demo.html">Book Demo</a>
+      <a href="careers.html">Careers</a>
+      <a href="privacy-policy.html">Privacy Policy</a>
+    </div>
+    <div class="footer-meta">
+      <div>© 2026 Prexus Systems</div>
+      <div style="margin-top:4px">Research Infrastructure Initiative</div>
+    </div>
+  </div>
+</footer>
+
+<script>
+'use strict';
+
+/* Nav scroll */
+const nav = document.getElementById('nav');
+window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 20), {passive:true});
+
+/* Reveal */
+const revObs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if(e.isIntersecting){ e.target.classList.add('visible'); revObs.unobserve(e.target); }});
+}, {threshold:.08, rootMargin:'0px 0px -30px 0px'});
+document.querySelectorAll('.reveal').forEach((el, i) => {
+  el.style.transitionDelay = `${i * 0.06}s`;
+  revObs.observe(el);
+});
+
+/* Modal state */
+let currentPlan = '';
+
+function openModal(planName, planPrice) {
+  currentPlan = planName;
+  document.getElementById('modal-plan-tag').textContent = planName + ' · Access Request';
+  document.getElementById('modal-title').textContent = planName;
+  document.getElementById('f-plan').value = planName + ' — ' + planPrice;
+  document.getElementById('modal-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  setTimeout(() => document.getElementById('f-name').focus(), 350);
+}
+
+function closeModal() {
+  document.getElementById('modal-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+/* Close on backdrop click */
+document.getElementById('modal-overlay').addEventListener('click', e => {
+  if(e.target === document.getElementById('modal-overlay')) closeModal();
+});
+
+/* Escape key */
+document.addEventListener('keydown', e => {
+  if(e.key === 'Escape') {
+    closeModal();
+    closeThankyou();
+  }
+});
+
+/* Form validation + submit */
+function submitForm() {
+  const fields = [
+    {id:'f-name',     label:'Full Name'},
+    {id:'f-designation', label:'Designation'},
+    {id:'f-email',    label:'Institutional Email'},
+    {id:'f-org',      label:'Organization'},
+    {id:'f-domain',   label:'Domain / Sector'},
+    {id:'f-country',  label:'Country'},
+    {id:'f-reason',   label:'Reason for access'},
+  ];
+
+  let valid = true;
+  fields.forEach(f => {
+    const el = document.getElementById(f.id);
+    const val = el.value.trim();
+    if(!val) {
+      el.style.borderColor = 'rgba(239,68,68,.4)';
+      el.style.boxShadow = '0 0 0 3px rgba(239,68,68,.06)';
+      valid = false;
+    } else {
+      el.style.borderColor = '';
+      el.style.boxShadow = '';
+    }
+  });
+
+  // Email check
+  const emailEl = document.getElementById('f-email');
+  const emailVal = emailEl.value.trim();
+  if(emailVal && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailVal)) {
+    emailEl.style.borderColor = 'rgba(239,68,68,.4)';
+    emailEl.style.boxShadow = '0 0 0 3px rgba(239,68,68,.06)';
+    valid = false;
+  }
+
+  if(!valid) return;
+
+  const btn = document.getElementById('modal-submit');
+  btn.disabled = true;
+  btn.textContent = 'Submitting…';
+
+  // Simulate async submission
+  setTimeout(() => {
+    closeModal();
+    setTimeout(() => {
+      document.getElementById('thankyou-overlay').classList.add('open');
+      document.body.style.overflow = 'hidden';
+      // Reset form
+      ['f-name','f-designation','f-email','f-org','f-country','f-reason'].forEach(id => {
+        document.getElementById(id).value = '';
+        document.getElementById(id).style.borderColor = '';
+        document.getElementById(id).style.boxShadow = '';
+      });
+      document.getElementById('f-domain').value = '';
+      btn.disabled = false;
+      btn.innerHTML = 'Submit Request <svg width="13" height="13" viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M2 6.5h9M7 2l4.5 4.5L7 11"/></svg>';
+    }, 200);
+  }, 1200);
+}
+
+function closeThankyou() {
+  document.getElementById('thankyou-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+  window.location.href = 'landing.html';
+}
+
+/* Input error reset on type */
+document.querySelectorAll('.modal-body input, .modal-body select, .modal-body textarea').forEach(el => {
+  el.addEventListener('input', () => {
+    el.style.borderColor = '';
+    el.style.boxShadow = '';
+  });
+});
+</script>
+</body>
+</html>

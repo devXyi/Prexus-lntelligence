@@ -4,24 +4,41 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <meta name="theme-color" content="#080808"/>
-<title>Plans &amp; Pricing — Prexus Intelligence</title>
-<meta name="description" content="Request access to Prexus Intelligence sovereign predictive intelligence platform."/>
+<title>Prexus Intelligence — Platform Access & Plans</title>
+<meta name="description" content="Deployment architectures and access plans for the Prexus sovereign intelligence platform."/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Martian+Mono:wght@300;400;500&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;1,8..60,300&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Martian+Mono:wght@300;400;500&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,300;1,400&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
 <style>
 @property --ba{syntax:'<angle>';inherits:false;initial-value:0deg}
 
+/* ── TOKENS — exact match to landing.html ── */
 :root{
-  --void:#080808;--deep:#0d0d0d;--panel:rgba(13,13,13,.85);
-  --ice:#E8D9C8;--steel:#8A9BAD;--muted:#2E4558;
-  --wire-soft:rgba(232,217,200,.055);--wire:rgba(232,217,200,.1);--wire-strong:rgba(232,217,200,.2);
-  --green:#10B981;--amber:#F59E0B;--red:#EF4444;
+  --void:#080808;
+  --deep:#0d0d0d;
+  --panel:rgba(13,13,13,.85);
+  --cobalt:#0EA5E9;
+  --cobalt-lo:rgba(14,165,233,.07);
+  --cobalt-mid:rgba(14,165,233,.18);
+  --cobalt-hi:rgba(14,165,233,.32);
+  --ice:#E8D9C8;
+  --ice-dim:rgba(232,217,200,.6);
+  --steel:#8A9BAD;
+  --muted:#2E4558;
+  --wire-soft:rgba(232,217,200,.055);
+  --wire:rgba(232,217,200,.1);
+  --wire-strong:rgba(232,217,200,.18);
+  --green:#10B981;
+  --amber:#F59E0B;
+  --red:#EF4444;
+
   --f-display:'Bebas Neue',sans-serif;
   --f-data:'Martian Mono',monospace;
   --f-serif:'Source Serif 4',serif;
   --f-ui:'IBM Plex Sans',sans-serif;
+
   --ease-out5:cubic-bezier(.16,1,.3,1);
+  --ease-out3:cubic-bezier(.23,1,.32,1);
   --ease-spring:cubic-bezier(.34,1.56,.64,1);
 }
 
@@ -30,11 +47,13 @@ html{scroll-behavior:smooth}
 body{
   background:var(--void);color:var(--ice);
   font-family:var(--f-ui);font-size:15px;line-height:1.6;
-  overflow-x:hidden;-webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
   -moz-osx-font-smoothing:grayscale;
 }
-a{text-decoration:none;color:inherit;cursor:pointer}
-button{cursor:pointer;border:none;background:none;font-family:inherit}
+h1,h2,h3{text-rendering:optimizeLegibility}
+a{text-decoration:none;color:inherit}
+a,button{cursor:pointer}
 ::-webkit-scrollbar{width:2px}
 ::-webkit-scrollbar-track{background:transparent}
 ::-webkit-scrollbar-thumb{background:var(--muted);border-radius:2px}
@@ -42,700 +61,1120 @@ button{cursor:pointer;border:none;background:none;font-family:inherit}
 body::before{
   content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
-  opacity:.02;
+  opacity:.022;
 }
 
-/* ── NAV ── */
+/* ══════════════════════════════════════
+   NAV
+══════════════════════════════════════ */
 .nav{
   position:fixed;top:0;left:0;right:0;z-index:400;height:54px;
   display:flex;align-items:center;padding:0 40px;
-  background:rgba(8,8,8,.82);
+  background:rgba(8,8,8,.72);
   backdrop-filter:blur(28px) saturate(1.5);
   -webkit-backdrop-filter:blur(28px) saturate(1.5);
   border-bottom:1px solid var(--wire-soft);
   transition:border-color .35s,background .35s;
 }
-.nav.scrolled{border-bottom-color:var(--wire);background:rgba(8,8,8,.97)}
-.nav-logo{display:flex;align-items:center;gap:12px}
+.nav.scrolled{border-bottom-color:var(--wire);background:rgba(8,8,8,.94)}
+.nav-logo{display:flex;align-items:center;gap:12px;margin-right:auto;text-decoration:none}
+.nav-logo-icon{animation:logoBreathe 5s ease-in-out infinite;flex-shrink:0}
 .nav-wordmark{font-family:var(--f-display);font-size:22px;letter-spacing:.18em;color:var(--ice);line-height:1}
 .nav-product{font-family:var(--f-data);font-size:7.5px;letter-spacing:.22em;color:rgba(232,217,200,.35);text-transform:uppercase;line-height:1;margin-top:2px}
-.nav-right{margin-left:auto;display:flex;align-items:center;gap:22px}
-.nav-back{
-  display:inline-flex;align-items:center;gap:7px;
-  font-family:var(--f-data);font-size:9px;letter-spacing:.14em;text-transform:uppercase;
-  color:rgba(232,217,200,.32);transition:color .2s;
-}
-.nav-back:hover{color:rgba(232,217,200,.6)}
-.nav-back svg{transition:transform .2s}
-.nav-back:hover svg{transform:translateX(-3px)}
+.nav-right{display:flex;align-items:center;gap:14px}
+.nav-links{display:flex;align-items:center;gap:22px;font-family:var(--f-data);font-size:10px;letter-spacing:.08em;text-transform:uppercase;margin-right:8px}
+.nav-links a{color:rgba(232,217,200,.38);transition:color .2s;position:relative;padding-bottom:2px}
+.nav-links a::after{content:'';position:absolute;bottom:0;left:50%;right:50%;height:1px;background:var(--ice);transition:left .22s var(--ease-out3),right .22s var(--ease-out3)}
+.nav-links a:hover{color:rgba(232,217,200,.7)}
+.nav-links a:hover::after{left:0;right:0}
 .nav-status{display:flex;align-items:center;gap:5px}
-.nav-status-dot{
-  width:5px;height:5px;border-radius:50%;
-  background:var(--green);box-shadow:0 0 6px rgba(16,185,129,.55);
-  animation:pulseSoft 2.8s ease-in-out infinite;
-}
-.nav-status-text{font-family:var(--f-data);font-size:7.5px;letter-spacing:.18em;text-transform:uppercase;color:rgba(16,185,129,.5)}
+.nav-status-dot{width:5px;height:5px;border-radius:50%;background:var(--green);box-shadow:0 0 6px rgba(16,185,129,.55);animation:pulseSoft 2.8s ease-in-out infinite}
+.nav-status-text{font-family:var(--f-data);font-size:7.5px;letter-spacing:.18em;text-transform:uppercase;color:rgba(16,185,129,.55)}
+.nav-clock{font-family:var(--f-data);font-size:9px;letter-spacing:.06em;color:var(--muted);border-left:1px solid var(--wire-soft);padding-left:14px}
 
-/* ── PAGE HERO ── */
-.page-hero{
-  padding:130px 48px 70px;
+/* ══════════════════════════════════════
+   HERO
+══════════════════════════════════════ */
+.pricing-hero{
+  padding:130px 48px 80px;
   border-bottom:1px solid var(--wire-soft);
-  background:
-    radial-gradient(ellipse 55% 70% at 15% 60%,rgba(232,217,200,.018) 0%,transparent 60%),
-    radial-gradient(ellipse 45% 60% at 85% 40%,rgba(14,165,233,.012) 0%,transparent 60%),
-    var(--deep);
-  position:relative;overflow:hidden;text-align:center;
+  position:relative;overflow:hidden;
+  background:radial-gradient(ellipse 70% 60% at 50% 0%,rgba(232,217,200,.018) 0%,transparent 55%),var(--void);
 }
-.page-hero::before{
-  content:'';position:absolute;inset:0;pointer-events:none;
+.pricing-hero-grid{
+  position:absolute;inset:0;pointer-events:none;
   background-image:linear-gradient(var(--wire-soft) 1px,transparent 1px),linear-gradient(90deg,var(--wire-soft) 1px,transparent 1px);
-  background-size:80px 80px;opacity:.22;
-  mask-image:radial-gradient(ellipse 80% 100% at 50% 50%,black 20%,transparent 75%);
+  background-size:80px 80px;opacity:.32;
+  mask-image:radial-gradient(ellipse 90% 80% at 50% 0%,black 20%,transparent 75%);
 }
-.page-hero-inner{max-width:680px;margin:0 auto;position:relative;z-index:1}
-.page-eyebrow{
-  display:inline-flex;align-items:center;gap:10px;
-  font-family:var(--f-data);font-size:9px;letter-spacing:.28em;
-  text-transform:uppercase;color:rgba(232,217,200,.35);margin-bottom:20px;
+.pricing-hero-inner{max-width:1100px;margin:0 auto;display:flex;align-items:flex-end;justify-content:space-between;gap:40px;flex-wrap:wrap}
+.hero-label{font-family:var(--f-data);font-size:9px;letter-spacing:.28em;text-transform:uppercase;color:rgba(232,217,200,.38);margin-bottom:14px;display:flex;align-items:center;gap:10px}
+.hero-label::before{content:'';display:block;width:22px;height:1px;background:var(--ice);opacity:.22}
+.hero-h1{font-family:var(--f-display);font-size:clamp(38px,6vw,72px);letter-spacing:.04em;text-transform:uppercase;color:var(--ice);line-height:1.0;margin-bottom:16px}
+.hero-sub{font-family:var(--f-serif);font-size:16px;font-weight:300;color:rgba(232,217,200,.42);line-height:1.75;max-width:480px}
+.hero-meta{
+  display:flex;flex-direction:column;align-items:flex-end;gap:10px;
+  font-family:var(--f-data);font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;
+  color:rgba(232,217,200,.22);text-align:right;flex-shrink:0;
 }
-.page-eyebrow::before,.page-eyebrow::after{content:'';display:block;width:20px;height:1px;background:var(--ice);opacity:.18}
-.page-h1{
-  font-family:var(--f-display);font-size:clamp(48px,7vw,88px);
-  letter-spacing:.04em;text-transform:uppercase;color:var(--ice);
-  line-height:.95;margin-bottom:22px;
-}
-.page-h1 .stroke{
-  color:transparent;
-  -webkit-text-stroke:1.5px rgba(232,217,200,.35);
-}
-.page-lead{
-  font-family:var(--f-serif);font-size:15.5px;font-weight:300;
-  color:rgba(232,217,200,.42);line-height:1.8;max-width:520px;margin:0 auto;
+.hero-badge{
+  padding:6px 14px;border:1px solid var(--wire-soft);border-radius:2px;
+  font-family:var(--f-data);font-size:8.5px;letter-spacing:.18em;text-transform:uppercase;
+  color:rgba(232,217,200,.32);background:rgba(232,217,200,.02);
 }
 
-/* ── CLASSIFICATION ── */
-.cls-strip{
-  background:rgba(16,185,129,.05);
-  border-top:1px solid rgba(16,185,129,.1);
-  border-bottom:1px solid rgba(16,185,129,.1);
-  padding:7px 0;text-align:center;
-  font-family:var(--f-data);font-size:8.5px;
-  letter-spacing:.25em;text-transform:uppercase;color:rgba(16,185,129,.5);
-}
-
-/* ── COMPLIANCE BAR ── */
-.compliance-bar{
-  font-family:var(--f-data);font-size:7.5px;
-  letter-spacing:.2em;text-transform:uppercase;
-  color:rgba(232,217,200,.18);text-align:center;padding:9px 48px;
+/* ══════════════════════════════════════
+   MODULE SELECTOR
+══════════════════════════════════════ */
+.selector-bar{
+  position:sticky;top:54px;z-index:300;
+  background:rgba(8,8,8,.92);
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
   border-bottom:1px solid var(--wire-soft);
+}
+.selector-inner{
+  max-width:1100px;margin:0 auto;padding:0 48px;
+  display:flex;align-items:center;gap:0;
+  overflow-x:auto;-webkit-overflow-scrolling:touch;
+  scrollbar-width:none;
+}
+.selector-inner::-webkit-scrollbar{display:none}
+.sel-tab{
+  flex-shrink:0;
+  padding:16px 28px;background:none;border:none;
+  font-family:var(--f-data);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;
+  color:rgba(232,217,200,.3);
+  position:relative;cursor:pointer;transition:color .2s;
+  display:flex;align-items:center;gap:9px;
+  border-right:1px solid var(--wire-soft);
+}
+.sel-tab:first-child{border-left:1px solid var(--wire-soft)}
+.sel-tab::after{
+  content:'';position:absolute;bottom:0;left:0;right:0;height:1.5px;
+  background:var(--ice);transform:scaleX(0);transition:transform .25s var(--ease-out5);
+}
+.sel-tab:hover{color:rgba(232,217,200,.6)}
+.sel-tab.active{color:var(--ice)}
+.sel-tab.active::after{transform:scaleX(1)}
+.sel-tab-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;transition:box-shadow .2s}
+.sel-tab.active .sel-tab-dot{animation:pulseSoft 2.8s ease-in-out infinite}
+
+.sel-tab-count{
+  font-family:var(--f-data);font-size:7.5px;letter-spacing:.1em;
+  padding:1px 6px;border-radius:2px;
+  background:rgba(232,217,200,.05);
+  border:1px solid var(--wire-soft);
+  color:rgba(232,217,200,.28);margin-left:4px;
+}
+.sel-divider{flex:1}
+.sel-desc{
+  flex-shrink:0;padding:0 24px;
+  font-family:var(--f-data);font-size:8.5px;letter-spacing:.1em;text-transform:uppercase;
+  color:rgba(232,217,200,.18);
+  white-space:nowrap;
+}
+
+/* ══════════════════════════════════════
+   PLANS CONTAINER
+══════════════════════════════════════ */
+.plans-wrap{max-width:1100px;margin:0 auto;padding:64px 48px 100px}
+.module-plans{display:none}
+.module-plans.active{display:block}
+
+/* module intro */
+.module-intro{margin-bottom:52px;display:flex;align-items:flex-start;justify-content:space-between;gap:40px;flex-wrap:wrap}
+.module-intro-text{}
+.module-eyebrow{
+  font-family:var(--f-data);font-size:8.5px;letter-spacing:.24em;text-transform:uppercase;
+  color:rgba(232,217,200,.35);margin-bottom:10px;display:flex;align-items:center;gap:8px;
+}
+.module-eyebrow::before{content:'';display:block;width:16px;height:1px;background:var(--ice);opacity:.2}
+.module-title{font-family:var(--f-display);font-size:clamp(24px,3.5vw,38px);letter-spacing:.06em;text-transform:uppercase;color:var(--ice);margin-bottom:10px;line-height:1.05}
+.module-desc{font-family:var(--f-serif);font-size:15px;font-weight:300;color:rgba(232,217,200,.42);line-height:1.8;max-width:540px}
+.module-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
+.m-tag{
+  font-family:var(--f-data);font-size:7.5px;letter-spacing:.12em;text-transform:uppercase;
+  padding:3px 9px;border-radius:2px;border:1px solid var(--wire-soft);color:rgba(232,217,200,.3);
+}
+.module-stat-block{
+  display:flex;flex-direction:column;gap:8px;flex-shrink:0;
+}
+.module-stat{
+  padding:12px 18px;border:1px solid var(--wire-soft);border-radius:2px;
+  background:rgba(13,13,13,.6);text-align:right;min-width:160px;
+}
+.module-stat-val{font-family:var(--f-display);font-size:22px;letter-spacing:.06em;color:var(--ice);line-height:1}
+.module-stat-label{font-family:var(--f-data);font-size:7.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-top:1px}
+
+/* deployment separator */
+.deploy-separator{
+  display:flex;align-items:center;gap:14px;margin-bottom:20px;
+  font-family:var(--f-data);font-size:8px;letter-spacing:.22em;text-transform:uppercase;
+  color:rgba(232,217,200,.2);
+}
+.deploy-separator::before,.deploy-separator::after{content:'';flex:1;height:1px;background:var(--wire-soft)}
+
+/* plan grid — 3 col */
+.plan-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;border:1px solid var(--wire-soft);border-radius:4px;overflow:hidden;margin-bottom:40px}
+
+.plan-card{
+  background:rgba(13,13,13,.6);
+  padding:32px 28px;
+  position:relative;overflow:hidden;
+  transition:background .25s;
+  display:flex;flex-direction:column;
+  border-right:1px solid var(--wire-soft);
+}
+.plan-card:last-child{border-right:none}
+.plan-card:hover{background:rgba(232,217,200,.025)}
+
+/* tier-specific left border accent */
+.plan-card.tier-1{border-top:2px solid rgba(232,217,200,.08)}
+.plan-card.tier-2{border-top:2px solid rgba(14,165,233,.18)}
+.plan-card.tier-3{border-top:2px solid rgba(232,217,200,.28)}
+
+/* corner bracket hover */
+.plan-card::before,.plan-card::after{
+  content:'';position:absolute;width:8px;height:8px;
+  border-style:solid;border-color:rgba(232,217,200,.18);
+  opacity:0;transition:opacity .25s;pointer-events:none;
+}
+.plan-card::before{top:0;left:0;border-width:1.5px 0 0 1.5px}
+.plan-card::after{bottom:0;right:0;border-width:0 1.5px 1.5px 0}
+.plan-card:hover::before,.plan-card:hover::after{opacity:1}
+
+/* deploy badge */
+.deploy-badge{
+  display:inline-flex;align-items:center;gap:5px;
+  font-family:var(--f-data);font-size:7px;letter-spacing:.14em;text-transform:uppercase;
+  padding:3px 8px;border-radius:2px;margin-bottom:20px;
+  width:fit-content;
+}
+.deploy-badge.cloud{background:rgba(14,165,233,.07);border:1px solid rgba(14,165,233,.18);color:rgba(14,165,233,.7)}
+.deploy-badge.hybrid{background:rgba(245,158,11,.06);border:1px solid rgba(245,158,11,.2);color:rgba(245,158,11,.65)}
+.deploy-badge.sovereign{background:rgba(232,217,200,.04);border:1px solid rgba(232,217,200,.18);color:rgba(232,217,200,.55)}
+.deploy-badge svg{flex-shrink:0}
+
+/* plan content */
+.plan-num{font-family:var(--f-data);font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:rgba(232,217,200,.2);margin-bottom:8px}
+.plan-name{font-family:var(--f-display);font-size:22px;letter-spacing:.08em;text-transform:uppercase;color:var(--ice);margin-bottom:4px;line-height:1}
+.plan-tagline{font-family:var(--f-data);font-size:8.5px;letter-spacing:.12em;text-transform:uppercase;color:rgba(232,217,200,.32);margin-bottom:18px}
+.plan-built-for{margin-bottom:18px}
+.plan-built-label{font-family:var(--f-data);font-size:7.5px;letter-spacing:.18em;text-transform:uppercase;color:rgba(232,217,200,.22);margin-bottom:7px}
+.plan-built-list{display:flex;flex-wrap:wrap;gap:4px}
+.plan-pill{
+  font-family:var(--f-data);font-size:7.5px;letter-spacing:.08em;
+  padding:2px 7px;border-radius:2px;
+  border:1px solid var(--wire-soft);color:rgba(232,217,200,.35);
+  background:rgba(232,217,200,.03);
+}
+.plan-caps-divider{height:1px;background:var(--wire-soft);margin:18px 0}
+.plan-caps-label{font-family:var(--f-data);font-size:7.5px;letter-spacing:.2em;text-transform:uppercase;color:rgba(232,217,200,.22);margin-bottom:12px}
+.plan-caps{list-style:none;flex:1}
+.plan-caps li{
+  display:flex;align-items:flex-start;gap:8px;
+  font-family:var(--f-ui);font-size:13px;font-weight:300;
+  color:rgba(232,217,200,.45);line-height:1.55;
+  padding-bottom:9px;
+}
+.plan-caps li:last-child{padding-bottom:0}
+.cap-check{
+  width:14px;height:14px;border-radius:2px;flex-shrink:0;margin-top:2px;
+  display:flex;align-items:center;justify-content:center;
+  background:rgba(232,217,200,.04);border:1px solid var(--wire-soft);
+}
+.cap-check svg{opacity:.5}
+
+/* regions row */
+.plan-regions{margin-top:18px;padding-top:14px;border-top:1px solid var(--wire-soft)}
+.plan-regions-label{font-family:var(--f-data);font-size:7.5px;letter-spacing:.16em;text-transform:uppercase;color:rgba(232,217,200,.22);margin-bottom:7px}
+.plan-regions-val{font-family:var(--f-data);font-size:8.5px;letter-spacing:.05em;color:rgba(232,217,200,.35);line-height:1.6}
+
+/* CTA */
+.plan-cta{margin-top:24px}
+.btn-apply{
+  width:100%;padding:12px 16px;
+  background:transparent;
+  color:rgba(232,217,200,.55);
+  border:1px solid var(--wire);border-radius:2px;
+  font-family:var(--f-data);font-size:10px;letter-spacing:.14em;text-transform:uppercase;
+  transition:border-color .22s,color .22s,background .22s,transform .15s;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  position:relative;overflow:hidden;
+}
+.btn-apply::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(110deg,transparent 30%,rgba(255,255,255,.04) 50%,transparent 70%);
+  transform:translateX(-150%);transition:transform .5s ease;
+}
+.btn-apply:hover{
+  border-color:rgba(232,217,200,.28);
+  color:var(--ice);
+  background:rgba(232,217,200,.04);
+}
+.btn-apply:hover::after{transform:translateX(150%)}
+.btn-apply:active{transform:scale(.98)}
+
+.btn-apply.sovereign{
+  border-color:rgba(232,217,200,.18);
+  color:rgba(232,217,200,.65);
+}
+.btn-apply.sovereign:hover{
+  border-color:rgba(232,217,200,.4);
+  background:rgba(232,217,200,.06);
+  color:var(--ice);
+}
+
+/* ══════════════════════════════════════
+   COMPLIANCE STRIP
+══════════════════════════════════════ */
+.compliance-strip{
+  border-top:1px solid var(--wire-soft);
+  padding:9px 0;text-align:center;
+  font-family:var(--f-data);font-size:7.5px;letter-spacing:.2em;text-transform:uppercase;
+  color:rgba(232,217,200,.18);
   background:rgba(8,8,8,.9);
 }
 
-/* ── PLANS GRID ── */
-.plans-wrap{max-width:1100px;margin:0 auto;padding:80px 48px 60px}
-.plans-label{
-  text-align:center;
-  font-family:var(--f-data);font-size:8.5px;letter-spacing:.28em;
-  text-transform:uppercase;color:rgba(232,217,200,.28);margin-bottom:48px;
-}
-
-.plans-grid{
-  display:grid;grid-template-columns:repeat(4,1fr);gap:12px;
-}
-
-.plan-card{
-  border:1px solid var(--wire-soft);border-radius:4px;
-  background:rgba(8,8,8,.75);backdrop-filter:blur(10px);
-  padding:28px 22px 24px;position:relative;overflow:hidden;
-  display:flex;flex-direction:column;
-  transition:border-color .3s,box-shadow .3s,transform .2s var(--ease-spring);
-}
-.plan-card::before{
-  content:'';position:absolute;inset:-1px;border-radius:5px;
-  background:conic-gradient(from var(--ba),transparent 20%,rgba(232,217,200,.28) 40%,rgba(232,217,200,.06) 50%,transparent 65%);
-  z-index:-1;opacity:0;transition:opacity .35s;
-  animation:spinBorder 5s linear infinite paused;
-}
-.plan-card::after{content:'';position:absolute;inset:1px;border-radius:3px;background:rgba(8,8,8,.82);z-index:-1}
-.plan-card:hover{border-color:transparent;box-shadow:0 10px 40px rgba(0,0,0,.45),0 0 24px rgba(232,217,200,.04);transform:translateY(-3px)}
-.plan-card:hover::before{opacity:1;animation-play-state:running}
-
-/* featured */
-.plan-card.featured{
-  border-color:rgba(232,217,200,.18);
-  background:rgba(232,217,200,.03);
-  box-shadow:0 4px 32px rgba(0,0,0,.35),inset 0 1px 0 rgba(232,217,200,.06);
-}
-.plan-card.featured:hover{border-color:transparent}
-.featured-badge{
-  position:absolute;top:14px;right:14px;
-  font-family:var(--f-data);font-size:6.5px;letter-spacing:.16em;text-transform:uppercase;
-  padding:3px 8px;border-radius:2px;
-  background:rgba(232,217,200,.1);color:rgba(232,217,200,.65);
-  border:1px solid rgba(232,217,200,.18);
-}
-
-.plan-tier{
-  font-family:var(--f-data);font-size:8px;letter-spacing:.24em;
-  text-transform:uppercase;color:var(--muted);margin-bottom:12px;
-}
-.plan-name{
-  font-family:var(--f-display);font-size:26px;letter-spacing:.08em;
-  text-transform:uppercase;color:var(--ice);line-height:1;margin-bottom:10px;
-}
-.plan-price{
-  font-family:var(--f-display);font-size:38px;letter-spacing:.04em;
-  color:var(--ice);line-height:1;margin-bottom:4px;
-}
-.plan-price .currency{font-size:18px;opacity:.5;margin-right:2px;vertical-align:top;padding-top:8px;display:inline-block}
-.plan-price .period{font-family:var(--f-data);font-size:9px;letter-spacing:.1em;opacity:.4;margin-left:3px}
-.plan-price-note{font-family:var(--f-data);font-size:8px;letter-spacing:.08em;color:var(--muted);margin-bottom:20px}
-.plan-divider{height:1px;background:var(--wire-soft);margin:16px 0}
-.plan-desc{
-  font-family:var(--f-serif);font-size:12.5px;font-weight:300;
-  color:rgba(232,217,200,.38);line-height:1.65;margin-bottom:20px;flex:1;
-}
-.plan-features{list-style:none;display:flex;flex-direction:column;gap:8px;margin-bottom:24px}
-.plan-features li{
-  display:flex;align-items:flex-start;gap:8px;
-  font-family:var(--f-data);font-size:9px;letter-spacing:.04em;
-  color:rgba(232,217,200,.4);line-height:1.5;
-}
-.plan-features li::before{
-  content:'·';color:rgba(232,217,200,.25);flex-shrink:0;margin-top:0;
-}
-.plan-features li.ok::before{content:'✓';color:rgba(16,185,129,.5)}
-.plan-features li.lock::before{content:'—';color:rgba(46,69,88,.6)}
-
-.plan-cta{
-  display:block;width:100%;padding:11px 16px;border-radius:3px;
-  font-family:var(--f-data);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;
-  text-align:center;transition:all .25s;
-  border:1px solid var(--wire);color:rgba(232,217,200,.45);background:transparent;
-}
-.plan-cta:hover{border-color:rgba(232,217,200,.3);color:var(--ice);background:rgba(232,217,200,.05)}
-.plan-cta.primary{
-  background:var(--ice);color:#080808;border-color:transparent;
-  font-weight:500;
-  box-shadow:0 0 0 1px rgba(232,217,200,.2),0 6px 20px rgba(232,217,200,.08);
-}
-.plan-cta.primary:hover{filter:brightness(1.06);box-shadow:0 0 0 1px rgba(232,217,200,.35),0 10px 28px rgba(232,217,200,.14)}
-
-/* ── ENTERPRISE BANNER ── */
-.enterprise-wrap{max-width:1100px;margin:0 auto;padding:0 48px 80px}
-.enterprise-card{
-  border:1px solid var(--wire);border-radius:4px;padding:36px 40px;
-  background:rgba(232,217,200,.018);
-  display:grid;grid-template-columns:1fr auto;gap:40px;align-items:center;
-  position:relative;overflow:hidden;
-  transition:border-color .3s,box-shadow .3s;
-}
-.enterprise-card:hover{border-color:rgba(232,217,200,.2);box-shadow:0 8px 36px rgba(0,0,0,.35)}
-.enterprise-card::before{
-  content:'';position:absolute;left:0;top:0;bottom:0;width:3px;
-  background:linear-gradient(to bottom,transparent,rgba(232,217,200,.3),transparent);
-}
-.enterprise-eyebrow{
-  font-family:var(--f-data);font-size:8px;letter-spacing:.24em;
-  text-transform:uppercase;color:var(--muted);margin-bottom:10px;
-}
-.enterprise-name{
-  font-family:var(--f-display);font-size:32px;letter-spacing:.06em;
-  text-transform:uppercase;color:var(--ice);margin-bottom:10px;line-height:1;
-}
-.enterprise-desc{
-  font-family:var(--f-serif);font-size:14.5px;font-weight:300;
-  color:rgba(232,217,200,.42);line-height:1.75;max-width:580px;
-}
-.enterprise-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:18px}
-.enterprise-tag{
-  font-family:var(--f-data);font-size:7.5px;letter-spacing:.1em;text-transform:uppercase;
-  padding:3px 9px;border-radius:2px;border:1px solid var(--wire-soft);color:var(--muted);
-}
-.enterprise-actions{display:flex;flex-direction:column;gap:10px;align-items:flex-end}
-.enterprise-price{
-  font-family:var(--f-display);font-size:22px;letter-spacing:.06em;
-  color:rgba(232,217,200,.35);text-align:right;margin-bottom:4px;
-}
-.enterprise-price-note{
-  font-family:var(--f-data);font-size:7.5px;letter-spacing:.1em;
-  text-transform:uppercase;color:var(--muted);text-align:right;margin-bottom:14px;
-}
-
-/* ── FORM MODAL ── */
-.modal-overlay{
+/* ══════════════════════════════════════
+   APPLICATION MODAL
+══════════════════════════════════════ */
+.modal-backdrop{
   position:fixed;inset:0;z-index:800;
-  background:rgba(0,0,0,.75);
+  background:rgba(0,0,0,.78);
   backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
   display:flex;align-items:center;justify-content:center;
-  padding:20px;opacity:0;pointer-events:none;
-  transition:opacity .3s var(--ease-out5);
+  padding:20px;
+  opacity:0;pointer-events:none;
+  transition:opacity .25s var(--ease-out5);
 }
-.modal-overlay.open{opacity:1;pointer-events:all}
+.modal-backdrop.open{opacity:1;pointer-events:all}
 
 .modal{
-  width:100%;max-width:560px;
-  background:rgba(10,10,10,.98);
-  border:1px solid var(--wire);border-radius:6px;
-  box-shadow:0 32px 80px rgba(0,0,0,.8),0 0 0 1px rgba(232,217,200,.04);
-  transform:translateY(20px) scale(.97);
-  transition:transform .35s var(--ease-out5);
-  overflow:hidden;
+  width:100%;max-width:520px;max-height:90vh;overflow-y:auto;
+  background:var(--deep);
+  border:1px solid var(--wire);border-radius:4px;
+  box-shadow:0 40px 90px rgba(0,0,0,.8),0 0 0 1px rgba(232,217,200,.04);
+  transform:translateY(18px) scale(.98);
+  transition:transform .3s var(--ease-out5);
 }
-.modal-overlay.open .modal{transform:translateY(0) scale(1)}
+.modal-backdrop.open .modal{transform:translateY(0) scale(1)}
+::-webkit-scrollbar{width:2px}
 
-.modal-header{
-  padding:26px 28px 20px;
-  border-bottom:1px solid var(--wire-soft);
-  display:flex;align-items:flex-start;justify-content:space-between;gap:16px;
+.modal-head{
+  padding:16px 22px;border-bottom:1px solid var(--wire-soft);
+  background:rgba(0,0,0,.4);
+  display:flex;align-items:center;justify-content:space-between;
+  position:sticky;top:0;z-index:2;
 }
-.modal-title-wrap{}
-.modal-plan-tag{
-  font-family:var(--f-data);font-size:7.5px;letter-spacing:.22em;text-transform:uppercase;
-  color:var(--muted);margin-bottom:6px;
-}
-.modal-title{
-  font-family:var(--f-display);font-size:24px;letter-spacing:.06em;
-  text-transform:uppercase;color:var(--ice);line-height:1;
-}
+.modal-head-left{display:flex;flex-direction:column;gap:3px}
+.modal-head-title{font-family:var(--f-display);font-size:18px;letter-spacing:.1em;text-transform:uppercase;color:var(--ice)}
+.modal-head-sub{font-family:var(--f-data);font-size:8.5px;letter-spacing:.16em;text-transform:uppercase;color:rgba(232,217,200,.3)}
 .modal-close{
-  width:30px;height:30px;display:flex;align-items:center;justify-content:center;
-  border-radius:3px;color:rgba(232,217,200,.35);flex-shrink:0;
-  transition:background .15s,color .15s;background:none;border:none;cursor:pointer;
+  width:28px;height:28px;background:rgba(232,217,200,.04);
+  border:1px solid var(--wire-soft);border-radius:2px;
+  color:rgba(232,217,200,.45);font-size:14px;
+  display:flex;align-items:center;justify-content:center;
+  transition:background .2s,color .2s;
 }
-.modal-close:hover{background:rgba(232,217,200,.07);color:var(--ice)}
+.modal-close:hover{background:rgba(232,217,200,.08);color:var(--ice)}
 
-.modal-body{padding:24px 28px 28px;display:flex;flex-direction:column;gap:14px}
-
-.field{display:flex;flex-direction:column;gap:5px}
-.field-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.field label{
-  font-family:var(--f-data);font-size:8px;letter-spacing:.18em;
-  text-transform:uppercase;color:var(--muted);
+.modal-selected-plan{
+  padding:12px 22px;border-bottom:1px solid var(--wire-soft);
+  background:rgba(232,217,200,.02);
+  display:flex;align-items:center;justify-content:space-between;
 }
-.field label span{color:rgba(239,68,68,.6);margin-left:2px}
-.field input,.field select,.field textarea{
-  background:rgba(232,217,200,.04);
-  border:1px solid var(--wire-soft);border-radius:3px;
-  padding:11px 14px;
-  font-family:var(--f-data);font-size:10.5px;letter-spacing:.04em;
-  color:var(--ice);outline:none;
-  transition:border-color .2s,box-shadow .2s;
+.modal-plan-tag{
+  font-family:var(--f-data);font-size:8px;letter-spacing:.14em;text-transform:uppercase;
+  color:rgba(232,217,200,.45);
+}
+.modal-plan-name{font-family:var(--f-data);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ice)}
+
+.modal-body{padding:26px 22px}
+.form-row{margin-bottom:16px}
+.form-row.half{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.form-label{
+  font-family:var(--f-data);font-size:8.5px;letter-spacing:.18em;
+  text-transform:uppercase;color:rgba(232,217,200,.38);
+  display:block;margin-bottom:6px;
+}
+.form-label .req{color:var(--cobalt)}
+.form-input,.form-select,.form-textarea{
   width:100%;
+  background:rgba(0,0,0,.5);
+  border:1px solid var(--wire-soft);
+  color:var(--ice);font-family:var(--f-data);font-size:11.5px;
+  padding:11px 12px;border-radius:2px;
+  transition:border-color .2s,box-shadow .2s;outline:none;
+  letter-spacing:.03em;
 }
-.field input::placeholder,.field textarea::placeholder{color:rgba(232,217,200,.2)}
-.field input:focus,.field select:focus,.field textarea:focus{
+.form-input:focus,.form-select:focus,.form-textarea:focus{
   border-color:rgba(232,217,200,.25);
   box-shadow:0 0 0 3px rgba(232,217,200,.04);
 }
-.field select{appearance:none;cursor:pointer;color:rgba(232,217,200,.55)}
-.field select option{background:#0d0d0d;color:var(--ice)}
-.field textarea{resize:vertical;min-height:88px;line-height:1.6;font-size:10px}
+.form-input::placeholder,.form-textarea::placeholder{color:rgba(46,69,88,.85);letter-spacing:.05em}
+.form-select{cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' fill='none' stroke='rgba(232,217,200,.3)' stroke-width='1.4'%3E%3Cpath d='M1 1l4 4 4-4'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center}
+.form-select option{background:#0d0d0d}
+.form-textarea{resize:vertical;min-height:90px;font-family:var(--f-ui);font-size:13px;letter-spacing:0;line-height:1.55}
 
-.modal-footer{
-  padding:0 28px 24px;display:flex;align-items:center;justify-content:space-between;
-  gap:14px;
+.modal-notice{
+  padding:11px 13px;margin-bottom:20px;
+  background:rgba(232,217,200,.02);
+  border:1px solid var(--wire-soft);
+  border-left:2px solid rgba(232,217,200,.12);
+  border-radius:2px;
+  font-family:var(--f-data);font-size:9px;letter-spacing:.04em;
+  color:rgba(232,217,200,.3);line-height:1.65;
 }
-.modal-note{font-family:var(--f-data);font-size:7.5px;letter-spacing:.08em;color:var(--muted)}
-.modal-submit{
-  display:inline-flex;align-items:center;gap:8px;
-  padding:12px 26px;background:var(--ice);color:#080808;
-  border:none;border-radius:3px;cursor:pointer;
-  font-family:var(--f-data);font-size:10px;font-weight:500;
-  letter-spacing:.14em;text-transform:uppercase;
-  transition:filter .2s,box-shadow .2s,transform .2s var(--ease-spring);
-  box-shadow:0 0 0 1px rgba(232,217,200,.2),0 6px 20px rgba(232,217,200,.07);
+
+.btn-submit{
+  width:100%;padding:13px;
+  background:var(--ice);color:#080808;border:none;
+  border-radius:2px;cursor:pointer;
+  font-family:var(--f-data);font-size:10.5px;font-weight:500;
+  letter-spacing:.16em;text-transform:uppercase;
+  transition:filter .25s,box-shadow .25s,transform .15s;
+  box-shadow:0 0 0 1px rgba(232,217,200,.18),0 8px 24px rgba(232,217,200,.06);
   position:relative;overflow:hidden;
 }
-.modal-submit::after{
+.btn-submit::after{
   content:'';position:absolute;inset:0;
   background:linear-gradient(110deg,transparent 30%,rgba(255,255,255,.14) 50%,transparent 70%);
-  transform:translateX(-150%);transition:transform .45s ease;
+  transform:translateX(-150%);transition:transform .5s ease;
 }
-.modal-submit:hover{filter:brightness(1.06);transform:translateY(-1px);box-shadow:0 0 0 1px rgba(232,217,200,.35),0 10px 26px rgba(232,217,200,.12)}
-.modal-submit:hover::after{transform:translateX(150%)}
-.modal-submit:active{transform:scale(.98)}
-.modal-submit:disabled{opacity:.45;pointer-events:none}
+.btn-submit:hover{filter:brightness(1.06);box-shadow:0 0 0 1px rgba(232,217,200,.3),0 10px 32px rgba(232,217,200,.11)}
+.btn-submit:hover::after{transform:translateX(150%)}
+.btn-submit:disabled{opacity:.45;cursor:not-allowed}
+.btn-submit:active:not(:disabled){transform:scale(.98)}
 
-/* ── THANK YOU OVERLAY ── */
-.thankyou-overlay{
-  position:fixed;inset:0;z-index:900;
-  background:rgba(0,0,0,.8);
-  backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
-  display:flex;align-items:center;justify-content:center;padding:20px;
-  opacity:0;pointer-events:none;
-  transition:opacity .35s var(--ease-out5);
+/* success state */
+.modal-success{
+  display:none;flex-direction:column;align-items:center;
+  padding:52px 24px;text-align:center;
 }
-.thankyou-overlay.open{opacity:1;pointer-events:all}
-
-.thankyou-card{
-  width:100%;max-width:480px;text-align:center;
-  background:rgba(10,10,10,.98);
-  border:1px solid var(--wire);border-radius:6px;
-  padding:52px 44px 44px;
-  box-shadow:0 40px 100px rgba(0,0,0,.85);
-  transform:scale(.93) translateY(16px);
-  transition:transform .45s var(--ease-out5);
-  position:relative;overflow:hidden;
-}
-.thankyou-overlay.open .thankyou-card{transform:scale(1) translateY(0)}
-.thankyou-card::before{
-  content:'';position:absolute;inset:0;
-  background:radial-gradient(ellipse 70% 50% at 50% 0%,rgba(232,217,200,.04) 0%,transparent 60%);
-  pointer-events:none;
-}
-
-.ty-icon{
-  width:56px;height:56px;border-radius:50%;
-  background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.18);
+.success-icon{
+  width:52px;height:52px;border-radius:50%;
+  background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.2);
   display:flex;align-items:center;justify-content:center;
-  margin:0 auto 24px;
-  animation:tyPop .6s .1s var(--ease-spring) both;
+  margin-bottom:20px;
 }
-.ty-icon svg{stroke:rgba(16,185,129,.75);stroke-width:1.5;fill:none}
+.success-title{font-family:var(--f-display);font-size:24px;letter-spacing:.08em;text-transform:uppercase;color:var(--ice);margin-bottom:10px}
+.success-body{font-family:var(--f-serif);font-size:14px;font-weight:300;color:rgba(232,217,200,.45);line-height:1.75;max-width:340px}
+.success-ref{margin-top:18px;font-family:var(--f-data);font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:rgba(232,217,200,.22)}
 
-.ty-tag{
-  display:inline-block;
-  font-family:var(--f-data);font-size:7.5px;letter-spacing:.24em;text-transform:uppercase;
-  color:rgba(16,185,129,.55);border:1px solid rgba(16,185,129,.15);
-  padding:3px 10px;border-radius:2px;background:rgba(16,185,129,.04);
-  margin-bottom:18px;
-  animation:fadeUp .6s .15s var(--ease-out5) both;
+/* modal error */
+.form-error{
+  display:none;padding:9px 12px;margin-bottom:14px;
+  background:rgba(239,68,68,.05);border:1px solid rgba(239,68,68,.18);border-radius:2px;
+  font-family:var(--f-data);font-size:9.5px;letter-spacing:.04em;color:rgba(239,68,68,.75);
 }
-.ty-h2{
-  font-family:var(--f-display);font-size:clamp(28px,5vw,44px);
-  letter-spacing:.05em;text-transform:uppercase;color:var(--ice);
-  line-height:1;margin-bottom:14px;
-  animation:fadeUp .6s .22s var(--ease-out5) both;
-}
-.ty-body{
-  font-family:var(--f-serif);font-size:14.5px;font-weight:300;
-  color:rgba(232,217,200,.42);line-height:1.8;margin-bottom:28px;
-  animation:fadeUp .6s .3s var(--ease-out5) both;
-}
-.ty-body strong{color:rgba(232,217,200,.7);font-weight:400}
-.ty-divider{height:1px;background:var(--wire-soft);margin:0 0 24px;animation:fadeUp .5s .36s var(--ease-out5) both}
-.ty-meta{
-  display:flex;justify-content:center;gap:22px;flex-wrap:wrap;
-  font-family:var(--f-data);font-size:8px;letter-spacing:.1em;
-  text-transform:uppercase;color:var(--muted);
-  animation:fadeUp .5s .4s var(--ease-out5) both;
-  margin-bottom:28px;
-}
-.ty-meta-item{display:flex;align-items:center;gap:5px}
-.ty-dot{width:4px;height:4px;border-radius:50%;background:rgba(16,185,129,.5)}
-.ty-close{
-  display:inline-flex;align-items:center;gap:8px;
-  padding:11px 26px;
-  border:1px solid var(--wire);border-radius:3px;
-  font-family:var(--f-data);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;
-  color:rgba(232,217,200,.45);background:transparent;cursor:pointer;
-  transition:border-color .2s,color .2s,background .2s;
-  animation:fadeUp .5s .46s var(--ease-out5) both;
-}
-.ty-close:hover{border-color:rgba(232,217,200,.28);color:var(--ice);background:rgba(232,217,200,.05)}
+.form-error.show{display:block}
 
-/* ── FOOTER ── */
-footer{padding:44px;border-top:1px solid var(--wire-soft);background:var(--deep)}
-.footer-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between}
+/* ══════════════════════════════════════
+   FOOTER
+══════════════════════════════════════ */
+footer{padding:40px;border-top:1px solid var(--wire-soft);background:var(--deep)}
+.footer-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}
 .footer-logo{font-family:var(--f-display);font-size:19px;letter-spacing:.18em;color:var(--ice)}
-.footer-links{display:flex;gap:22px;font-family:var(--f-data);font-size:8.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.footer-links{display:flex;gap:20px;font-family:var(--f-data);font-size:8.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
 .footer-links a{transition:color .2s}
 .footer-links a:hover{color:rgba(232,217,200,.5)}
-.footer-meta{font-family:var(--f-data);font-size:8.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);text-align:right}
+.footer-meta{font-family:var(--f-data);font-size:8.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
 
-/* ── REVEAL ── */
-.reveal{opacity:0;transform:translateY(20px);transition:opacity .6s var(--ease-out5),transform .6s var(--ease-out5)}
-.reveal.visible{opacity:1;transform:none}
+/* ══════════════════════════════════════
+   REVEAL + ANIMATIONS
+══════════════════════════════════════ */
+.reveal{opacity:0;transform:translateY(18px);transition:opacity .6s var(--ease-out5),transform .6s var(--ease-out5)}
+.reveal.visible{opacity:1;transform:translateY(0)}
 
-/* ── KEYFRAMES ── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
 @keyframes pulseSoft{0%,100%{opacity:.65}50%{opacity:1}}
-@keyframes spinBorder{to{--ba:360deg}}
-@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
-@keyframes tyPop{from{opacity:0;transform:scale(.6)}to{opacity:1;transform:scale(1)}}
-@keyframes logoBreathe{
-  0%,100%{filter:drop-shadow(0 0 12px rgba(232,217,200,.04))}
-  50%{filter:drop-shadow(0 0 24px rgba(232,217,200,.1))}
-}
+@keyframes logoBreathe{0%,100%{filter:drop-shadow(0 0 10px rgba(232,217,200,.04))}50%{filter:drop-shadow(0 0 20px rgba(232,217,200,.1))}}
+@keyframes slideIn{from{opacity:0;transform:translateX(-12px)}to{opacity:1;transform:translateX(0)}}
 
-/* ── RESPONSIVE ── */
-@media(max-width:960px){
-  .plans-grid{grid-template-columns:1fr 1fr}
-  .enterprise-card{grid-template-columns:1fr}
-  .enterprise-actions{align-items:flex-start}
-  .enterprise-price,.enterprise-price-note{text-align:left}
-  .plans-wrap,.enterprise-wrap{padding-left:24px;padding-right:24px}
-  .page-hero{padding:100px 24px 56px}
+.fu {opacity:0;animation:fadeUp .65s var(--ease-out5) forwards}
+.fu-1{opacity:0;animation:fadeUp .65s .09s var(--ease-out5) forwards}
+.fu-2{opacity:0;animation:fadeUp .65s .18s var(--ease-out5) forwards}
+.fu-3{opacity:0;animation:fadeUp .65s .27s var(--ease-out5) forwards}
+
+/* ══════════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════════ */
+@media(max-width:900px){
+  .plan-grid{grid-template-columns:1fr}
+  .plan-card{border-right:none;border-bottom:1px solid var(--wire-soft)}
+  .plan-card:last-child{border-bottom:none}
+  .pricing-hero{padding:100px 24px 60px}
+  .plans-wrap{padding:40px 20px 80px}
+  .selector-inner{padding:0 20px}
+  .form-row.half{grid-template-columns:1fr}
   .nav{padding:0 20px}
-}
-@media(max-width:600px){
-  .plans-grid{grid-template-columns:1fr}
-  .field-row{grid-template-columns:1fr}
-  .modal-footer{flex-direction:column;align-items:stretch}
-  .modal-submit{justify-content:center}
-  .footer-inner{flex-direction:column;gap:20px;text-align:center}
-  .footer-meta{text-align:center}
-  .footer-links{flex-wrap:wrap;justify-content:center;gap:14px}
+  .nav-links,.nav-clock{display:none}
+  .module-intro{flex-direction:column}
+  .module-stat-block{flex-direction:row;flex-wrap:wrap}
 }
 @media(prefers-reduced-motion:reduce){
   *,*::before,*::after{animation:none!important;transition:none!important}
-  .reveal{opacity:1;transform:none}
+  .fu,.fu-1,.fu-2,.fu-3,.reveal{opacity:1;transform:none}
 }
 </style>
 </head>
 <body>
 
-<!-- NAV -->
+<!-- ════════════ NAV ════════════ -->
 <nav class="nav" id="nav">
   <a href="landing.html" class="nav-logo">
-    <img src="logo.png" alt="Prexus" style="width:32px;height:32px;object-fit:contain;display:block"/>
-    <div style="margin-left:12px">
+    <div class="nav-logo-icon">
+      <img src="logo.png" alt="Prexus" style="width:32px;height:32px;object-fit:contain;display:block"/>
+    </div>
+    <div>
       <div class="nav-wordmark">PREXUS</div>
       <div class="nav-product">Intelligence Platform</div>
     </div>
   </a>
   <div class="nav-right">
+    <div class="nav-links">
+      <a href="landing.html">Platform</a>
+      <a href="index.html">Access</a>
+      <a href="demo.html">Book Demo</a>
+    </div>
     <div class="nav-status">
       <div class="nav-status-dot"></div>
       <span class="nav-status-text">NOMINAL</span>
     </div>
-    <a href="landing.html" class="nav-back">
-      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"><path d="M8 2L3 7L8 12"/><line x1="3" y1="7" x2="13" y2="7"/></svg>
-      Platform
-    </a>
+    <div class="nav-clock" id="nav-clock">--:--:-- UTC</div>
   </div>
 </nav>
 
-<!-- HERO -->
-<div class="page-hero">
-  <div class="page-hero-inner">
-    <div class="page-eyebrow">By Authorization Only</div>
-    <h1 class="page-h1">Plans &amp;<br/><span class="stroke">Pricing</span></h1>
-    <p class="page-lead">Prexus grants access to verified institutions — governments, research bodies, and regulated enterprises. Select a plan and submit your access request. We vet every application.</p>
-  </div>
-</div>
-
-<div class="cls-strip">FOUO // Early Access Program // Prexus Intelligence v2.0</div>
-<div class="compliance-bar">SOC 2 Type II &nbsp;·&nbsp; ISO 27001 &nbsp;·&nbsp; GDPR &nbsp;·&nbsp; RBI Compliant &nbsp;·&nbsp; TLS 1.3 &nbsp;·&nbsp; AES-256 &nbsp;·&nbsp; Zero-Trust</div>
-
-<!-- PLANS -->
-<div class="plans-wrap">
-  <div class="plans-label">Choose your access tier — all plans require institutional verification</div>
-
-  <div class="plans-grid">
-
-    <!-- Explorer -->
-    <div class="plan-card reveal">
-      <div class="plan-tier">Tier 01 · Research</div>
-      <div class="plan-name">Explorer</div>
-      <div class="plan-price"><span class="currency">$</span>49<span class="period">/mo</span></div>
-      <div class="plan-price-note">₹2,999 / month · annual option available</div>
-      <div class="plan-divider"></div>
-      <div class="plan-desc">For students, independent researchers, and analysts. Limited pipeline access with delayed data. Distribution-first, not revenue-first.</div>
-      <ul class="plan-features">
-        <li class="ok">Meteorium dashboard — read only</li>
-        <li class="ok">3 predictive models</li>
-        <li class="ok">Delayed telemetry (6h lag)</li>
-        <li class="ok">100 API calls / month</li>
-        <li class="ok">Community access</li>
-        <li class="lock">Real-time data streams</li>
-        <li class="lock">Monte Carlo simulation</li>
-        <li class="lock">Custom integrations</li>
-      </ul>
-      <button class="plan-cta" onclick="openModal('Explorer','$49 / month')">Request Access →</button>
-    </div>
-
-    <!-- Builder -->
-    <div class="plan-card reveal">
-      <div class="plan-tier">Tier 02 · Startup</div>
-      <div class="plan-name">Builder</div>
-      <div class="plan-price"><span class="currency">$</span>399<span class="period">/mo</span></div>
-      <div class="plan-price-note">₹24,999 / month · annual option available</div>
-      <div class="plan-divider"></div>
-      <div class="plan-desc">For startups, small trading firms, and AI research teams. First real revenue layer with real-time analytics and team collaboration.</div>
-      <ul class="plan-features">
-        <li class="ok">Real-time analytics</li>
-        <li class="ok">Portfolio simulations</li>
-        <li class="ok">Market intelligence feeds</li>
-        <li class="ok">5,000 API calls / month</li>
-        <li class="ok">Team collaboration (5 seats)</li>
-        <li class="ok">Basic AI forecasting</li>
-        <li class="lock">Dedicated support</li>
-        <li class="lock">Custom model deployment</li>
-      </ul>
-      <button class="plan-cta" onclick="openModal('Builder','$399 / month')">Request Access →</button>
-    </div>
-
-    <!-- Professional -->
-    <div class="plan-card featured reveal">
-      <div class="featured-badge">Most Selected</div>
-      <div class="plan-tier">Tier 03 · Institutional</div>
-      <div class="plan-name">Professional</div>
-      <div class="plan-price" style="font-size:28px;letter-spacing:.02em">Custom</div>
-      <div class="plan-price-note">$5K–$15K / month · quoted per scope</div>
-      <div class="plan-divider"></div>
-      <div class="plan-desc">For hedge funds, asset managers, and mid-sized enterprises. Full Meteorium access, dedicated support, and custom integrations.</div>
-      <ul class="plan-features">
-        <li class="ok">Advanced forecasting suite</li>
-        <li class="ok">Full Meteorium pipeline</li>
-        <li class="ok">Scenario simulations (all SSPs)</li>
-        <li class="ok">Unlimited API access</li>
-        <li class="ok">Custom integrations</li>
-        <li class="ok">Dedicated engineering support</li>
-        <li class="ok">Multi-region deployment</li>
-        <li class="ok">SLA guarantees</li>
-      </ul>
-      <button class="plan-cta primary" onclick="openModal('Professional','Custom — $5K–$15K/mo')">Request Access →</button>
-    </div>
-
-    <!-- Sovereign -->
-    <div class="plan-card reveal">
-      <div class="plan-tier">Tier 04 · Government</div>
-      <div class="plan-name">Sovereign</div>
-      <div class="plan-price" style="font-size:22px;letter-spacing:.02em;padding-top:6px">Contact<br/>Sales</div>
-      <div class="plan-price-note">$250K–$5M / year · multi-year contracts</div>
-      <div class="plan-divider"></div>
-      <div class="plan-desc">For sovereign governments, defense agencies, and national infrastructure bodies. Air-gapped deployment, dedicated AI architecture, classified intelligence layers.</div>
-      <ul class="plan-features">
-        <li class="ok">Dedicated infrastructure</li>
-        <li class="ok">Air-gapped deployment option</li>
-        <li class="ok">On-premise / private cloud</li>
-        <li class="ok">Classified intelligence layers</li>
-        <li class="ok">Custom AI agent deployment</li>
-        <li class="ok">National-scale risk models</li>
-        <li class="ok">Priority engineering team</li>
-        <li class="ok">Strategic simulation systems</li>
-      </ul>
-      <button class="plan-cta" onclick="openModal('Sovereign Suite','$250K–$5M / year')">Request Access →</button>
-    </div>
-
-  </div>
-</div>
-
-<!-- ENTERPRISE BANNER -->
-<div class="enterprise-wrap">
-  <div class="enterprise-card reveal">
+<!-- ════════════ HERO ════════════ -->
+<header class="pricing-hero">
+  <div class="pricing-hero-grid" aria-hidden="true"></div>
+  <div class="pricing-hero-inner">
     <div>
-      <div class="enterprise-eyebrow">Black Division · Invitation Only</div>
-      <div class="enterprise-name">Ultra-Sovereign<br/>Intelligence</div>
-      <div class="enterprise-desc">Private predictive systems for billion-dollar hedge funds, intelligence-linked entities, and strategic governments. Closed-loop, air-gapped, and invitation-only. This division does not appear in our public catalogue.</div>
-      <div class="enterprise-tags">
-        <span class="enterprise-tag">Invitation Only</span>
-        <span class="enterprise-tag">$5M–$100M+</span>
-        <span class="enterprise-tag">Autonomous Threat Monitoring</span>
-        <span class="enterprise-tag">Ultra-custom AI Architecture</span>
-        <span class="enterprise-tag">Strategic War-Gaming</span>
+      <div class="hero-label fu">Deployment Architectures</div>
+      <h1 class="hero-h1 fu-1">Platform<br/>Access Plans</h1>
+      <p class="hero-sub fu-2">
+        Prexus modules are available across cloud, hybrid, and sovereign deployment models.
+        Access tiers are determined by institutional authorization, operational requirements, and sovereignty constraints.
+      </p>
+    </div>
+    <div class="hero-meta fu-3">
+      <div class="hero-badge">By Authorization Only</div>
+      <div class="hero-badge">Early Access Program</div>
+      <div style="margin-top:6px">3 Modules · 9 Deployment Tiers</div>
+    </div>
+  </div>
+</header>
+
+<!-- compliance strip -->
+<div class="compliance-strip">SOC 2 Type II &nbsp;·&nbsp; ISO 27001 &nbsp;·&nbsp; GDPR &nbsp;·&nbsp; RBI Compliant &nbsp;·&nbsp; Data Residency India / EU &nbsp;·&nbsp; TLS 1.3 &nbsp;·&nbsp; AES-256 &nbsp;·&nbsp; Zero-Trust</div>
+
+<!-- ════════════ MODULE SELECTOR ════════════ -->
+<div class="selector-bar">
+  <div class="selector-inner">
+    <button class="sel-tab active" id="tab-meteorium" onclick="selectModule('meteorium')">
+      <div class="sel-tab-dot" style="background:#0EA5E9;box-shadow:0 0 6px #0EA5E9"></div>
+      Meteorium
+      <span class="sel-tab-count">3 Plans</span>
+    </button>
+    <button class="sel-tab" id="tab-heltho" onclick="selectModule('heltho')">
+      <div class="sel-tab-dot" style="background:#10B981;box-shadow:0 0 6px #10B981"></div>
+      Heltho
+      <span class="sel-tab-count">3 Plans</span>
+    </button>
+    <button class="sel-tab" id="tab-raksha" onclick="selectModule('raksha')">
+      <div class="sel-tab-dot" style="background:#EF4444;box-shadow:0 0 6px #EF4444"></div>
+      Raksha
+      <span class="sel-tab-count">3 Plans</span>
+    </button>
+    <div class="sel-divider"></div>
+    <div class="sel-desc" id="sel-desc">Climate Risk Intelligence</div>
+  </div>
+</div>
+
+<!-- ════════════ PLANS ════════════ -->
+<div class="plans-wrap">
+
+  <!-- ── METEORIUM ── -->
+  <div class="module-plans active reveal" id="plans-meteorium">
+    <div class="module-intro">
+      <div class="module-intro-text">
+        <div class="module-eyebrow">Meteorium · Climate Risk Intelligence</div>
+        <div class="module-title">Three Deployment<br/>Architectures</div>
+        <p class="module-desc">
+          From university research environments to sovereign air-gapped deployments, Meteorium's
+          infrastructure adapts to the security posture and operational requirements of the institution.
+        </p>
+        <div class="module-tags">
+          <span class="m-tag">IPCC AR6 Calibrated</span>
+          <span class="m-tag">Rust · PyO3</span>
+          <span class="m-tag">19 Data Sources</span>
+          <span class="m-tag">10K Monte Carlo</span>
+          <span class="m-tag">FastAPI · Go Gateway</span>
+        </div>
+      </div>
+      <div class="module-stat-block">
+        <div class="module-stat">
+          <div class="module-stat-val">~12ms</div>
+          <div class="module-stat-label">Engine Latency</div>
+        </div>
+        <div class="module-stat">
+          <div class="module-stat-val">7</div>
+          <div class="module-stat-label">Pipeline Layers</div>
+        </div>
+        <div class="module-stat">
+          <div class="module-stat-val">H3-7</div>
+          <div class="module-stat-label">Asset Resolution</div>
+        </div>
       </div>
     </div>
-    <div class="enterprise-actions">
-      <div class="enterprise-price">$5M – $100M+</div>
-      <div class="enterprise-price-note">Custom annual contracts</div>
-      <button class="plan-cta" style="white-space:nowrap" onclick="openModal('Black Division','$5M–$100M+ custom contract')">Submit Inquiry →</button>
-    </div>
-  </div>
-</div>
 
-<!-- FORM MODAL -->
-<div class="modal-overlay" id="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-title">
-  <div class="modal">
-    <div class="modal-header">
-      <div class="modal-title-wrap">
-        <div class="modal-plan-tag" id="modal-plan-tag">Access Request</div>
-        <div class="modal-title" id="modal-title">Request Access</div>
+    <div class="deploy-separator">Cloud Deployment</div>
+
+    <div class="plan-grid">
+      <!-- Plan 1 -->
+      <div class="plan-card tier-1 reveal">
+        <div class="deploy-badge cloud">
+          <svg width="8" height="8" viewBox="0 0 8 8" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M1.5 5.5a1.5 1.5 0 010-3h.3A2 2 0 016.5 3.5a1.5 1.5 0 010 3H1.5z"/></svg>
+          SaaS · Public Cloud
+        </div>
+        <div class="plan-num">Plan 01 / 03</div>
+        <div class="plan-name">Meteorium Research</div>
+        <div class="plan-tagline">Scientific &amp; Academic Intelligence</div>
+        <div class="plan-built-for">
+          <div class="plan-built-label">Built For</div>
+          <div class="plan-built-list">
+            <span class="plan-pill">Universities</span>
+            <span class="plan-pill">Research Labs</span>
+            <span class="plan-pill">Scientific Institutions</span>
+            <span class="plan-pill">Public Programs</span>
+          </div>
+        </div>
+        <div class="plan-caps-divider"></div>
+        <div class="plan-caps-label">Core Capabilities</div>
+        <ul class="plan-caps">
+          <li><div class="cap-check"><svg width="8" height="8" viewBox="0 0 8 8" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1.5 4l2 2 3-3"/></svg></div>AI-Native Simulation Environment</li>
+          <li><div class="cap-check"><svg width="8" height="8" viewBox="0 0 8 8" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1.5 4l2 2 3-3"/></svg></div>Elastic Autoscaling Compute</li>
+          <li><div class="cap-check"><svg width="8" height="8" viewBox="0 0 8 8" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1.5 4l2 2 3-3"/></svg></div>Encrypted Intelligence Layer</li>
+          <li><div class="cap-check"><svg width="8" height="8" viewBox="0 0 8 8" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1.5 4l2 2 3-3"/></svg></div>Research Collaboration Workspace</li>
+          <li><div class="cap-check"><svg width="8" height="8" viewBox="0 0 8 8" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1.5 4l2 2 3-3"/></svg></div>SAML 2.0 Identity Integration</li>
+          <li><div class="cap-check"><svg width="8" height="8" viewBox="0 0 8 8" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1.5 4l2 2 3-3"/></svg></div>24/7 Monitoring &amp; Support</li>
+        </ul>
+        <div class="plan-regions">
+          <div class="plan-regions-label">Availability Regions</div>
+          <div class="plan-regions-val">Asia · European Union · United States</div>
+        </div>
+        <div class="plan-cta">
+          <button class="btn-apply" onclick="openModal('Meteorium','Meteorium Research','SaaS · Public Cloud')">
+            <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M1.5 5h7M5.5 2l3 3-3 3"/></svg>
+            Apply for Access
+          </button>
+        </div>
+      </div>
+
+      <!-- Plan 2 -->
+      <div class="plan-card tier-2 reveal">
+        <div class="deploy-badge hybrid">
+          <svg width="8" height="8" viewBox="0 0 8 8" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="1" y="1" width="6" height="6" rx="1"/><path d="M3 3h2M3 5h2"/></svg>
+          Hybrid SaaS + Enterprise
+        </div>
+        <div class="plan-num">Plan 02 / 03</div>
+        <div class="plan-name">Meteorium Capital</div>
+        <div class="plan-tagline">Institutional Capital Intelligence</div>
+        <div class="plan-built-for">
+          <div class="plan-built-label">Built For</div>
+          <div class="plan-built-list">
+            <span class="plan-pill">Hedge Funds</span>
+            <span class="plan-pill">Asset Managers</span>
+            <span class="plan-pill">Quant Firms</span>
+            <span class="plan-pill">Sovereign Investment</span>
+          </div>
+        </div>
+        <div class="plan-caps-divider"></div>
+        <div class="plan-caps-label">Core Capabilities</div>
+        <ul class="plan-caps">
+          <li><div class="cap-check"><svg width="8" height="8" viewBox="0 0 8 8" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1.5 4l2 2 3-3"/></svg></div>Multi-Asset Forecasting Engine</li>
+          <li><div class="cap-check"><svg width="8" height="8" viewBox="0 0 8 8" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1.5 4l2 2 3-3"/></svg></div>Monte Carlo Simulation Framework</li>
+          <li><div class="cap-check"><svg width="8" height="8" viewBox="0 0 8 8" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1.5 4l2 2 3-3"/></svg></div>Strategic Risk Intelligence</li>
+          <li><div class="cap-check"><svg width="8" height="8" viewBox="0 0 8 8" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1.5 4l2 2 3-3"/></svg></div>Private Forecasting Environment</li>
+          <li><div class="cap-check"><svg width="8" height="8" viewBox="0 0 8 8" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1.5 4l2 2 3-3"/></svg></div>Real-Time Intelligence Architecture</li>
+          <li><div class="cap-check"><svg width="8" height="8" viewBox="0 0 8 8" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1.5 4l2 2 3-3"/></svg></div>Sovereign Encryption Control</li>
+          <li><div class="cap-check"><svg width="8" height="8" viewBox="0 0 8 8" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1.5 4l2 2 3-3"/></svg></div>PrivateLink Infrastructure</li>
+        </ul>
+        <div class="plan-regions">
+          <div class="plan-regions-label">Availability Regions</div>
+          <div class="plan-regions-val">North America · Europe · Middle East · Asia-Pacific</div>
+        </div>
+        <div class="plan-cta">
+          <button class="btn-apply" onclick="openModal('Meteorium','Meteorium Capital','Hybrid SaaS + Enterprise')">
+            <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M1.5 5h7M5.5 2l3 3-3 3"/></svg>
+            Apply for Access
+          </button>
+        </div>
+      </div>
+
+      <!-- Plan 3 -->
+      <div class="plan-card tier-3 reveal">
+        <div class="deploy-badge sovereign">
+          <svg width="8" height="8" viewBox="0 0 8 8" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M4 1l3.5 1.4v3C7.5 7 4 7.5 4 7.5S.5 7 .5 5.4v-3L4 1z"/></svg>
+          Private · Air-Gapped
+        </div>
+        <div class="plan-num">Plan 03 / 03</div>
+        <div class="plan-name">Sovereign Grid</div>
+        <div class="plan-tagline">National Infrastructure Deployment</div>
+        <div class="plan-built-for">
+          <div class="plan-built-label">Built For</div>
+          <div class="plan-built-list">
+            <span class="plan-pill">Government Ministries</span>
+            <span class="plan-pill">National Intelligence</span>
+            <span class="plan-pill">Strategic Operations</span>
+          </div>
+        </div>
+        <div class="plan-caps-divider"></div>
+        <div class="plan-caps-label">Core Capabilities</div>
+        <ul class="plan-caps">
+          <li><div class="cap-check"><svg width="8" height="8" viewBox="0 0 8 8" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1.5 4l2 2 3-3"/></svg></div>Autonomous Infrastructure Operations</li>
+          <li><div class="cap-check"><svg width="8" height="8" viewBox="0 0 8 8" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1.5 4l2 2 3-3"/></svg></div>Classified Environment Support</li>
+          <li><div class="cap-check"><svg width="8" height="8" viewBox="0 0 8 8" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1.5 4l2 2 3-3"/></svg></div>National-Scale Simulation Systems</li>
+          <li><div class="cap-check"><svg width="8" height="8" viewBox="0 0 8 8" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1.5 4l2 2 3-3"/></svg></div>Operational Continuity Architecture</li>
+          <li><div class="cap-check"><svg width="8" height="8" viewBox="0 0 8 8" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1.5 4l2 2 3-3"/></svg></div>Dedicated Sovereign Cluster</li>
+          <li><div class="cap-check"><svg width="8" height="8" viewBox="0 0 8 8" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1.5 4l2 2 3-3"/></svg></div>Integrated Security Framework</li>
+          <li><div class="cap-check"><svg width="8" height="8" viewBox="0 0 8 8" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1.5 4l2 2 3-3"/></svg></div>Prexus Strategic Operations Mgmt</li>
+        </ul>
+        <div class="plan-regions">
+          <div class="plan-regions-label">Deployment Model</div>
+          <div class="plan-regions-val">Sovereign · On-Premises · Multi-Year Contract</div>
+        </div>
+        <div class="plan-cta">
+          <button class="btn-apply sovereign" onclick="openModal('Meteorium','Sovereign Grid','Private · Air-Gapped')">
+            <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M4 1l3.5 1.4v3C7.5 7 4 7.5 4 7.5S.5 7 .5 5.4v-3L4 1z"/></svg>
+            Request Sovereign Deployment
+          </button>
+        </div>
+      </div>
+    </div>
+  </div><!-- /meteorium -->
+
+
+  <!-- ── HELTHO ── -->
+  <div class="module-plans reveal" id="plans-heltho">
+    <div class="module-intro">
+      <div class="module-intro-text">
+        <div class="module-eyebrow">Heltho · Healthcare Intelligence</div>
+        <div class="module-title">Predictive Healthcare<br/>Infrastructure</div>
+        <p class="module-desc">
+          From clinical operations at a single hospital to national pandemic response infrastructure,
+          Heltho provides sovereign-grade AI-native healthcare intelligence at every operational scale.
+        </p>
+        <div class="module-tags">
+          <span class="m-tag">HIPAA-Aligned</span>
+          <span class="m-tag">190+ Jurisdictions</span>
+          <span class="m-tag">EMR Integration</span>
+          <span class="m-tag">Level 4 Auth</span>
+        </div>
+      </div>
+      <div class="module-stat-block">
+        <div class="module-stat">
+          <div class="module-stat-val">190+</div>
+          <div class="module-stat-label">Jurisdictions</div>
+        </div>
+        <div class="module-stat">
+          <div class="module-stat-val">3</div>
+          <div class="module-stat-label">Deployment Tiers</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="deploy-separator">Cloud Deployment</div>
+
+    <div class="plan-grid">
+      <!-- Heltho Plan 1 -->
+      <div class="plan-card tier-1 reveal">
+        <div class="deploy-badge cloud">
+          <svg width="8" height="8" viewBox="0 0 8 8" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M1.5 5.5a1.5 1.5 0 010-3h.3A2 2 0 016.5 3.5a1.5 1.5 0 010 3H1.5z"/></svg>
+          SaaS · Healthcare Cloud
+        </div>
+        <div class="plan-num">Plan 01 / 03</div>
+        <div class="plan-name">Heltho Clinical</div>
+        <div class="plan-tagline">Operational Hospital Intelligence</div>
+        <div class="plan-built-for">
+          <div class="plan-built-label">Built For</div>
+          <div class="plan-built-list">
+            <span class="plan-pill">Hospitals</span>
+            <span class="plan-pill">Health Systems</span>
+            <span class="plan-pill">Insurers</span>
+            <span class="plan-pill">Healthcare Operators</span>
+          </div>
+        </div>
+        <div class="plan-caps-divider"></div>
+        <div class="plan-caps-label">Core Capabilities</div>
+        <ul class="plan-caps">
+          <li><div class="cap-check"><svg width="8" height="8" viewBox="0 0 8 8" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1.5 4l2 2 3-3"/></svg></div>Unified Healthcare Intelligence Layer</li>
+          <li><div class="cap-check"><svg width="8" height="8" viewBox="0 0 8 8" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1.5 4l2 2 3-3"/></svg></div>Predictive Patient Flow</li>
+          <li><div class="cap-check"><svg width="8" height="8" viewBox="0 0 8 8" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1.5 4l2 2 3-3"/></svg></div>Clinical Decision Intelligence</li>
+          <li><div class="cap-check"><svg width="8" height="8" viewBox="0 0 8 8" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1.5 4l2 2 3-3"/></svg></div>Hospital Operations Command</li>
+          <li><div class="cap-check"><svg width="8" height="8" viewBox="0 0 8 8" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1.5 4l2 2 3-3"/></svg></div>Medical Data Integration (EMR/IoT)</li>
+          <li><div class="cap-check"><svg width="8" height="8" viewBox="0 0 8 8" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1.5 4l2 2 3-3"/></svg></div>Operational Risk Forecasting</li>
+        </ul>
+        <div class="plan-regions">
+          <div class="plan-regions-label">Availability Regions</div>
+          <div class="plan-regions-val">Asia · Europe · North America · Middle East</div>
+        </div>
+        <div class="plan-cta">
+          <button class="btn-apply" onclick="openModal('Heltho','Heltho Clinical','SaaS · Healthcare Cloud')">
+            <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M1.5 5h7M5.5 2l3 3-3 3"/></svg>
+            Apply for Access
+          </button>
+        </div>
+      </div>
+
+      <!-- Heltho Plan 2 -->
+      <div class="plan-card tier-2 reveal">
+        <div class="deploy-badge hybrid">
+          <svg width="8" height="8" viewBox="0 0 8 8" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="1" y="1" width="6" height="6" rx="1"/><path d="M3 3h2M3 5h2"/></svg>
+          Research SaaS + Institutional
+        </div>
+        <div class="plan-num">Plan 02 / 03</div>
+        <div class="plan-name">Heltho Research</div>
+        <div class="plan-tagline">Computational Medical Discovery</div>
+        <div class="plan-built-for">
+          <div class="plan-built-label">Built For</div>
+          <div class="plan-built-list">
+            <span class="plan-pill">Medical Research</span>
+            <span class="plan-pill">Pharma</span>
+            <span class="plan-pill">Genomics Labs</span>
+            <span class="plan-pill">Biotech</span>
+            <span class="plan-pill">Academic Medical</span>
+          </div>
+        </div>
+        <div class="plan-caps-divider"></div>
+        <div class="plan-caps-label">Core Capabilities</div>
+        <ul class="plan-caps">
+          <li><div class="cap-check"><svg width="8" height="8" viewBox="0 0 8 8" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1.5 4l2 2 3-3"/></svg></div>Biomedical Simulation Systems</li>
+          <li><div class="cap-check"><svg width="8" height="8" viewBox="0 0 8 8" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1.5 4l2 2 3-3"/></svg></div>AI-Assisted Research Intelligence</li>
+          <li><div class="cap-check"><svg width="8" height="8" viewBox="0 0 8 8" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1.5 4l2 2 3-3"/></svg></div>Clinical Trial Intelligence</li>
+          <li><div class="cap-check"><svg width="8" height="8" viewBox="0 0 8 8" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1.5 4l2 2 3-3"/></svg></div>Population Health Modeling</li>
+          <li><div class="cap-check"><svg width="8" height="8" viewBox="0 0 8 8" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1.5 4l2 2 3-3"/></svg></div>Secure Research Collaboration</li>
+          <li><div class="cap-check"><svg width="8" height="8" viewBox="0 0 8 8" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1.5 4l2 2 3-3"/></svg></div>Sovereign Data Governance</li>
+        </ul>
+        <div class="plan-regions">
+          <div class="plan-regions-label">Compliance</div>
+          <div class="plan-regions-val">HIPAA-Aligned · Regional Data Governance</div>
+        </div>
+        <div class="plan-cta">
+          <button class="btn-apply" onclick="openModal('Heltho','Heltho Research','Research SaaS + Institutional')">
+            <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M1.5 5h7M5.5 2l3 3-3 3"/></svg>
+            Apply for Access
+          </button>
+        </div>
+      </div>
+
+      <!-- Heltho Plan 3 -->
+      <div class="plan-card tier-3 reveal">
+        <div class="deploy-badge sovereign">
+          <svg width="8" height="8" viewBox="0 0 8 8" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M4 1l3.5 1.4v3C7.5 7 4 7.5 4 7.5S.5 7 .5 5.4v-3L4 1z"/></svg>
+          National · Air-Gapped
+        </div>
+        <div class="plan-num">Plan 03 / 03</div>
+        <div class="plan-name">National Grid</div>
+        <div class="plan-tagline">Sovereign Healthcare Infrastructure</div>
+        <div class="plan-built-for">
+          <div class="plan-built-label">Built For</div>
+          <div class="plan-built-list">
+            <span class="plan-pill">National Health Ministries</span>
+            <span class="plan-pill">Public Health Agencies</span>
+            <span class="plan-pill">Emergency Operations</span>
+          </div>
+        </div>
+        <div class="plan-caps-divider"></div>
+        <div class="plan-caps-label">Core Capabilities</div>
+        <ul class="plan-caps">
+          <li><div class="cap-check"><svg width="8" height="8" viewBox="0 0 8 8" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1.5 4l2 2 3-3"/></svg></div>National Healthcare Visibility</li>
+          <li><div class="cap-check"><svg width="8" height="8" viewBox="0 0 8 8" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1.5 4l2 2 3-3"/></svg></div>Pandemic &amp; Crisis Forecasting</li>
+          <li><div class="cap-check"><svg width="8" height="8" viewBox="0 0 8 8" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1.5 4l2 2 3-3"/></svg></div>Healthcare Resource Optimization</li>
+          <li><div class="cap-check"><svg width="8" height="8" viewBox="0 0 8 8" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1.5 4l2 2 3-3"/></svg></div>Emergency Operations Intelligence</li>
+          <li><div class="cap-check"><svg width="8" height="8" viewBox="0 0 8 8" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1.5 4l2 2 3-3"/></svg></div>Sovereign Medical Infrastructure</li>
+          <li><div class="cap-check"><svg width="8" height="8" viewBox="0 0 8 8" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1.5 4l2 2 3-3"/></svg></div>Air-Gapped Controlled Environments</li>
+        </ul>
+        <div class="plan-regions">
+          <div class="plan-regions-label">Deployment Model</div>
+          <div class="plan-regions-val">Sovereign · On-Premises · Multi-Year Contract</div>
+        </div>
+        <div class="plan-cta">
+          <button class="btn-apply sovereign" onclick="openModal('Heltho','National Grid','National · Air-Gapped')">
+            <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M4 1l3.5 1.4v3C7.5 7 4 7.5 4 7.5S.5 7 .5 5.4v-3L4 1z"/></svg>
+            Request Sovereign Deployment
+          </button>
+        </div>
+      </div>
+    </div>
+  </div><!-- /heltho -->
+
+
+  <!-- ── RAKSHA ── -->
+  <div class="module-plans reveal" id="plans-raksha">
+    <div class="module-intro">
+      <div class="module-intro-text">
+        <div class="module-eyebrow">Raksha · Strategic Intelligence</div>
+        <div class="module-title">Sovereign Defense<br/>Intelligence Infrastructure</div>
+        <p class="module-desc">
+          Built for nations, strategic agencies, and mission-critical defense operations.
+          Raksha unifies strategic awareness, predictive threat modeling, and AI-native battlefield
+          intelligence into a continuously evolving sovereign environment.
+        </p>
+        <div class="module-tags">
+          <span class="m-tag">Allied Nations Only</span>
+          <span class="m-tag">Zero-Trust Architecture</span>
+          <span class="m-tag">Level 5 Clearance</span>
+          <span class="m-tag">MSA Required</span>
+        </div>
+      </div>
+      <div class="module-stat-block">
+        <div class="module-stat">
+          <div class="module-stat-val">L5</div>
+          <div class="module-stat-label">Min. Clearance</div>
+        </div>
+        <div class="module-stat">
+          <div class="module-stat-val">MSA</div>
+          <div class="module-stat-label">Required</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="deploy-separator">Secure Government Cloud</div>
+
+    <div class="plan-grid">
+      <!-- Raksha Plan 1 -->
+      <div class="plan-card tier-1 reveal">
+        <div class="deploy-badge cloud" style="background:rgba(239,68,68,.06);border-color:rgba(239,68,68,.2);color:rgba(239,68,68,.65)">
+          <svg width="8" height="8" viewBox="0 0 8 8" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M1.5 5.5a1.5 1.5 0 010-3h.3A2 2 0 016.5 3.5a1.5 1.5 0 010 3H1.5z"/></svg>
+          Secure SaaS · Gov Cloud
+        </div>
+        <div class="plan-num">Plan 01 / 03</div>
+        <div class="plan-name">Raksha Strategic</div>
+        <div class="plan-tagline">Mission Intelligence Operations</div>
+        <div class="plan-built-for">
+          <div class="plan-built-label">Authorized Entities</div>
+          <div class="plan-built-list">
+            <span class="plan-pill">Allied Nations</span>
+            <span class="plan-pill">Strategic Partners</span>
+            <span class="plan-pill">Approved Institutions</span>
+          </div>
+        </div>
+        <div class="plan-caps-divider"></div>
+        <div class="plan-caps-label">Core Capabilities</div>
+        <ul class="plan-caps">
+          <li><div class="cap-check"><svg width="8" height="8" viewBox="0 0 8 8" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1.5 4l2 2 3-3"/></svg></div>Unified Operational Intelligence</li>
+          <li><div class="cap-check"><svg width="8" height="8" viewBox="0 0 8 8" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1.5 4l2 2 3-3"/></svg></div>AI-Powered Threat Forecasting</li>
+          <li><div class="cap-check"><svg width="8" height="8" viewBox="0 0 8 8" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1.5 4l2 2 3-3"/></svg></div>Real-Time Battlefield Visualization</li>
+          <li><div class="cap-check"><svg width="8" height="8" viewBox="0 0 8 8" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1.5 4l2 2 3-3"/></svg></div>Entity &amp; Network Intelligence</li>
+          <li><div class="cap-check"><svg width="8" height="8" viewBox="0 0 8 8" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1.5 4l2 2 3-3"/></svg></div>Autonomous Alert Systems</li>
+          <li><div class="cap-check"><svg width="8" height="8" viewBox="0 0 8 8" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1.5 4l2 2 3-3"/></svg></div>Secure Cross-Agency Collaboration</li>
+        </ul>
+        <div class="plan-regions">
+          <div class="plan-regions-label">Infrastructure</div>
+          <div class="plan-regions-val">AWS GovCloud · Azure Government · Sovereign Providers</div>
+        </div>
+        <div class="plan-cta">
+          <button class="btn-apply" onclick="openModal('Raksha','Raksha Strategic','Secure SaaS · Gov Cloud')">
+            <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M1.5 5h7M5.5 2l3 3-3 3"/></svg>
+            Submit Procurement Request
+          </button>
+        </div>
+      </div>
+
+      <!-- Raksha Plan 2 -->
+      <div class="plan-card tier-2 reveal">
+        <div class="deploy-badge hybrid" style="background:rgba(239,68,68,.05);border-color:rgba(239,68,68,.18);color:rgba(239,68,68,.6)">
+          <svg width="8" height="8" viewBox="0 0 8 8" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="1" y="1" width="6" height="6" rx="1"/><path d="M3 3h2M3 5h2"/></svg>
+          Private Strategic Cloud
+        </div>
+        <div class="plan-num">Plan 02 / 03</div>
+        <div class="plan-name">Raksha Command</div>
+        <div class="plan-tagline">Advanced Strategic Command</div>
+        <div class="plan-built-for">
+          <div class="plan-built-label">Built For</div>
+          <div class="plan-built-list">
+            <span class="plan-pill">Defense Ministries</span>
+            <span class="plan-pill">Intelligence Agencies</span>
+            <span class="plan-pill">Homeland Security</span>
+            <span class="plan-pill">Border Operations</span>
+          </div>
+        </div>
+        <div class="plan-caps-divider"></div>
+        <div class="plan-caps-label">Core Capabilities</div>
+        <ul class="plan-caps">
+          <li><div class="cap-check"><svg width="8" height="8" viewBox="0 0 8 8" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1.5 4l2 2 3-3"/></svg></div>Multi-Domain Intelligence Fusion</li>
+          <li><div class="cap-check"><svg width="8" height="8" viewBox="0 0 8 8" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1.5 4l2 2 3-3"/></svg></div>Strategic Simulation Engine</li>
+          <li><div class="cap-check"><svg width="8" height="8" viewBox="0 0 8 8" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1.5 4l2 2 3-3"/></svg></div>Geospatial Intelligence Systems</li>
+          <li><div class="cap-check"><svg width="8" height="8" viewBox="0 0 8 8" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1.5 4l2 2 3-3"/></svg></div>Critical Infrastructure Monitoring</li>
+          <li><div class="cap-check"><svg width="8" height="8" viewBox="0 0 8 8" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1.5 4l2 2 3-3"/></svg></div>Mission Continuity Architecture</li>
+          <li><div class="cap-check"><svg width="8" height="8" viewBox="0 0 8 8" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1.5 4l2 2 3-3"/></svg></div>Dedicated Mission Infrastructure</li>
+        </ul>
+        <div class="plan-regions">
+          <div class="plan-regions-label">Deployment</div>
+          <div class="plan-regions-val">Private Cloud · Dedicated Mission Infrastructure</div>
+        </div>
+        <div class="plan-cta">
+          <button class="btn-apply" onclick="openModal('Raksha','Raksha Command','Private Strategic Cloud')">
+            <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M1.5 5h7M5.5 2l3 3-3 3"/></svg>
+            Submit Procurement Request
+          </button>
+        </div>
+      </div>
+
+      <!-- Raksha Plan 3 -->
+      <div class="plan-card tier-3 reveal">
+        <div class="deploy-badge sovereign">
+          <svg width="8" height="8" viewBox="0 0 8 8" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M4 1l3.5 1.4v3C7.5 7 4 7.5 4 7.5S.5 7 .5 5.4v-3L4 1z"/></svg>
+          Classified · Air-Gapped
+        </div>
+        <div class="plan-num">Plan 03 / 03</div>
+        <div class="plan-name">Raksha Sovereign</div>
+        <div class="plan-tagline">Classified National Intelligence</div>
+        <div class="plan-built-for">
+          <div class="plan-built-label">Built For</div>
+          <div class="plan-built-list">
+            <span class="plan-pill">National Command</span>
+            <span class="plan-pill">Defense Cleared Only</span>
+            <span class="plan-pill">Strategic Infrastructure</span>
+          </div>
+        </div>
+        <div class="plan-caps-divider"></div>
+        <div class="plan-caps-label">Core Capabilities</div>
+        <ul class="plan-caps">
+          <li><div class="cap-check"><svg width="8" height="8" viewBox="0 0 8 8" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1.5 4l2 2 3-3"/></svg></div>Classified Operational Environment</li>
+          <li><div class="cap-check"><svg width="8" height="8" viewBox="0 0 8 8" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1.5 4l2 2 3-3"/></svg></div>Autonomous Defense Intelligence</li>
+          <li><div class="cap-check"><svg width="8" height="8" viewBox="0 0 8 8" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1.5 4l2 2 3-3"/></svg></div>National-Scale Intelligence Grid</li>
+          <li><div class="cap-check"><svg width="8" height="8" viewBox="0 0 8 8" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1.5 4l2 2 3-3"/></svg></div>Strategic Decision Architecture</li>
+          <li><div class="cap-check"><svg width="8" height="8" viewBox="0 0 8 8" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1.5 4l2 2 3-3"/></svg></div>Sovereign Encryption Management</li>
+          <li><div class="cap-check"><svg width="8" height="8" viewBox="0 0 8 8" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1.5 4l2 2 3-3"/></svg></div>Zero External Exposure Architecture</li>
+        </ul>
+        <div class="plan-regions">
+          <div class="plan-regions-label">Deployment Model</div>
+          <div class="plan-regions-val">Air-Gapped Sovereign · Multi-Year National Contract</div>
+        </div>
+        <div class="plan-cta">
+          <button class="btn-apply sovereign" onclick="openModal('Raksha','Raksha Sovereign','Classified · Air-Gapped')">
+            <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M4 1l3.5 1.4v3C7.5 7 4 7.5 4 7.5S.5 7 .5 5.4v-3L4 1z"/></svg>
+            Initiate Classified Procurement
+          </button>
+        </div>
+      </div>
+    </div>
+  </div><!-- /raksha -->
+
+</div><!-- /plans-wrap -->
+
+
+<!-- ════════════ APPLICATION MODAL ════════════ -->
+<div class="modal-backdrop" id="modal-backdrop" onclick="handleBackdropClick(event)">
+  <div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+
+    <div class="modal-head">
+      <div class="modal-head-left">
+        <div class="modal-head-title" id="modal-title">Access Application</div>
+        <div class="modal-head-sub" id="modal-subtitle">Early Access Program · Prexus Intelligence</div>
       </div>
       <button class="modal-close" onclick="closeModal()" aria-label="Close">
-        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><line x1="2" y1="2" x2="12" y2="12"/><line x1="12" y1="2" x2="2" y2="12"/></svg>
+        <svg width="11" height="11" viewBox="0 0 11 11" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M1.5 1.5l8 8M9.5 1.5l-8 8"/>
+        </svg>
       </button>
     </div>
 
-    <div class="modal-body">
-      <div class="field-row">
-        <div class="field">
-          <label>Full Name <span>*</span></label>
-          <input type="text" id="f-name" placeholder="Dr. Arjun Mehta" autocomplete="name"/>
-        </div>
-        <div class="field">
-          <label>Designation <span>*</span></label>
-          <input type="text" id="f-designation" placeholder="Deputy Director, Risk"/>
-        </div>
+    <!-- selected plan -->
+    <div class="modal-selected-plan">
+      <span class="modal-plan-tag">Selected Plan</span>
+      <span class="modal-plan-name" id="modal-plan-display">—</span>
+    </div>
+
+    <!-- form -->
+    <div class="modal-body" id="modal-form-body">
+      <div class="modal-notice">
+        Applications are reviewed by the Prexus Intelligence deployment team within 3–5 business days.
+        All submissions are subject to institutional verification and compliance review.
       </div>
 
-      <div class="field">
-        <label>Institutional Email <span>*</span></label>
-        <input type="email" id="f-email" placeholder="a.mehta@institution.gov.in" autocomplete="email"/>
-      </div>
+      <div class="form-error" id="form-error"></div>
 
-      <div class="field-row">
-        <div class="field">
-          <label>Organization <span>*</span></label>
-          <input type="text" id="f-org" placeholder="Ministry of Finance, GoI"/>
+      <form id="apply-form" onsubmit="handleApply(event)">
+        <input type="hidden" id="f-module"/>
+        <input type="hidden" id="f-plan"/>
+        <input type="hidden" id="f-deployment"/>
+
+        <div class="form-row half">
+          <div>
+            <label class="form-label" for="f-name">Full Name <span class="req">*</span></label>
+            <input type="text" id="f-name" class="form-input" placeholder="Jane Doe" required autocomplete="name"/>
+          </div>
+          <div>
+            <label class="form-label" for="f-title">Job Title <span class="req">*</span></label>
+            <input type="text" id="f-title" class="form-input" placeholder="Director of Risk"/>
+          </div>
         </div>
-        <div class="field">
-          <label>Domain / Sector <span>*</span></label>
-          <select id="f-domain">
-            <option value="" disabled selected>Select domain</option>
-            <option>Government &amp; Defense</option>
-            <option>Research &amp; Academia</option>
-            <option>Asset Management</option>
-            <option>Banking &amp; Insurance</option>
-            <option>Energy &amp; Infrastructure</option>
-            <option>Climate &amp; Environmental</option>
-            <option>Healthcare &amp; Public Health</option>
-            <option>Technology &amp; AI</option>
-            <option>Sovereign Wealth</option>
-            <option>Other Regulated Enterprise</option>
+
+        <div class="form-row">
+          <label class="form-label" for="f-email">Official Email <span class="req">*</span></label>
+          <input type="email" id="f-email" class="form-input" placeholder="you@institution.gov" required autocomplete="email"/>
+        </div>
+
+        <div class="form-row half">
+          <div>
+            <label class="form-label" for="f-org">Organization <span class="req">*</span></label>
+            <input type="text" id="f-org" class="form-input" placeholder="Ministry / Agency / Firm" required/>
+          </div>
+          <div>
+            <label class="form-label" for="f-country">Country <span class="req">*</span></label>
+            <input type="text" id="f-country" class="form-input" placeholder="India" required/>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <label class="form-label" for="f-orgtype">Organization Type <span class="req">*</span></label>
+          <select id="f-orgtype" class="form-select" required>
+            <option value="">Select entity classification…</option>
+            <option>Government Department</option>
+            <option>Government Agency / PSU</option>
+            <option>Defense / Intelligence Agency</option>
+            <option>State-Owned Enterprise</option>
+            <option>Regulated Public Company</option>
+            <option>Hedge Fund / Asset Manager</option>
+            <option>University / Research Institute</option>
+            <option>Hospital / Health System</option>
+            <option>Pharmaceutical / Biotech</option>
+            <option>Private Institution</option>
           </select>
         </div>
-      </div>
 
-      <div class="field">
-        <label>Country / Jurisdiction <span>*</span></label>
-        <input type="text" id="f-country" placeholder="India" autocomplete="country-name"/>
-      </div>
+        <div class="form-row">
+          <label class="form-label" for="f-usecase">Use Case / Brief Description</label>
+          <textarea id="f-usecase" class="form-textarea" placeholder="Describe your intended use and operational context…"></textarea>
+        </div>
 
-      <div class="field">
-        <label>Why do you require access? <span>*</span></label>
-        <textarea id="f-reason" placeholder="Describe your use case, specific intelligence requirements, and how Prexus will integrate into your decision infrastructure…"></textarea>
-      </div>
-
-      <div class="field">
-        <label>Selected Plan</label>
-        <input type="text" id="f-plan" readonly style="opacity:.5;cursor:default"/>
-      </div>
+        <button type="submit" class="btn-submit" id="submit-btn">Submit Application →</button>
+      </form>
     </div>
 
-    <div class="modal-footer">
-      <div class="modal-note">All applications are reviewed within 48 hours.</div>
-      <button class="modal-submit" id="modal-submit" onclick="submitForm()">
-        Submit Request
-        <svg width="13" height="13" viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M2 6.5h9M7 2l4.5 4.5L7 11"/></svg>
-      </button>
+    <!-- success state -->
+    <div class="modal-success" id="modal-success">
+      <div class="success-icon">
+        <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="#10B981" stroke-width="1.5">
+          <path d="M4 11l5 5 9-9"/>
+        </svg>
+      </div>
+      <div class="success-title">Application Submitted</div>
+      <p class="success-body">
+        Your access application has been received and queued for institutional review.
+        A member of the Prexus deployment team will contact you within 3–5 business days.
+      </p>
+      <div class="success-ref" id="success-ref">REF: —</div>
+      <button class="btn-apply" style="margin-top:24px;padding:10px 28px;width:auto" onclick="closeModal()">Close</button>
     </div>
+
   </div>
 </div>
 
-<!-- THANK YOU OVERLAY -->
-<div class="thankyou-overlay" id="thankyou-overlay">
-  <div class="thankyou-card">
-    <div class="ty-icon">
-      <svg width="24" height="24" viewBox="0 0 24 24"><polyline points="4,12 9,17 20,6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-    </div>
-    <div class="ty-tag">Application Received</div>
-    <h2 class="ty-h2">Thank You for<br/>Being Prexisian</h2>
-    <p class="ty-body">Your access request has been logged in our intelligence registry. Our team will verify your institutional credentials and <strong>connect with you within 48 hours</strong>.</p>
-    <div class="ty-divider"></div>
-    <div class="ty-meta">
-      <div class="ty-meta-item"><div class="ty-dot"></div><span>Application encrypted &amp; stored</span></div>
-      <div class="ty-meta-item"><div class="ty-dot"></div><span>Review within 48h</span></div>
-      <div class="ty-meta-item"><div class="ty-dot"></div><span>Credentials issued on approval</span></div>
-    </div>
-    <button class="ty-close" onclick="closeThankyou()">
-      <svg width="13" height="13" viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><path d="M8 2L3 6.5L8 11"/><line x1="3" y1="6.5" x2="12" y2="6.5"/></svg>
-      Return to Platform
-    </button>
-  </div>
-</div>
 
 <footer>
   <div class="footer-inner">
@@ -745,16 +1184,14 @@ footer{padding:44px;border-top:1px solid var(--wire-soft);background:var(--deep)
     </div>
     <div class="footer-links">
       <a href="landing.html">Platform</a>
-      <a href="landing.html#architecture">Architecture</a>
-      <a href="landing.html#capabilities">Capabilities</a>
-      <a href="landing.html#modules">Modules</a>
+      <a href="index.html">Access</a>
       <a href="demo.html">Book Demo</a>
       <a href="careers.html">Careers</a>
       <a href="privacy-policy.html">Privacy Policy</a>
     </div>
     <div class="footer-meta">
       <div>© 2026 Prexus Systems</div>
-      <div style="margin-top:4px">Research Infrastructure Initiative</div>
+      <div style="margin-top:3px">All Rights Reserved</div>
     </div>
   </div>
 </footer>
@@ -762,123 +1199,127 @@ footer{padding:44px;border-top:1px solid var(--wire-soft);background:var(--deep)
 <script>
 'use strict';
 
-/* Nav scroll */
-const nav = document.getElementById('nav');
-window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 20), {passive:true});
+/* ── Nav clock ── */
+(function(){
+  const el = document.getElementById('nav-clock');
+  if (!el) return;
+  const pad = n => String(n).padStart(2,'0');
+  const tick = () => {
+    const d = new Date();
+    el.textContent = `${pad(d.getUTCHours())}:${pad(d.getUTCMinutes())}:${pad(d.getUTCSeconds())} UTC`;
+  };
+  tick(); setInterval(tick, 1000);
+})();
 
-/* Reveal */
-const revObs = new IntersectionObserver(entries => {
-  entries.forEach(e => { if(e.isIntersecting){ e.target.classList.add('visible'); revObs.unobserve(e.target); }});
-}, {threshold:.08, rootMargin:'0px 0px -30px 0px'});
-document.querySelectorAll('.reveal').forEach((el, i) => {
-  el.style.transitionDelay = `${i * 0.06}s`;
-  revObs.observe(el);
-});
+/* ── Nav scroll ── */
+window.addEventListener('scroll', () => {
+  document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 20);
+}, {passive:true});
 
-/* Modal state */
-let currentPlan = '';
+/* ── Module selector ── */
+const MODULE_DESCS = {
+  meteorium: 'Climate Risk Intelligence',
+  heltho:    'Predictive Healthcare Intelligence',
+  raksha:    'Sovereign Defense Intelligence',
+};
+function selectModule(name) {
+  document.querySelectorAll('.sel-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  document.querySelectorAll('.module-plans').forEach(p => p.classList.remove('active'));
+  document.getElementById('plans-' + name).classList.add('active');
+  document.getElementById('sel-desc').textContent = MODULE_DESCS[name] || '';
+  // Re-trigger reveals for newly visible cards
+  triggerReveal();
+}
 
-function openModal(planName, planPrice) {
-  currentPlan = planName;
-  document.getElementById('modal-plan-tag').textContent = planName + ' · Access Request';
-  document.getElementById('modal-title').textContent = planName;
-  document.getElementById('f-plan').value = planName + ' — ' + planPrice;
-  document.getElementById('modal-overlay').classList.add('open');
+/* ── Scroll reveal ── */
+function triggerReveal() {
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); }
+    });
+  }, { threshold: 0.08, rootMargin: '0px 0px -30px 0px' });
+  document.querySelectorAll('.reveal:not(.visible)').forEach(el => obs.observe(el));
+}
+document.addEventListener('DOMContentLoaded', triggerReveal);
+
+/* ── Modal state ── */
+let modalOpen = false;
+
+function openModal(module, plan, deployment) {
+  document.getElementById('f-module').value     = module;
+  document.getElementById('f-plan').value       = plan;
+  document.getElementById('f-deployment').value = deployment;
+  document.getElementById('modal-plan-display').textContent = `${module} · ${plan}`;
+  document.getElementById('modal-subtitle').textContent     = `${deployment} · Early Access Program`;
+  // reset
+  document.getElementById('apply-form').reset();
+  document.getElementById('form-error').className = 'form-error';
+  document.getElementById('submit-btn').disabled   = false;
+  document.getElementById('submit-btn').textContent = 'Submit Application →';
+  document.getElementById('modal-form-body').style.display = '';
+  document.getElementById('modal-success').style.display   = 'none';
+
+  document.getElementById('modal-backdrop').classList.add('open');
   document.body.style.overflow = 'hidden';
-  setTimeout(() => document.getElementById('f-name').focus(), 350);
+  modalOpen = true;
 }
 
 function closeModal() {
-  document.getElementById('modal-overlay').classList.remove('open');
+  document.getElementById('modal-backdrop').classList.remove('open');
   document.body.style.overflow = '';
+  modalOpen = false;
 }
 
-/* Close on backdrop click */
-document.getElementById('modal-overlay').addEventListener('click', e => {
-  if(e.target === document.getElementById('modal-overlay')) closeModal();
-});
+function handleBackdropClick(e) {
+  if (e.target === document.getElementById('modal-backdrop')) closeModal();
+}
 
-/* Escape key */
-document.addEventListener('keydown', e => {
-  if(e.key === 'Escape') {
-    closeModal();
-    closeThankyou();
-  }
-});
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && modalOpen) closeModal(); });
 
-/* Form validation + submit */
-function submitForm() {
-  const fields = [
-    {id:'f-name',     label:'Full Name'},
-    {id:'f-designation', label:'Designation'},
-    {id:'f-email',    label:'Institutional Email'},
-    {id:'f-org',      label:'Organization'},
-    {id:'f-domain',   label:'Domain / Sector'},
-    {id:'f-country',  label:'Country'},
-    {id:'f-reason',   label:'Reason for access'},
-  ];
+/* ── Apply submit ── */
+async function handleApply(e) {
+  e.preventDefault();
+  const btn    = document.getElementById('submit-btn');
+  const errEl  = document.getElementById('form-error');
+  errEl.className = 'form-error';
 
-  let valid = true;
-  fields.forEach(f => {
-    const el = document.getElementById(f.id);
-    const val = el.value.trim();
-    if(!val) {
-      el.style.borderColor = 'rgba(239,68,68,.4)';
-      el.style.boxShadow = '0 0 0 3px rgba(239,68,68,.06)';
-      valid = false;
-    } else {
-      el.style.borderColor = '';
-      el.style.boxShadow = '';
-    }
-  });
+  const name     = document.getElementById('f-name').value.trim();
+  const email    = document.getElementById('f-email').value.trim();
+  const org      = document.getElementById('f-org').value.trim();
+  const country  = document.getElementById('f-country').value.trim();
+  const orgtype  = document.getElementById('f-orgtype').value;
+  const module   = document.getElementById('f-module').value;
+  const plan     = document.getElementById('f-plan').value;
+  const deploy   = document.getElementById('f-deployment').value;
+  const usecase  = document.getElementById('f-usecase').value.trim();
 
-  // Email check
-  const emailEl = document.getElementById('f-email');
-  const emailVal = emailEl.value.trim();
-  if(emailVal && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailVal)) {
-    emailEl.style.borderColor = 'rgba(239,68,68,.4)';
-    emailEl.style.boxShadow = '0 0 0 3px rgba(239,68,68,.06)';
-    valid = false;
+  if (!name || !email || !org || !country || !orgtype) {
+    errEl.textContent = '✕  Please complete all required fields.';
+    errEl.className = 'form-error show';
+    return;
   }
 
-  if(!valid) return;
-
-  const btn = document.getElementById('modal-submit');
   btn.disabled = true;
   btn.textContent = 'Submitting…';
 
-  // Simulate async submission
-  setTimeout(() => {
-    closeModal();
-    setTimeout(() => {
-      document.getElementById('thankyou-overlay').classList.add('open');
-      document.body.style.overflow = 'hidden';
-      // Reset form
-      ['f-name','f-designation','f-email','f-org','f-country','f-reason'].forEach(id => {
-        document.getElementById(id).value = '';
-        document.getElementById(id).style.borderColor = '';
-        document.getElementById(id).style.boxShadow = '';
-      });
-      document.getElementById('f-domain').value = '';
-      btn.disabled = false;
-      btn.innerHTML = 'Submit Request <svg width="13" height="13" viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M2 6.5h9M7 2l4.5 4.5L7 11"/></svg>';
-    }, 200);
-  }, 1200);
-}
+  // Simulate submission (replace with real API call)
+  await new Promise(r => setTimeout(r, 1200));
 
-function closeThankyou() {
-  document.getElementById('thankyou-overlay').classList.remove('open');
+  // Generate reference
+  const ref = 'PRX-' + module.slice(0,3).toUpperCase() + '-' + Date.now().toString(36).toUpperCase().slice(-6);
+
+  // Store locally
+  const apps = JSON.parse(localStorage.getItem('prx_applications') || '[]');
+  apps.push({ ref, name, email, org, country, orgtype, module, plan, deploy, usecase, submittedAt: new Date().toISOString() });
+  localStorage.setItem('prx_applications', JSON.stringify(apps));
+
+  // Show success
+  document.getElementById('success-ref').textContent = 'REF: ' + ref;
+  document.getElementById('modal-form-body').style.display = 'none';
+  document.getElementById('modal-success').style.display   = 'flex';
   document.body.style.overflow = '';
-  window.location.href = 'landing.html';
 }
-
-/* Input error reset on type */
-document.querySelectorAll('.modal-body input, .modal-body select, .modal-body textarea').forEach(el => {
-  el.addEventListener('input', () => {
-    el.style.borderColor = '';
-    el.style.boxShadow = '';
-  });
-});
 </script>
 </body>
 </html>

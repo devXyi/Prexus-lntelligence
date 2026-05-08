@@ -3,820 +3,956 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Prexus — Sovereign Intelligence Platform</title>
+<meta name="theme-color" content="#080808"/>
+<title>Prexus Intelligence — Secure Access</title>
+<meta name="description" content="Authorized access portal for the Prexus Sovereign Intelligence Platform."/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Martian+Mono:wght@300;400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600;700&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,300&display=swap" rel="stylesheet"/>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
-<style>
-/* ═══════════════════════════════════════════
-   DESIGN TOKENS
-═══════════════════════════════════════════ */
-:root {
-  --void:#020912; --deep:#04101f; --surface:#06162a; --depth3:#091e35;
-  --cobalt:#0EA5E9; --cobalt-lo:rgba(14,165,233,.08); --cobalt-md:rgba(14,165,233,.18); --cobalt-hi:rgba(14,165,233,.35);
-  --ice:#E0F0FF; --steel:#7BA4C0; --ghost:#2A4A65; --phantom:#122035;
-  --amber:#F59E0B; --red:#EF4444; --green:#10B981;
-  --wire:rgba(14,165,233,.12); --border:rgba(255,255,255,.08);
-  --font-display:'Bebas Neue',sans-serif; --font-data:'Martian Mono',monospace;
-  --font-ui:'IBM Plex Sans',sans-serif; --font-serif:'Source Serif 4',serif;
-  --shadow-panel:0 40px 80px rgba(0,0,0,.6),0 0 0 1px rgba(14,165,233,.08);
-  --transition:all .2s ease;
-}
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html,body{height:100%;overflow-x:hidden}
-body{background:var(--void);color:var(--ice);font-family:var(--font-ui)}
-body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");opacity:.02;pointer-events:none;z-index:9999}
-::-webkit-scrollbar{width:3px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--ghost);border-radius:2px}
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Martian+Mono:wght@300;400;500&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,300;1,400&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
 
-/* ═══ PAGE SYSTEM ═══ */
-.page{display:none;position:relative;min-height:100vh}
+<style>
+/* ── TOKENS — exact match to landing.html ── */
+:root{
+  --void:#080808;
+  --deep:#0d0d0d;
+  --panel:rgba(13,13,13,.88);
+  --cobalt:#0EA5E9;
+  --cobalt-lo:rgba(14,165,233,.07);
+  --cobalt-mid:rgba(14,165,233,.18);
+  --cobalt-hi:rgba(14,165,233,.32);
+  --ice:#E8D9C8;
+  --ice-dim:rgba(232,217,200,.6);
+  --steel:#8A9BAD;
+  --muted:#2E4558;
+  --wire-soft:rgba(232,217,200,.055);
+  --wire:rgba(232,217,200,.1);
+  --wire-strong:rgba(232,217,200,.18);
+  --green:#10B981;
+  --amber:#F59E0B;
+  --red:#EF4444;
+
+  --f-display:'Bebas Neue',sans-serif;
+  --f-data:'Martian Mono',monospace;
+  --f-serif:'Source Serif 4',serif;
+  --f-ui:'IBM Plex Sans',sans-serif;
+
+  --ease-out5:cubic-bezier(.16,1,.3,1);
+  --ease-out3:cubic-bezier(.23,1,.32,1);
+  --ease-spring:cubic-bezier(.34,1.56,.64,1);
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  background:var(--void);color:var(--ice);
+  font-family:var(--f-ui);font-size:15px;line-height:1.6;
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  min-height:100vh;
+}
+h1,h2,h3{text-rendering:optimizeLegibility}
+a{text-decoration:none;color:inherit}
+a,button{cursor:pointer}
+::-webkit-scrollbar{width:2px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--muted);border-radius:2px}
+
+/* noise grain */
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+  opacity:.022;
+}
+
+/* ── PAGE SYSTEM ── */
+.page{display:none;min-height:100vh;position:relative}
 .page.active{display:flex}
 
-/* ═══ ANIMATIONS ═══ */
-@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
-@keyframes spinBorder{to{transform:rotate(360deg)}}
-.fu  {opacity:0;animation:fadeUp .65s cubic-bezier(.16,1,.3,1) forwards}
-.fu-1{opacity:0;animation:fadeUp .65s .08s cubic-bezier(.16,1,.3,1) forwards}
-.fu-2{opacity:0;animation:fadeUp .65s .16s cubic-bezier(.16,1,.3,1) forwards}
-.fu-3{opacity:0;animation:fadeUp .65s .24s cubic-bezier(.16,1,.3,1) forwards}
-.fu-4{opacity:0;animation:fadeUp .65s .32s cubic-bezier(.16,1,.3,1) forwards}
 
-/* ═══ GLASS ═══ */
-.glass{background:rgba(4,16,31,.8);border:1px solid var(--border);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
-
-/* ═══ CORNER BRACKETS ═══ */
-.bracket{position:relative}
-.bracket::before,.bracket::after{content:'';position:absolute;width:14px;height:14px;border-color:var(--cobalt-hi);border-style:solid;pointer-events:none;z-index:2}
-.bracket::before{top:-1px;left:-1px;border-width:1.5px 0 0 1.5px}
-.bracket::after{bottom:-1px;right:-1px;border-width:0 1.5px 1.5px 0}
-
-/* ═══ TYPOGRAPHY ═══ */
-.data-label{font-family:var(--font-data);font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--ghost)}
-.data-label.cobalt{color:var(--cobalt)}
-
-/* ═══ TAGS ═══ */
-.tag{display:inline-flex;align-items:center;gap:4px;font-family:var(--font-data);font-size:9px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;padding:3px 8px;border-radius:4px}
-.tag-green {background:rgba(16,185,129,.12);border:1px solid rgba(16,185,129,.3);color:#6ee7b7}
-.tag-cobalt{background:rgba(14,165,233,.1);border:1px solid rgba(14,165,233,.3);color:var(--cobalt)}
-.tag-amber {background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.3);color:#fcd34d}
-.tag-red   {background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);color:#fca5a5}
-.tag-dim   {background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);color:var(--steel)}
-
-/* ═══ STATUS DOT ═══ */
-.status-dot{display:inline-block;width:6px;height:6px;border-radius:50%;flex-shrink:0}
-.status-dot.live{background:var(--green);box-shadow:0 0 6px var(--green)}
-.status-dot.warn{background:var(--amber);box-shadow:0 0 6px var(--amber)}
-.pulse{animation:pulse 2s infinite}
-
-/* ═══ BUTTON ═══ */
-.btn-auth{width:100%;padding:14px;background:var(--cobalt);color:white;border:none;border-radius:8px;cursor:pointer;font-family:var(--font-data);font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;transition:var(--transition);box-shadow:0 0 20px rgba(14,165,233,.3)}
-.btn-auth:hover:not(:disabled){filter:brightness(1.12);box-shadow:0 0 32px rgba(14,165,233,.5)}
-.btn-auth:disabled{opacity:.5;cursor:not-allowed}
-.btn-ghost{background:transparent;border:1px solid var(--border);color:var(--steel);padding:8px 18px;border-radius:10px;cursor:pointer;font-family:var(--font-data);font-size:10px;letter-spacing:.12em;text-transform:uppercase;transition:var(--transition)}
-.btn-ghost:hover{border-color:rgba(14,165,233,.3);color:var(--ice)}
-
-/* ═══ INPUTS ═══ */
-.inp{width:100%;background:rgba(0,0,0,.4);border:1px solid rgba(14,165,233,.15);color:var(--ice);font-family:var(--font-data);font-size:12px;padding:12px 14px;border-radius:8px;transition:border-color .2s;outline:none}
-.inp:focus{border-color:var(--cobalt);box-shadow:0 0 0 3px rgba(14,165,233,.1)}
-.inp::placeholder{color:var(--ghost)}
-.inp-field{width:100%;background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.08);color:var(--ice);font-family:var(--font-ui);font-size:14px;padding:10px 14px;border-radius:8px;transition:border-color .2s;outline:none}
-.inp-field:focus{border-color:rgba(14,165,233,.4);box-shadow:0 0 0 3px rgba(14,165,233,.08)}
-.inp-field::placeholder{color:var(--ghost)}
-select.inp-field{cursor:pointer;appearance:none}
-select.inp-field option{background:#04101f}
-.form-label{display:block;font-family:var(--font-data);font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--steel);margin-bottom:6px}
-.req{color:var(--cobalt);margin-left:2px}
-.error-box{display:none;background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.25);border-radius:6px;padding:10px 12px;font-family:var(--font-data);font-size:10px;color:#fca5a5;letter-spacing:.04em}
-.error-box.show{display:block}
-
-/* ═══ LAYOUT UTILS ═══ */
-.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-.space-y{display:flex;flex-direction:column;gap:16px}
-
-/* ═══ LOGO SVG ═══ */
-.lg-l1{stroke:rgba(255,255,255,.9);stroke-width:2;fill:none}
-.lg-l2{stroke:var(--cobalt);stroke-width:2;fill:none}
-.lg-dot{fill:var(--cobalt)}
-.lg-text{font-family:'Bebas Neue',sans-serif;font-size:46px;fill:#fff;letter-spacing:8px;font-weight:700}
-.lg-tag{font-family:'Martian Mono',monospace;font-size:9px;fill:rgba(14,165,233,.8);letter-spacing:3.5px}
-
-/* ═══════════════════════════════════════════
-   COOKIE BANNER
-═══════════════════════════════════════════ */
-#cookieBanner{
-  position:fixed;bottom:0;left:0;right:0;z-index:5000;
-  background:rgba(4,16,31,.98);border-top:1px solid rgba(14,165,233,.2);
-  backdrop-filter:blur(20px);padding:16px 32px;
-  display:none;align-items:center;gap:24px;flex-wrap:wrap;
+/* ══════════════════════════════════════
+   NAV — same spec as landing.html
+══════════════════════════════════════ */
+.nav{
+  position:fixed;top:0;left:0;right:0;z-index:400;height:54px;
+  display:flex;align-items:center;padding:0 40px;
+  background:rgba(8,8,8,.72);
+  backdrop-filter:blur(28px) saturate(1.5);
+  -webkit-backdrop-filter:blur(28px) saturate(1.5);
+  border-bottom:1px solid var(--wire-soft);
+  transition:border-color .35s,background .35s;
 }
-.cookie-title{display:flex;align-items:center;gap:8px;font-weight:600;margin-bottom:4px;font-size:14px}
-.cookie-desc{font-size:13px;color:var(--steel);line-height:1.5;max-width:600px}
-.cookie-actions{display:flex;gap:10px;flex-shrink:0;margin-left:auto}
-.btn-cookie-decline{padding:9px 20px;border-radius:6px;border:1px solid var(--border);background:transparent;color:var(--steel);cursor:pointer;font-family:var(--font-data);font-size:10px;letter-spacing:.1em;text-transform:uppercase;transition:var(--transition)}
-.btn-cookie-decline:hover{border-color:rgba(255,255,255,.2);color:var(--ice)}
-.btn-cookie-accept{padding:9px 20px;border-radius:6px;border:none;background:var(--cobalt);color:white;cursor:pointer;font-family:var(--font-data);font-size:10px;letter-spacing:.1em;text-transform:uppercase;transition:var(--transition)}
-.btn-cookie-accept:hover{filter:brightness(1.1)}
+.nav-logo{display:flex;align-items:center;gap:12px}
+.nav-logo-icon{transition:filter .35s ease;animation:logoBreathe 5s ease-in-out infinite;flex-shrink:0}
+.nav-wordmark{font-family:var(--f-display);font-size:22px;letter-spacing:.18em;color:var(--ice);line-height:1}
+.nav-product{font-family:var(--f-data);font-size:7.5px;letter-spacing:.22em;color:rgba(232,217,200,.35);text-transform:uppercase;line-height:1;margin-top:2px}
+.nav-right{margin-left:auto;display:flex;align-items:center;gap:14px}
+.nav-back-link{
+  font-family:var(--f-data);font-size:9px;letter-spacing:.1em;text-transform:uppercase;
+  color:rgba(232,217,200,.3);display:flex;align-items:center;gap:6px;
+  padding:6px 12px;border:1px solid var(--wire-soft);border-radius:2px;
+  transition:color .2s,border-color .2s;
+}
+.nav-back-link:hover{color:rgba(232,217,200,.65);border-color:var(--wire)}
+.nav-status-cluster{display:flex;align-items:center;gap:5px}
+.nav-status-dot{
+  width:5px;height:5px;border-radius:50%;
+  background:var(--green);box-shadow:0 0 6px rgba(16,185,129,.55);
+  animation:pulseSoft 2.8s ease-in-out infinite;
+}
+.nav-status-text{font-family:var(--f-data);font-size:7.5px;letter-spacing:.18em;text-transform:uppercase;color:rgba(16,185,129,.55)}
+.nav-clock{font-family:var(--f-data);font-size:9px;letter-spacing:.06em;color:var(--muted);border-left:1px solid var(--wire-soft);padding-left:14px}
 
-/* ═══════════════════════════════════════════
+
+/* ══════════════════════════════════════
    PAGE 1: AUTH
-═══════════════════════════════════════════ */
-#page-auth{flex-direction:column;align-items:center;justify-content:center;padding:24px;overflow:hidden}
-.auth-bg-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(14,165,233,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(14,165,233,.03) 1px,transparent 1px);background-size:48px 48px;pointer-events:none}
-.auth-bg-glow{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 55%,rgba(14,165,233,.07) 0%,transparent 60%);pointer-events:none}
-.auth-wrap{position:relative;z-index:10;display:flex;flex-direction:column;align-items:center;width:100%;max-width:400px}
-.auth-logo-wrap{margin-bottom:44px;width:300px}
-.auth-icon-wrap{width:56px;height:56px;border-radius:50%;background:rgba(14,165,233,.1);border:1px solid rgba(14,165,233,.25);display:flex;align-items:center;justify-content:center;margin-bottom:20px;transition:all .3s}
-.auth-icon{font-size:22px;color:var(--cobalt)}
-.auth-tabs{display:flex;gap:0;background:rgba(0,0,0,.3);border-radius:10px;padding:3px;margin-bottom:22px;width:100%}
-.auth-tab{flex:1;padding:8px 16px;border:none;border-radius:8px;background:transparent;color:var(--steel);cursor:pointer;font-family:var(--font-data);font-size:11px;letter-spacing:.1em;text-transform:uppercase;transition:all .2s}
-.auth-tab.active{background:rgba(14,165,233,.15);color:var(--cobalt);border:1px solid rgba(14,165,233,.25)}
-.auth-form{width:100%;display:flex;flex-direction:column;gap:12px}
-.auth-card-head{border-bottom:1px solid var(--border);padding:11px 22px;display:flex;align-items:center;justify-content:space-between;background:rgba(0,0,0,.4)}
-.auth-card-foot{border-top:1px solid rgba(255,255,255,.05);padding:11px 22px;display:flex;justify-content:space-between;align-items:center;background:rgba(0,0,0,.25)}
-.auth-footer-text{margin-top:20px;font-family:var(--font-data);font-size:9px;color:rgba(255,255,255,.2);text-transform:uppercase;letter-spacing:.2em;text-align:center}
+══════════════════════════════════════ */
+#page-auth{
+  flex-direction:column;align-items:center;justify-content:center;
+  padding:80px 24px 40px;overflow:hidden;
+}
+.auth-bg-grid{
+  position:absolute;inset:0;pointer-events:none;
+  background-image:linear-gradient(var(--wire-soft) 1px,transparent 1px),linear-gradient(90deg,var(--wire-soft) 1px,transparent 1px);
+  background-size:80px 80px;opacity:.35;
+  mask-image:radial-gradient(ellipse 80% 90% at 50% 50%,black 40%,transparent 100%);
+}
+.auth-bg-glow{
+  position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(ellipse 55% 60% at 50% 50%,rgba(232,217,200,.025) 0%,transparent 60%);
+}
+.auth-wrap{
+  position:relative;z-index:10;
+  display:flex;flex-direction:column;align-items:center;
+  width:100%;max-width:380px;
+  opacity:0;animation:authReveal .9s .1s var(--ease-out5) forwards;
+}
 
-/* ═══════════════════════════════════════════
-   PAGE 2: ORG SETUP
-═══════════════════════════════════════════ */
-#page-org{align-items:center;justify-content:center;padding:24px}
-.org-bg-grid{position:absolute;inset:0;background-image:linear-gradient(#334155 1px,transparent 1px),linear-gradient(90deg,#334155 1px,transparent 1px);background-size:44px 44px;opacity:.07;pointer-events:none}
-.org-card{width:100%;max-width:960px;z-index:10;border-radius:16px;overflow:hidden;box-shadow:var(--shadow-panel)}
-.org-head{border-bottom:1px solid var(--border);padding:32px;background:rgba(0,0,0,.5);display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:20px}
-.org-body{padding:32px}
-.org-section-label{display:flex;align-items:center;gap:12px;padding-bottom:12px;border-bottom:1px solid var(--border);margin-bottom:20px}
-.org-section-num{width:28px;height:28px;border-radius:50%;background:rgba(14,165,233,.1);border:1px solid rgba(14,165,233,.25);display:flex;align-items:center;justify-content:center;color:var(--cobalt);font-family:var(--font-data);font-size:12px;font-weight:700;flex-shrink:0}
-.org-compliance{margin-top:28px;background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.05);border-radius:14px;padding:20px}
-.org-foot{display:flex;flex-direction:column;align-items:center;margin-top:28px;padding-top:28px;border-top:1px solid var(--border)}
+/* logo lockup */
+.auth-logo{display:flex;align-items:center;gap:14px;margin-bottom:40px}
+.auth-logo-mark{font-family:var(--f-display);font-size:32px;letter-spacing:.2em;color:var(--ice);line-height:1}
+.auth-logo-sub{font-family:var(--f-data);font-size:7px;letter-spacing:.22em;text-transform:uppercase;color:rgba(232,217,200,.3);margin-top:3px}
+.auth-logo-divider{width:1px;height:36px;background:var(--wire)}
 
-/* Terminal overlay */
-#termOverlay{display:none;position:fixed;inset:0;z-index:100;background:rgba(0,0,0,.96);backdrop-filter:blur(20px);align-items:center;justify-content:center}
-.term-window{width:100%;max-width:560px;border-radius:14px;overflow:hidden;box-shadow:var(--shadow-panel);border:1px solid rgba(255,255,255,.08);margin:0 16px}
-.term-head{background:#02040A;border-bottom:1px solid rgba(255,255,255,.08);padding:12px 20px;display:flex;align-items:center;justify-content:space-between}
-.term-dots{display:flex;gap:6px}
-.term-dot{width:10px;height:10px;border-radius:50%}
-.term-body{padding:24px;background:#02040A;min-height:240px;max-height:360px;display:flex;flex-direction:column;justify-content:flex-end;font-size:11px;overflow-y:auto;line-height:1.7}
+/* card */
+.auth-card{
+  width:100%;
+  background:var(--panel);
+  border:1px solid var(--wire-soft);
+  border-radius:4px;overflow:hidden;
+  box-shadow:0 32px 80px rgba(0,0,0,.6),0 0 0 1px rgba(232,217,200,.03);
+}
+.auth-card-head{
+  padding:11px 22px;
+  border-bottom:1px solid var(--wire-soft);
+  background:rgba(0,0,0,.4);
+  display:flex;align-items:center;justify-content:space-between;
+}
+.auth-card-head-label{
+  font-family:var(--f-data);font-size:9px;letter-spacing:.18em;
+  text-transform:uppercase;color:rgba(232,217,200,.35);
+  display:flex;align-items:center;gap:8px;
+}
+.auth-card-head-label svg{opacity:.5}
+.auth-card-body{padding:28px 28px 24px}
+.auth-card-foot{
+  padding:10px 22px;
+  border-top:1px solid var(--wire-soft);
+  background:rgba(0,0,0,.25);
+  display:flex;justify-content:space-between;align-items:center;
+}
+.auth-card-foot-text{
+  font-family:var(--f-data);font-size:8px;letter-spacing:.12em;
+  text-transform:uppercase;color:rgba(232,217,200,.18);
+}
 
-/* ═══════════════════════════════════════════
-   PAGE 3: HUB
-═══════════════════════════════════════════ */
-#page-hub{flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:32px;position:relative}
-.hub-bg-dots{position:absolute;inset:0;background-image:radial-gradient(rgba(14,165,233,.05) 1px,transparent 1px);background-size:30px 30px;pointer-events:none}
-.hub-bg-glow{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 38%,rgba(14,165,233,.065) 0%,transparent 58%);pointer-events:none}
-.hub-header-bar{position:absolute;top:24px;left:24px;display:flex;align-items:center;gap:12px;padding:10px 16px;border-radius:12px;font-family:var(--font-data);font-size:11px}
-.hub-logout-btn{position:absolute;top:24px;right:24px;padding:8px 16px;border-radius:10px;background:transparent;border:1px solid var(--border);color:var(--steel);cursor:pointer;font-family:var(--font-data);font-size:10px;text-transform:uppercase;letter-spacing:.14em;transition:var(--transition);display:flex;align-items:center;gap:6px}
-.hub-logout-btn:hover{border-color:rgba(239,68,68,.4);color:var(--red)}
-.hub-hero{z-index:10;text-align:center;margin-bottom:44px;display:flex;flex-direction:column;align-items:center}
-.hub-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;z-index:10;max-width:1000px;width:100%}
-@media(max-width:768px){.hub-grid{grid-template-columns:1fr}}
-.hub-bottom{z-index:10;margin-top:28px}
+/* tabs */
+.auth-tabs{
+  display:flex;gap:0;
+  background:rgba(0,0,0,.4);
+  border:1px solid var(--wire-soft);
+  border-radius:2px;padding:2px;
+  margin-bottom:22px;
+}
+.auth-tab{
+  flex:1;padding:7px 12px;border:none;
+  background:transparent;color:rgba(232,217,200,.3);
+  cursor:pointer;font-family:var(--f-data);font-size:9.5px;
+  letter-spacing:.1em;text-transform:uppercase;
+  transition:all .18s ease;border-radius:1px;
+}
+.auth-tab.active{
+  background:rgba(232,217,200,.07);color:var(--ice);
+  border:1px solid var(--wire);
+}
 
-/* Hub cards */
-.hub-card{position:relative;border-radius:16px;overflow:hidden;transition:all .3s;cursor:default}
-.hub-card.enabled{cursor:pointer}
-.hub-card.enabled:hover{transform:translateY(-5px);box-shadow:0 24px 60px rgba(0,0,0,.5),0 0 0 1px rgba(14,165,233,.35)}
-.hub-card.enabled:hover .hub-card-border{opacity:1}
-.hub-card-border{position:absolute;inset:0;border-radius:16px;border:1px solid rgba(14,165,233,.3);pointer-events:none;opacity:0;transition:opacity .3s}
-.hub-lock-overlay{position:absolute;inset:0;background:rgba(2,9,18,.88);backdrop-filter:blur(8px);display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0;transition:opacity .25s;text-align:center;padding:20px}
-.hub-card.locked:hover .hub-lock-overlay{opacity:1}
+/* fields */
+.field-group{display:flex;flex-direction:column;gap:12px;margin-bottom:16px}
+.field-label{
+  font-family:var(--f-data);font-size:8.5px;letter-spacing:.18em;
+  text-transform:uppercase;color:rgba(232,217,200,.4);
+  display:block;margin-bottom:5px;
+}
+.field-req{color:var(--cobalt)}
+.field-input{
+  width:100%;
+  background:rgba(0,0,0,.5);
+  border:1px solid var(--wire-soft);
+  color:var(--ice);font-family:var(--f-data);font-size:11.5px;
+  padding:11px 13px;border-radius:2px;
+  transition:border-color .2s,box-shadow .2s;outline:none;
+  letter-spacing:.04em;
+}
+.field-input:focus{
+  border-color:rgba(232,217,200,.28);
+  box-shadow:0 0 0 3px rgba(232,217,200,.04);
+}
+.field-input::placeholder{color:rgba(46,69,88,.8);letter-spacing:.06em}
+.field-input.pw{letter-spacing:.22em}
+.field-input.pw::placeholder{letter-spacing:.06em}
 
-/* ═══════════════════════════════════════════
-   METEORIUM LAUNCH MODAL
-═══════════════════════════════════════════ */
-#metLaunchModal{display:none;position:fixed;inset:0;z-index:8000;background:rgba(2,9,18,.92);backdrop-filter:blur(20px);align-items:center;justify-content:center}
-.met-modal-box{max-width:460px;width:90%;margin:0 20px;background:#04101f;border:1px solid rgba(14,165,233,.2);border-radius:6px;overflow:hidden;box-shadow:0 40px 80px rgba(0,0,0,.7)}
+/* error */
+.auth-error{
+  display:none;padding:10px 12px;
+  background:rgba(239,68,68,.06);
+  border:1px solid rgba(239,68,68,.2);border-radius:2px;
+  font-family:var(--f-data);font-size:9.5px;letter-spacing:.04em;
+  color:rgba(239,68,68,.8);margin-bottom:14px;
+}
+.auth-error.show{display:block}
 
-/* ═══ MISC HELPERS ═══ */
-@keyframes shimmer{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}}
-.spinner-dot{width:32px;height:32px;border:2px solid rgba(14,165,233,.2);border-top-color:var(--cobalt);border-radius:50%;animation:spinBorder .7s linear infinite}
+/* submit */
+.btn-auth{
+  position:relative;overflow:hidden;
+  width:100%;padding:13px;
+  background:var(--ice);color:#080808;border:none;
+  border-radius:2px;cursor:pointer;
+  font-family:var(--f-data);font-size:10.5px;font-weight:500;
+  letter-spacing:.16em;text-transform:uppercase;
+  transition:filter .25s,box-shadow .25s,transform .15s;
+  box-shadow:0 0 0 1px rgba(232,217,200,.2),0 8px 28px rgba(232,217,200,.07);
+}
+.btn-auth::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(110deg,transparent 30%,rgba(255,255,255,.15) 50%,transparent 70%);
+  transform:translateX(-150%);transition:transform .55s ease;
+}
+.btn-auth:hover:not(:disabled){filter:brightness(1.06);box-shadow:0 0 0 1px rgba(232,217,200,.35),0 10px 32px rgba(232,217,200,.12)}
+.btn-auth:hover::after:not(:disabled){transform:translateX(150%)}
+.btn-auth:disabled{opacity:.5;cursor:not-allowed}
+.btn-auth:active:not(:disabled){transform:scale(.98)}
 
+/* footnote */
+.auth-footnote{
+  margin-top:18px;
+  font-family:var(--f-data);font-size:8px;letter-spacing:.16em;
+  text-transform:uppercase;color:rgba(232,217,200,.18);text-align:center;
+}
+
+
+/* ══════════════════════════════════════
+   PAGE 2: MODULES (post-auth)
+══════════════════════════════════════ */
+#page-modules{
+  flex-direction:column;
+  padding:54px 0 0;/* below nav */
+}
+.modules-bg-grid{
+  position:fixed;inset:0;pointer-events:none;
+  background-image:linear-gradient(var(--wire-soft) 1px,transparent 1px),linear-gradient(90deg,var(--wire-soft) 1px,transparent 1px);
+  background-size:80px 80px;opacity:.25;
+  mask-image:radial-gradient(ellipse 80% 80% at 50% 30%,black 40%,transparent 100%);
+}
+.modules-bg-glow{
+  position:fixed;inset:0;pointer-events:none;
+  background:radial-gradient(ellipse 60% 40% at 50% 20%,rgba(232,217,200,.02) 0%,transparent 55%);
+}
+
+/* classification strip */
+.cls-strip{
+  background:rgba(16,185,129,.04);
+  border-bottom:1px solid rgba(16,185,129,.08);
+  padding:7px 0;text-align:center;
+  font-family:var(--f-data);font-size:8px;
+  letter-spacing:.25em;text-transform:uppercase;
+  color:rgba(16,185,129,.45);
+  position:relative;z-index:10;
+}
+
+/* user bar */
+.user-bar{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:12px 48px;
+  border-bottom:1px solid var(--wire-soft);
+  background:rgba(8,8,8,.85);
+  backdrop-filter:blur(12px);
+  position:relative;z-index:10;
+}
+.user-bar-info{display:flex;align-items:center;gap:18px}
+.user-bar-email{
+  font-family:var(--f-data);font-size:9px;letter-spacing:.1em;
+  color:rgba(232,217,200,.45);
+}
+.user-bar-badge{
+  font-family:var(--f-data);font-size:7.5px;letter-spacing:.18em;
+  text-transform:uppercase;padding:3px 8px;border-radius:2px;
+  background:rgba(16,185,129,.08);
+  border:1px solid rgba(16,185,129,.18);
+  color:rgba(16,185,129,.7);
+}
+.user-bar-signout{
+  font-family:var(--f-data);font-size:9px;letter-spacing:.12em;
+  text-transform:uppercase;color:rgba(232,217,200,.25);
+  background:none;border:1px solid var(--wire-soft);padding:6px 14px;
+  border-radius:2px;transition:color .2s,border-color .2s;
+}
+.user-bar-signout:hover{color:rgba(239,68,68,.6);border-color:rgba(239,68,68,.2)}
+
+/* section */
+.modules-section{
+  max-width:1100px;margin:0 auto;padding:60px 48px 100px;
+  position:relative;z-index:10;
+}
+.modules-eyebrow{
+  font-family:var(--f-data);font-size:9px;letter-spacing:.28em;
+  text-transform:uppercase;color:rgba(232,217,200,.4);
+  margin-bottom:14px;display:flex;align-items:center;gap:10px;
+}
+.modules-eyebrow::before{content:'';display:block;width:22px;height:1px;background:var(--ice);opacity:.22}
+.modules-h2{
+  font-family:var(--f-display);font-size:clamp(28px,4vw,48px);
+  letter-spacing:.04em;text-transform:uppercase;color:var(--ice);
+  margin-bottom:12px;line-height:1.05;
+}
+.modules-lead{
+  font-family:var(--f-serif);font-size:15px;font-weight:300;
+  color:rgba(232,217,200,.4);line-height:1.8;max-width:560px;
+  margin-bottom:52px;
+}
+
+/* module cards grid */
+.mod-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:2px;border:1px solid var(--wire-soft);border-radius:4px;overflow:hidden}
+
+.mod-card{
+  padding:32px 30px;background:rgba(13,13,13,.7);
+  position:relative;overflow:hidden;
+  border-right:1px solid var(--wire-soft);
+  border-bottom:1px solid var(--wire-soft);
+  transition:background .25s;
+}
+.mod-card:nth-child(even){border-right:none}
+.mod-card:nth-last-child(-n+2){border-bottom:none}
+.mod-card:hover{background:rgba(232,217,200,.025)}
+
+/* corner brackets on hover */
+.mod-card::before,.mod-card::after{
+  content:'';position:absolute;width:8px;height:8px;
+  border-color:rgba(232,217,200,.2);border-style:solid;
+  opacity:0;transition:opacity .25s;
+}
+.mod-card::before{top:-1px;left:-1px;border-width:1.5px 0 0 1.5px}
+.mod-card::after{bottom:-1px;right:-1px;border-width:0 1.5px 1.5px 0}
+.mod-card:hover::before,.mod-card:hover::after{opacity:1}
+
+/* status badge */
+.mod-status{
+  position:absolute;top:20px;right:20px;
+  font-family:var(--f-data);font-size:7px;letter-spacing:.14em;
+  text-transform:uppercase;padding:3px 8px;border-radius:2px;
+}
+.mod-status.dev{
+  background:rgba(245,158,11,.07);
+  border:1px solid rgba(245,158,11,.2);
+  color:rgba(245,158,11,.7);
+}
+.mod-status.restricted{
+  background:rgba(232,217,200,.04);
+  border:1px solid var(--wire-soft);
+  color:rgba(232,217,200,.3);
+}
+.mod-status.planned{
+  background:rgba(46,69,88,.15);
+  border:1px solid rgba(46,69,88,.35);
+  color:var(--muted);
+}
+
+/* card content */
+.mod-icon{
+  width:40px;height:40px;border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+  margin-bottom:18px;
+  background:rgba(232,217,200,.04);
+  border:1px solid var(--wire-soft);
+  color:rgba(232,217,200,.5);
+  transition:filter .3s,border-color .3s;
+}
+.mod-card:hover .mod-icon{
+  border-color:var(--wire);
+  filter:drop-shadow(0 0 8px rgba(232,217,200,.12));
+}
+.mod-name{
+  font-family:var(--f-display);font-size:20px;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--ice);margin-bottom:4px;
+}
+.mod-tagline{
+  font-family:var(--f-data);font-size:8.5px;letter-spacing:.16em;
+  text-transform:uppercase;color:rgba(232,217,200,.3);margin-bottom:12px;
+}
+.mod-body{
+  font-family:var(--f-serif);font-size:13.5px;font-weight:300;
+  color:rgba(232,217,200,.42);line-height:1.7;margin-bottom:18px;
+}
+
+/* dev notice block */
+.mod-notice{
+  padding:11px 13px;
+  background:rgba(0,0,0,.3);
+  border:1px solid var(--wire-soft);
+  border-left:2px solid rgba(245,158,11,.3);
+  border-radius:2px;
+  font-family:var(--f-data);font-size:9px;
+  letter-spacing:.04em;color:rgba(245,158,11,.6);
+  line-height:1.65;margin-bottom:14px;
+}
+.mod-notice.restricted-notice{
+  border-left-color:rgba(232,217,200,.15);
+  color:rgba(232,217,200,.28);
+}
+.mod-notice.planned-notice{
+  border-left-color:rgba(46,69,88,.5);
+  color:rgba(46,69,88,.8);
+}
+
+/* pricing link */
+.mod-pricing-link{
+  display:inline-flex;align-items:center;gap:7px;
+  font-family:var(--f-data);font-size:9.5px;letter-spacing:.12em;
+  text-transform:uppercase;color:rgba(232,217,200,.45);
+  padding:8px 14px;
+  border:1px solid var(--wire-soft);border-radius:2px;
+  background:rgba(232,217,200,.03);
+  transition:color .2s,border-color .2s,background .2s;
+}
+.mod-pricing-link:hover{
+  color:var(--ice);
+  border-color:var(--wire);
+  background:rgba(232,217,200,.06);
+}
+.mod-pricing-link svg{opacity:.5;transition:transform .2s,opacity .2s}
+.mod-pricing-link:hover svg{transform:translateX(3px);opacity:.9}
+
+/* specs strip */
+.mod-specs{
+  display:flex;gap:18px;flex-wrap:wrap;margin-top:14px;
+  padding-top:14px;border-top:1px solid var(--wire-soft);
+}
+.mod-spec{
+  font-family:var(--f-data);font-size:8px;letter-spacing:.1em;
+  color:rgba(46,69,88,.9);text-transform:uppercase;
+}
+.mod-spec span{color:rgba(232,217,200,.32)}
+
+/* compliance footer */
+.compliance-row{
+  margin-top:52px;
+  padding:12px 0;
+  border-top:1px solid var(--wire-soft);
+  font-family:var(--f-data);font-size:7.5px;letter-spacing:.18em;
+  text-transform:uppercase;color:rgba(232,217,200,.15);
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;
+}
+
+/* access request banner */
+.access-banner{
+  max-width:1100px;margin:0 auto;padding:0 48px;
+  position:relative;z-index:10;
+  margin-bottom:-20px;
+}
+.access-banner-inner{
+  padding:18px 24px;
+  background:rgba(14,165,233,.04);
+  border:1px solid rgba(14,165,233,.1);
+  border-radius:3px;
+  display:flex;align-items:center;justify-content:space-between;gap:20px;
+  flex-wrap:wrap;
+}
+.access-banner-text{
+  font-family:var(--f-data);font-size:9px;letter-spacing:.1em;
+  color:rgba(14,165,233,.55);text-transform:uppercase;
+}
+.access-banner-text strong{color:rgba(14,165,233,.8);display:block;font-size:10.5px;margin-bottom:2px}
+.btn-demo{
+  display:inline-flex;align-items:center;gap:7px;
+  padding:10px 20px;
+  background:transparent;
+  color:rgba(232,217,200,.5);
+  border:1px solid var(--wire);border-radius:2px;
+  font-family:var(--f-data);font-size:10px;letter-spacing:.12em;text-transform:uppercase;
+  transition:border-color .2s,color .2s,background .2s;
+}
+.btn-demo:hover{border-color:rgba(232,217,200,.28);color:var(--ice);background:rgba(232,217,200,.04)}
+
+
+/* ── KEYFRAMES ── */
+@keyframes authReveal{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes logoBreathe{
+  0%,100%{filter:drop-shadow(0 0 10px rgba(232,217,200,.04))}
+  50%{filter:drop-shadow(0 0 20px rgba(232,217,200,.1))}
+}
+@keyframes pulseSoft{0%,100%{opacity:.65}50%{opacity:1}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+.fu{opacity:0;animation:fadeUp .65s var(--ease-out5) forwards}
+.fu-1{opacity:0;animation:fadeUp .65s .08s var(--ease-out5) forwards}
+.fu-2{opacity:0;animation:fadeUp .65s .16s var(--ease-out5) forwards}
+.fu-3{opacity:0;animation:fadeUp .65s .24s var(--ease-out5) forwards}
+.fu-4{opacity:0;animation:fadeUp .65s .32s var(--ease-out5) forwards}
+
+/* ── RESPONSIVE ── */
+@media(max-width:700px){
+  .mod-grid{grid-template-columns:1fr}
+  .mod-card{border-right:none}
+  .mod-card:nth-last-child(-n+2){border-bottom:1px solid var(--wire-soft)}
+  .mod-card:last-child{border-bottom:none}
+  .user-bar{padding:10px 20px}
+  .modules-section{padding:40px 20px 80px}
+  .access-banner{padding:0 20px}
+  .nav{padding:0 20px}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  .auth-wrap,.fu,.fu-1,.fu-2,.fu-3,.fu-4{opacity:1;transform:none}
+}
 </style>
 </head>
 <body>
 
-<!-- ═══ COOKIE BANNER ═══ -->
-<div id="cookieBanner">
-  <div style="flex:1">
-    <div class="cookie-title">
-      <i class="fa-solid fa-cookie-bite" style="color:#F59E0B"></i>
-      <strong>Cookie &amp; Privacy Notice</strong>
+<!-- ════════════ NAV ════════════ -->
+<nav class="nav" id="main-nav">
+  <a href="landing.html" class="nav-logo">
+    <div class="nav-logo-icon">
+      <img src="logo.png" alt="Prexus" style="width:32px;height:32px;object-fit:contain;display:block"/>
     </div>
-    <p class="cookie-desc">We use cookies to maintain your session and enhance security. By accepting, you consent to our use of essential cookies per our Privacy Policy.</p>
-  </div>
-  <div class="cookie-actions">
-    <button id="cookieDecline" class="btn-cookie-decline">Decline</button>
-    <button id="cookieAccept" class="btn-cookie-accept">Accept All</button>
-  </div>
-</div>
+    <div>
+      <div class="nav-wordmark">PREXUS</div>
+      <div class="nav-product">Intelligence Platform</div>
+    </div>
+  </a>
 
-<!-- ═══════════════════════════════════════════
+  <div class="nav-right">
+    <a href="landing.html" class="nav-back-link" id="nav-back">
+      <svg width="9" height="9" viewBox="0 0 9 9" fill="none" stroke="currentColor" stroke-width="1.2">
+        <path d="M5 1L2 4.5L5 8"/>
+      </svg>
+      Landing
+    </a>
+    <div class="nav-status-cluster">
+      <div class="nav-status-dot"></div>
+      <span class="nav-status-text">NOMINAL</span>
+    </div>
+    <div class="nav-clock" id="nav-clock">--:--:-- UTC</div>
+  </div>
+</nav>
+
+
+<!-- ════════════════════════════════════════
      PAGE 1: AUTH
-═══════════════════════════════════════════ -->
+════════════════════════════════════════ -->
 <div id="page-auth" class="page">
-  <div class="auth-bg-grid"></div>
-  <div class="auth-bg-glow"></div>
+  <div class="auth-bg-grid" aria-hidden="true"></div>
+  <div class="auth-bg-glow"  aria-hidden="true"></div>
 
   <div class="auth-wrap">
-    <!-- Logo -->
-    <div class="auth-logo-wrap fu">
-      <svg viewBox="0 0 430 120" xmlns="http://www.w3.org/2000/svg" style="width:100%">
-        <path class="lg-l1" d="M 315 22 L 36 22 L 36 84"/>
-        <path class="lg-l2" d="M 56 100 L 204 100 L 220 83"/>
-        <circle class="lg-dot" cx="36" cy="22" r="3.5"/>
-        <text x="60" y="80" class="lg-text">PREXUS</text>
-        <text x="62" y="111" class="lg-tag">SOVEREIGN INTELLIGENCE PLATFORM</text>
-      </svg>
-    </div>
-
-    <!-- Auth card -->
-    <div class="fu-1 bracket" style="width:100%">
-      <div class="glass" style="border-radius:16px;overflow:hidden;box-shadow:var(--shadow-panel)">
-        <!-- Head -->
-        <div class="auth-card-head">
-          <div style="display:flex;align-items:center;gap:8px">
-            <i class="fa-solid fa-shield-halved" style="color:var(--cobalt);font-size:12px"></i>
-            <span style="font-family:var(--font-data);font-size:9.5px;color:var(--steel);text-transform:uppercase;letter-spacing:.2em">Secure Authentication</span>
-          </div>
-          <div id="apiStatusDot" style="display:flex;align-items:center;gap:6px;font-family:var(--font-data);font-size:9px;color:var(--ghost)">
-            <span class="status-dot live pulse"></span>
-            <span id="apiStatusText">CHECKING…</span>
-          </div>
-        </div>
-
-        <!-- Body -->
-        <div style="padding:28px 32px;display:flex;flex-direction:column;align-items:center">
-          <div id="authIcon" class="auth-icon-wrap">
-            <i id="authIconI" class="fa-solid fa-lock auth-icon"></i>
-          </div>
-
-          <div class="auth-tabs">
-            <button id="tabLogin" class="auth-tab active" onclick="setAuthMode('login')">Sign In</button>
-            <button id="tabRegister" class="auth-tab" onclick="setAuthMode('register')">Register</button>
-          </div>
-
-          <form id="authForm" class="auth-form" onsubmit="handleAuthSubmit(event)">
-            <div id="regOnlyFields" style="display:none;flex-direction:column;gap:12px">
-              <input type="text" id="authFullName" placeholder="FULL NAME" class="inp" autocomplete="name"/>
-            </div>
-            <input type="email" id="authEmail" placeholder="EMAIL ADDRESS" required class="inp" autocomplete="email"/>
-            <input type="password" id="authPassword" placeholder="PASSWORD" required minlength="6" class="inp" style="letter-spacing:.3em"/>
-            <div id="authError" class="error-box"></div>
-            <button type="submit" id="authBtn" class="btn-auth">Sign In</button>
-          </form>
-        </div>
-
-        <!-- Foot -->
-        <div class="auth-card-foot">
-          <span style="font-family:var(--font-data);font-size:9px;color:rgba(255,255,255,.18);text-transform:uppercase;letter-spacing:.14em">TLS 1.3 · AES-256</span>
-          <span style="font-family:var(--font-data);font-size:9px;color:var(--ghost);text-transform:uppercase;letter-spacing:.14em;display:flex;align-items:center;gap:6px">
-            <span class="status-dot live pulse"></span>Secure Channel
-          </span>
-        </div>
+    <!-- Lockup -->
+    <div class="auth-logo">
+      <div>
+        <div class="auth-logo-mark">PREXUS</div>
+        <div class="auth-logo-sub">Sovereign Intelligence Platform</div>
+      </div>
+      <div class="auth-logo-divider"></div>
+      <div style="font-family:var(--f-data);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:rgba(232,217,200,.3)">
+        Secure<br/>Access
       </div>
     </div>
 
-    <p class="fu-2 auth-footer-text">Prexus v2.0 &nbsp;·&nbsp; ISO 27001 &nbsp;·&nbsp; SOC 2 Type II</p>
+    <!-- Card -->
+    <div class="auth-card">
+
+      <div class="auth-card-head">
+        <div class="auth-card-head-label">
+          <svg width="11" height="11" viewBox="0 0 11 11" fill="none" stroke="currentColor" stroke-width="1.2">
+            <rect x="1.5" y="5" width="8" height="5.5" rx="1"/>
+            <path d="M3.5 5V3.5a2 2 0 0 1 4 0V5"/>
+          </svg>
+          Authorized Access Only
+        </div>
+        <div style="display:flex;align-items:center;gap:5px">
+          <div class="nav-status-dot"></div>
+          <span style="font-family:var(--f-data);font-size:8px;letter-spacing:.12em;text-transform:uppercase;color:rgba(16,185,129,.5)" id="api-status-text">CHECKING…</span>
+        </div>
+      </div>
+
+      <div class="auth-card-body">
+        <!-- Tabs -->
+        <div class="auth-tabs">
+          <button class="auth-tab active" id="tab-login"    onclick="setMode('login')">Sign In</button>
+          <button class="auth-tab"        id="tab-register" onclick="setMode('register')">Register</button>
+        </div>
+
+        <!-- Form -->
+        <form id="auth-form" onsubmit="handleAuth(event)">
+          <div class="field-group">
+            <!-- name — register only -->
+            <div id="field-name" style="display:none">
+              <label class="field-label" for="inp-name">Full Name <span class="field-req">*</span></label>
+              <input type="text" id="inp-name" class="field-input" placeholder="FULL NAME" autocomplete="name"/>
+            </div>
+            <!-- email -->
+            <div>
+              <label class="field-label" for="inp-email">Email Address <span class="field-req">*</span></label>
+              <input type="email" id="inp-email" class="field-input" placeholder="you@org.gov" required autocomplete="email"/>
+            </div>
+            <!-- password -->
+            <div>
+              <label class="field-label" for="inp-pw">Password <span class="field-req">*</span></label>
+              <input type="password" id="inp-pw" class="field-input pw" placeholder="••••••••" required minlength="6" autocomplete="current-password"/>
+            </div>
+          </div>
+
+          <div class="auth-error" id="auth-error"></div>
+
+          <button type="submit" class="btn-auth" id="auth-btn">Sign In</button>
+        </form>
+      </div>
+
+      <div class="auth-card-foot">
+        <span class="auth-card-foot-text">TLS 1.3 · AES-256 · Zero-Trust</span>
+        <span class="auth-card-foot-text">Prexus v2.0</span>
+      </div>
+    </div>
+
+    <p class="auth-footnote">ISO 27001 &nbsp;·&nbsp; SOC 2 Type II &nbsp;·&nbsp; GDPR &nbsp;·&nbsp; Data Residency India / EU</p>
   </div>
 </div>
 
 
-<!-- ═══════════════════════════════════════════
-     PAGE 2: ORG SETUP
-═══════════════════════════════════════════ -->
-<div id="page-org" class="page">
-  <div class="org-bg-grid"></div>
+<!-- ════════════════════════════════════════
+     PAGE 2: MODULES (post-auth)
+════════════════════════════════════════ -->
+<div id="page-modules" class="page">
+  <div class="modules-bg-grid" aria-hidden="true"></div>
+  <div class="modules-bg-glow"  aria-hidden="true"></div>
 
-  <div class="org-card glass z-10">
-    <div class="org-head">
-      <div>
-        <div style="width:150px">
-          <svg viewBox="0 0 430 120" xmlns="http://www.w3.org/2000/svg">
-            <path class="lg-l1" d="M 315 22 L 36 22 L 36 84"/>
-            <path class="lg-l2" d="M 56 100 L 204 100 L 220 83"/>
-            <circle class="lg-dot" cx="36" cy="22" r="3.5"/>
-            <text x="60" y="80" class="lg-text">PREXUS</text>
-            <text x="62" y="111" class="lg-tag">SOVEREIGN INTELLIGENCE PLATFORM</text>
+  <!-- Classification strip -->
+  <div class="cls-strip">FOUO // Sensitive But Unclassified // Authorized Distribution Only // Prexus v2.0</div>
+
+  <!-- User bar -->
+  <div class="user-bar fu">
+    <div class="user-bar-info">
+      <span class="user-bar-email" id="user-email-display">—</span>
+      <span class="user-bar-badge">Authenticated</span>
+    </div>
+    <button class="user-bar-signout" onclick="signOut()">Sign Out</button>
+  </div>
+
+  <!-- Access banner -->
+  <div class="access-banner" style="padding-top:40px">
+    <div class="access-banner-inner fu-1">
+      <div class="access-banner-text">
+        <strong>Early Access Program — Registration Open</strong>
+        Modules are in active development. Book a guided demonstration to discuss procurement and timeline.
+      </div>
+      <a href="demo.html" class="btn-demo">Book a Demo →</a>
+    </div>
+  </div>
+
+  <!-- Main section -->
+  <div class="modules-section">
+    <div class="modules-eyebrow fu-2">Platform Intelligence Suite</div>
+    <h2 class="modules-h2 fu-2">Intelligence<br/>Modules</h2>
+    <p class="modules-lead fu-3">
+      Each module is a sovereign intelligence environment built on the same seven-layer pipeline.
+      Access is tiered by authorization level, procurement, and clearance status.
+    </p>
+
+    <!-- Cards grid -->
+    <div class="mod-grid">
+
+      <!-- ── METEORIUM ── -->
+      <div class="mod-card fu">
+        <span class="mod-status dev">In Development</span>
+        <div class="mod-icon">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.1">
+            <circle cx="10" cy="10.5" r="4.5"/>
+            <circle cx="10" cy="10.5" r="8.5" stroke-dasharray="3.5 4.5" opacity=".4"/>
+            <circle cx="10" cy="2" r="1.5" fill="currentColor" stroke="none" opacity=".8"/>
+            <line x1="10" y1="3.5" x2="10" y2="6" opacity=".5"/>
           </svg>
         </div>
-        <h1 style="font-family:var(--font-display);font-size:24px;letter-spacing:.08em;margin-top:16px">Create Organization Account</h1>
-        <p style="color:var(--steel);font-size:14px;margin-top:4px">Secure onboarding for verified entities · Enterprise &amp; Government</p>
+        <div class="mod-name">Meteorium</div>
+        <div class="mod-tagline">Climate Risk Intelligence</div>
+        <div class="mod-body">
+          Physical and transition climate risk scored at asset resolution. Seven-layer pipeline from satellite telemetry to probabilistic decision output. IPCC AR6 calibrated, 10,000 Monte Carlo draws per asset.
+        </div>
+
+        <div class="mod-notice">
+          Currently in public testing and active development. Not yet available for unrestricted deployment. Register your interest to receive access notifications and a product briefing.
+        </div>
+
+        <a href="pricing.html" class="mod-pricing-link">
+          View Pricing &amp; Plans
+          <svg width="9" height="9" viewBox="0 0 9 9" fill="none" stroke="currentColor" stroke-width="1.3">
+            <path d="M1.5 4.5h6M5 1.5l3 3-3 3"/>
+          </svg>
+        </a>
+
+        <div class="mod-specs">
+          <span class="mod-spec">Engine <span>Rust · PyO3</span></span>
+          <span class="mod-spec">Data <span>19 Sources</span></span>
+          <span class="mod-spec">Latency <span>~12ms</span></span>
+          <span class="mod-spec">Auth <span>Level 2</span></span>
+        </div>
       </div>
-      <div style="display:flex;flex-wrap:wrap;gap:8px">
-        <span class="tag tag-cobalt"><i class="fa-solid fa-shield-check"></i>ISO 27001</span>
-        <span class="tag tag-cobalt"><i class="fa-solid fa-file-contract"></i>SOC 2 Type II</span>
-        <span class="tag tag-cobalt"><i class="fa-solid fa-lock"></i>Zero-Trust</span>
+
+      <!-- ── HEALTHO ── -->
+      <div class="mod-card fu-1">
+        <span class="mod-status dev">In Development</span>
+        <div class="mod-icon">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.1">
+            <circle cx="10" cy="10" r="8" opacity=".35"/>
+            <path d="M2 10L6 10L8.5 4L11 16L13 7.5L15.5 10L18 10" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="mod-name">Healtho</div>
+        <div class="mod-tagline">Health Risk Intelligence</div>
+        <div class="mod-body">
+          Epidemiological forecasting, outbreak vector analysis, and pandemic probability modeling across 190+ jurisdictions. Healthcare system stress modeling under concurrent crisis scenarios.
+        </div>
+
+        <div class="mod-notice">
+          Currently in development. Healtho requires Healthcare CISO-level authorization and formal procurement agreement. Contact your Prexus deployment liaison for onboarding.
+        </div>
+
+        <div class="mod-specs">
+          <span class="mod-spec">Coverage <span>190+ Jurisdictions</span></span>
+          <span class="mod-spec">Auth <span>Level 4</span></span>
+          <span class="mod-spec">Procurement <span>Required</span></span>
+        </div>
       </div>
+
+      <!-- ── RAKSHA ── -->
+      <div class="mod-card fu-2">
+        <span class="mod-status restricted">Clearance Required</span>
+        <div class="mod-icon">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.1">
+            <path d="M10 1.5L18 4.8L18 11.5C18 15.5 14.5 18.5 10 20C5.5 18.5 2 15.5 2 11.5L2 4.8Z"/>
+            <circle cx="10" cy="11" r="3" opacity=".6"/>
+            <circle cx="10" cy="11" r="1" fill="currentColor" stroke="none"/>
+          </svg>
+        </div>
+        <div class="mod-name">Raksha</div>
+        <div class="mod-tagline">Strategic Intelligence</div>
+        <div class="mod-body">
+          Strategic asset movement, geopolitical threat vector modeling, military geospatial analytics, and conflict risk simulation. Designed for verified defense and national security organizations.
+        </div>
+
+        <div class="mod-notice restricted-notice">
+          Access restricted to defense-cleared personnel and authorized government entities. Requires DoD Level-5 equivalent clearance verification and a signed Master Service Agreement.
+        </div>
+
+        <div class="mod-specs">
+          <span class="mod-spec">Classification <span>Restricted</span></span>
+          <span class="mod-spec">Auth <span>Level 5</span></span>
+          <span class="mod-spec">MSA <span>Required</span></span>
+        </div>
+      </div>
+
+      <!-- ── ARTHA ── -->
+      <div class="mod-card fu-3">
+        <span class="mod-status planned">Planned</span>
+        <div class="mod-icon">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.1">
+            <path d="M2 19L18 19" opacity=".3"/>
+            <rect x="2.5" y="13" width="3.5" height="6" rx=".4"/>
+            <rect x="8.2" y="9"  width="3.5" height="10" rx=".4" opacity=".7"/>
+            <rect x="14" y="5"   width="3.5" height="14" rx=".4" opacity=".45"/>
+            <path d="M4.2 13L10 9L15.7 5" opacity=".3" stroke-dasharray="1.5 2"/>
+          </svg>
+        </div>
+        <div class="mod-name">Artha</div>
+        <div class="mod-tagline">Economic Intelligence</div>
+        <div class="mod-body">
+          Macro-economic signal fusion, trade flow disruption modeling, currency risk analysis, and supply chain stress mapping across global corridors.
+        </div>
+
+        <div class="mod-notice planned-notice">
+          Artha is currently in the architectural design phase. Expected to enter development following the Meteorium general availability milestone. Register interest for early access.
+        </div>
+
+        <div class="mod-specs">
+          <span class="mod-spec">Status <span>Architecture Phase</span></span>
+          <span class="mod-spec">ETA <span>Post-Meteorium GA</span></span>
+        </div>
+      </div>
+
+    </div><!-- /mod-grid -->
+
+    <!-- Compliance footer -->
+    <div class="compliance-row fu-4">
+      <span>SOC 2 Type II · ISO 27001 · GDPR · RBI Compliant · Data Residency India / EU</span>
+      <span>TLS 1.3 · AES-256 · Zero-Trust · Prexus Systems © 2026</span>
     </div>
 
-    <form id="orgForm" class="org-body" onsubmit="handleOrgSubmit(event)">
-      <div class="grid-2">
-        <!-- Section 1: Org Details -->
-        <div>
-          <div class="org-section-label">
-            <div class="org-section-num">1</div>
-            <div>
-              <h3 style="font-family:var(--font-display);font-size:16px;letter-spacing:.08em">Organization Details</h3>
-              <p style="font-family:var(--font-data);font-size:9.5px;color:var(--steel)">Determines compliance routing &amp; workspace partition</p>
-            </div>
-          </div>
-          <div class="space-y">
-            <div>
-              <label class="form-label">Legal Name <span class="req">*</span></label>
-              <input type="text" id="orgName" required placeholder="Ministry of Finance / Acme Corp" class="inp-field"/>
-            </div>
-            <div>
-              <label class="form-label">Organization Type <span class="req">*</span></label>
-              <select id="orgType" required class="inp-field">
-                <option value="">Select entity classification…</option>
-                <option>Government Department</option>
-                <option>Government Agency / PSU</option>
-                <option>State-Owned Enterprise</option>
-                <option>Regulated Public Company</option>
-                <option>Private Institution</option>
-              </select>
-            </div>
-            <div class="grid-2">
-              <div>
-                <label class="form-label">Country <span class="req">*</span></label>
-                <input type="text" id="orgCountry" required value="India" class="inp-field"/>
-              </div>
-              <div>
-                <label class="form-label">Official Domain <span class="req">*</span></label>
-                <input type="text" id="orgDomain" required placeholder="finance.gov" class="inp-field" style="font-family:var(--font-data)"/>
-              </div>
-            </div>
-          </div>
-        </div>
-        <!-- Section 2: Admin Profile -->
-        <div>
-          <div class="org-section-label">
-            <div class="org-section-num">2</div>
-            <div>
-              <h3 style="font-family:var(--font-display);font-size:16px;letter-spacing:.08em">Administrator Profile</h3>
-              <p style="font-family:var(--font-data);font-size:9.5px;color:var(--steel)">Linked to your authenticated account</p>
-            </div>
-          </div>
-          <div class="space-y">
-            <div class="grid-2">
-              <div>
-                <label class="form-label">Full Name <span class="req">*</span></label>
-                <input type="text" id="orgFullName" required placeholder="Jane Doe" class="inp-field"/>
-              </div>
-              <div>
-                <label class="form-label">Job Title <span class="req">*</span></label>
-                <input type="text" id="orgJobTitle" required placeholder="Director of Risk" class="inp-field"/>
-              </div>
-            </div>
-            <div>
-              <label class="form-label">Department</label>
-              <input type="text" id="orgDept" placeholder="Strategic Planning" class="inp-field"/>
-            </div>
-            <div>
-              <label class="form-label">Role in Meteorium</label>
-              <select id="orgRole" class="inp-field">
-                <option>VP Risk Management</option>
-                <option>Risk Analyst</option>
-                <option>Portfolio Manager</option>
-                <option>Compliance Officer</option>
-                <option>System Administrator</option>
-              </select>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="org-compliance">
-        <p style="font-family:var(--font-data);font-size:9px;color:var(--ghost);text-transform:uppercase;letter-spacing:.14em;margin-bottom:12px">Authorization &amp; Compliance</p>
-        <label style="display:flex;align-items:flex-start;gap:12px;cursor:pointer;margin-bottom:12px">
-          <input type="checkbox" id="chk1" required style="margin-top:3px;accent-color:var(--cobalt)"/>
-          <span style="font-size:14px;color:#aec8d8;line-height:1.65">I confirm I am legally authorized to create an account on behalf of this organization under applicable law and internal governance policy.</span>
-        </label>
-        <label style="display:flex;align-items:flex-start;gap:12px;cursor:pointer">
-          <input type="checkbox" id="chk2" required style="margin-top:3px;accent-color:var(--cobalt)"/>
-          <span style="font-size:14px;color:#aec8d8;line-height:1.65">I acknowledge data will be processed in compliance with government data residency regulations and the Prexus Master Service Agreement.</span>
-        </label>
-      </div>
-
-      <div class="org-foot">
-        <button type="submit" id="orgBtn" class="btn-auth" style="max-width:380px;font-size:14px;padding:16px 64px">Establish Organization Account</button>
-        <p style="font-family:var(--font-data);font-size:11px;color:var(--ghost);margin-top:10px">Account linked to your authenticated session</p>
-      </div>
-    </form>
-  </div>
-
-  <!-- Terminal overlay -->
-  <div id="termOverlay">
-    <div class="term-window">
-      <div class="term-head">
-        <div style="display:flex;align-items:center;gap:10px;font-family:var(--font-data);font-size:11px;color:var(--steel)">
-          <i class="fa-solid fa-terminal" style="color:var(--green);font-size:10px"></i>
-          prexus_kernel_audit.log
-        </div>
-        <div class="term-dots">
-          <div class="term-dot" style="background:rgba(239,68,68,.5)"></div>
-          <div class="term-dot" style="background:rgba(245,158,11,.5)"></div>
-          <div class="term-dot" style="background:rgba(16,185,129,.5)"></div>
-        </div>
-      </div>
-      <div id="termBody" class="term-body">
-        <div id="termLines"></div>
-        <div style="margin-top:8px;color:var(--green);font-family:var(--font-data)">›</div>
-      </div>
-    </div>
-  </div>
-</div>
+  </div><!-- /modules-section -->
+</div><!-- /page-modules -->
 
 
-<!-- ═══════════════════════════════════════════
-     PAGE 3: HUB
-═══════════════════════════════════════════ -->
-<div id="page-hub" class="page">
-  <div class="hub-bg-dots"></div>
-  <div class="hub-bg-glow"></div>
-
-  <!-- Org bar -->
-  <div class="hub-header-bar glass fu">
-    <i class="fa-solid fa-building-shield" style="color:var(--cobalt);font-size:12px"></i>
-    <span style="color:var(--steel)">ORG: <span id="hubOrgName" style="color:var(--ice)">—</span></span>
-    <span style="width:1px;height:14px;background:rgba(255,255,255,.1)"></span>
-    <span style="color:var(--steel)">ROLE: <span style="color:var(--green)">ORG_ADMIN</span></span>
-  </div>
-
-  <!-- Logout -->
-  <button class="hub-logout-btn" onclick="logout()">
-    <i class="fa-solid fa-right-from-bracket" style="font-size:10px"></i>Sign Out
-  </button>
-
-  <!-- Hero -->
-  <div class="hub-hero">
-    <div class="fu" style="width:300px">
-      <svg viewBox="0 0 430 120" xmlns="http://www.w3.org/2000/svg" style="width:100%">
-        <path class="lg-l1" d="M 315 22 L 36 22 L 36 84"/>
-        <path class="lg-l2" d="M 56 100 L 204 100 L 220 83"/>
-        <circle class="lg-dot" cx="36" cy="22" r="3.5"/>
-        <text x="60" y="80" class="lg-text">PREXUS</text>
-        <text x="62" y="111" class="lg-tag">SOVEREIGN INTELLIGENCE PLATFORM</text>
-      </svg>
-    </div>
-    <p class="fu-1" style="font-size:17px;color:var(--steel);font-weight:300;margin-top:14px">Global Predictive Intelligence Environment</p>
-    <p class="fu-2" style="font-family:var(--font-data);font-size:9.5px;color:var(--ghost);margin-top:10px;text-transform:uppercase;letter-spacing:.24em">Select an authorized module to deploy</p>
-  </div>
-
-  <!-- Module grid -->
-  <div class="hub-grid">
-
-    <!-- Meteorium — AUTHORIZED -->
-    <div class="hub-card glass enabled fu" onclick="launchMeteorium()" style="animation-delay:.0s">
-      <div class="hub-card-border"></div>
-      <div class="tag tag-green" style="position:absolute;top:16px;right:16px">
-        <i class="fa-solid fa-check" style="font-size:7px"></i>AUTHORIZED
-      </div>
-      <div style="padding:28px">
-        <div style="width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;margin-bottom:20px;background:rgba(14,165,233,.1);border:1px solid rgba(14,165,233,.25)">
-          <i class="fa-solid fa-cloud-bolt" style="font-size:22px;color:var(--cobalt);filter:drop-shadow(0 0 10px rgba(14,165,233,.5))"></i>
-        </div>
-        <h2 style="font-family:var(--font-display);font-size:20px;font-weight:700;letter-spacing:.08em">Meteorium</h2>
-        <p style="font-family:var(--font-data);font-size:9px;color:var(--steel);text-transform:uppercase;letter-spacing:.14em;margin:2px 0 12px">Climate Risk Intelligence</p>
-        <p style="font-size:14px;color:var(--steel);line-height:1.65;margin-bottom:20px">AI-driven asset-level resolution for physical and transition climate risk. Powered by IPCC AR6 and live satellite telemetry.</p>
-        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding-top:16px;margin-bottom:16px;border-top:1px solid rgba(255,255,255,.05)">
-          <div><p style="font-family:var(--font-data);font-size:8px;color:var(--ghost);text-transform:uppercase">Assets</p><p style="font-family:var(--font-data);font-size:12px;font-weight:600;margin-top:2px" id="hubAssetCount">8</p></div>
-          <div><p style="font-family:var(--font-data);font-size:8px;color:var(--ghost);text-transform:uppercase">Models</p><p style="font-family:var(--font-data);font-size:12px;font-weight:600;margin-top:2px">14</p></div>
-          <div><p style="font-family:var(--font-data);font-size:8px;color:var(--ghost);text-transform:uppercase">Last Run</p><p style="font-family:var(--font-data);font-size:12px;font-weight:600;margin-top:2px" id="hubLastRun">Live</p></div>
-        </div>
-        <div style="font-family:var(--font-data);font-size:10px;color:var(--cobalt);display:flex;align-items:center;gap:8px">
-          <span class="status-dot live pulse"></span>LAUNCH TERMINAL
-          <i class="fa-solid fa-arrow-right" style="font-size:9px;margin-left:auto;opacity:.5"></i>
-        </div>
-      </div>
-    </div>
-
-    <!-- Healtho — LOCKED -->
-    <div class="hub-card glass locked fu" style="animation-delay:.1s">
-      <div class="tag tag-dim" style="position:absolute;top:16px;right:16px"><i class="fa-solid fa-lock" style="font-size:7px"></i>PROCUREMENT REQ.</div>
-      <div style="padding:28px">
-        <div style="width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;margin-bottom:20px;background:rgba(255,255,255,.03);border:1px solid var(--border)">
-          <i class="fa-solid fa-staff-snake" style="font-size:22px;color:var(--ghost)"></i>
-        </div>
-        <h2 style="font-family:var(--font-display);font-size:20px;font-weight:700;letter-spacing:.08em">Healtho</h2>
-        <p style="font-family:var(--font-data);font-size:9px;color:var(--steel);text-transform:uppercase;letter-spacing:.14em;margin:2px 0 12px">Health Risk Intelligence</p>
-        <p style="font-size:14px;color:var(--steel);line-height:1.65;margin-bottom:20px">Epidemiological forecasting and global pandemic probability modeling across 190+ jurisdictions.</p>
-        <div style="font-family:var(--font-data);font-size:9.5px;color:var(--ghost)">PROCUREMENT REQUIRED</div>
-      </div>
-      <div class="hub-lock-overlay">
-        <div style="width:48px;height:48px;border-radius:50%;background:rgba(255,255,255,.03);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;margin-bottom:16px">
-          <i class="fa-solid fa-file-invoice" style="font-size:18px;color:var(--steel)"></i>
-        </div>
-        <p style="font-family:var(--font-data);font-size:11.5px;color:#aec8d8;padding:0 32px;text-align:center;line-height:1.65;margin-bottom:12px">Contact your Prexus deployment liaison to initiate procurement.</p>
-        <span class="tag tag-amber">Healthcare CISO Authorization Required</span>
-      </div>
-    </div>
-
-    <!-- Raksha — LOCKED -->
-    <div class="hub-card glass locked fu" style="animation-delay:.2s">
-      <div class="tag tag-dim" style="position:absolute;top:16px;right:16px"><i class="fa-solid fa-lock" style="font-size:7px"></i>CLEARANCE REQ.</div>
-      <div style="padding:28px">
-        <div style="width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;margin-bottom:20px;background:rgba(255,255,255,.03);border:1px solid var(--border)">
-          <i class="fa-solid fa-crosshairs" style="font-size:22px;color:var(--ghost)"></i>
-        </div>
-        <h2 style="font-family:var(--font-display);font-size:20px;font-weight:700;letter-spacing:.08em">Raksha</h2>
-        <p style="font-family:var(--font-data);font-size:9px;color:var(--steel);text-transform:uppercase;letter-spacing:.14em;margin:2px 0 12px">Battlefield Intelligence</p>
-        <p style="font-size:14px;color:var(--steel);line-height:1.65;margin-bottom:20px">Strategic asset movement, military geospatial analytics, and geopolitical threat vector modeling.</p>
-        <div style="font-family:var(--font-data);font-size:9.5px;color:var(--ghost)">CLEARANCE REQUIRED</div>
-      </div>
-      <div class="hub-lock-overlay">
-        <div style="width:48px;height:48px;border-radius:50%;background:rgba(255,255,255,.03);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;margin-bottom:16px">
-          <i class="fa-solid fa-fingerprint" style="font-size:18px;color:var(--steel)"></i>
-        </div>
-        <p style="font-family:var(--font-data);font-size:11.5px;color:#aec8d8;padding:0 32px;text-align:center;line-height:1.65;margin-bottom:12px">Restricted to cleared defense contractors and authorized government personnel.</p>
-        <span class="tag tag-amber">DoD Level-5 Clearance Required</span>
-      </div>
-    </div>
-  </div>
-
-  <div class="hub-bottom fu-3">
-    <button class="btn-ghost" style="display:flex;align-items:center;gap:10px;padding:12px 24px;border-radius:12px">
-      <i class="fa-solid fa-diagram-project" style="color:var(--cobalt);font-size:13px"></i>
-      <span style="font-family:var(--font-data);font-size:11px">View Platform Architecture</span>
-      <i class="fa-solid fa-arrow-right" style="font-size:9px;opacity:.5"></i>
-    </button>
-  </div>
-</div>
-
-
-<!-- ═══ METEORIUM LAUNCH MODAL ═══ -->
-<div id="metLaunchModal">
-  <div class="met-modal-box" style="position:relative">
-    <div style="position:absolute;width:10px;height:10px;top:0;left:0;border-top:1.5px solid rgba(14,165,233,.4);border-left:1.5px solid rgba(14,165,233,.4)"></div>
-    <div style="position:absolute;width:10px;height:10px;bottom:0;right:0;border-bottom:1.5px solid rgba(14,165,233,.4);border-right:1.5px solid rgba(14,165,233,.4)"></div>
-    <div style="padding:16px 22px;border-bottom:1px solid rgba(14,165,233,.1);background:rgba(0,0,0,.4);display:flex;align-items:center;gap:10px">
-      <div style="width:28px;height:28px;border-radius:8px;background:rgba(14,165,233,.1);border:1px solid rgba(14,165,233,.2);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0">🌩</div>
-      <div>
-        <div style="font-family:var(--font-display);font-size:16px;letter-spacing:.1em;color:white">Meteorium</div>
-        <div style="font-family:var(--font-data);font-size:8px;letter-spacing:.15em;color:var(--cobalt);text-transform:uppercase;opacity:.8">Climate Risk Intelligence Engine</div>
-      </div>
-      <div style="margin-left:auto">
-        <span style="font-family:var(--font-data);font-size:7.5px;font-weight:700;letter-spacing:.12em;padding:3px 8px;border-radius:2px;text-transform:uppercase;background:rgba(16,185,129,.15);color:rgba(16,185,129,.9);border:1px solid rgba(16,185,129,.25)">PUBLIC TESTING</span>
-      </div>
-    </div>
-    <div style="padding:26px 22px">
-      <div style="font-family:var(--font-data);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:rgba(14,165,233,.7);margin-bottom:12px">Notice · Access Advisory</div>
-      <p style="font-family:var(--font-serif);font-size:15px;color:#7BA4C0;line-height:1.7;margin-bottom:12px;font-style:italic">Meteorium is <strong style="color:#E0F0FF;font-style:normal">proprietary software</strong> developed by Prexus Intelligence, currently available for public testing and evaluation.</p>
-      <p style="font-family:var(--font-serif);font-size:14px;color:#2A4A65;line-height:1.65;margin-bottom:20px">By proceeding, you acknowledge Meteorium's proprietary status. Usage data may be collected to improve the platform. Do not input classified data during the testing period.</p>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:20px">
-        <div style="padding:10px 12px;background:rgba(0,0,0,.3);border:1px solid rgba(14,165,233,.08);border-radius:2px">
-          <div style="font-family:var(--font-data);font-size:7px;letter-spacing:.15em;text-transform:uppercase;color:#2A4A65;margin-bottom:3px">Status</div>
-          <div style="font-family:var(--font-display);font-size:16px;color:#10B981;letter-spacing:.06em">Public Testing</div>
-        </div>
-        <div style="padding:10px 12px;background:rgba(0,0,0,.3);border:1px solid rgba(14,165,233,.08);border-radius:2px">
-          <div style="font-family:var(--font-data);font-size:7px;letter-spacing:.15em;text-transform:uppercase;color:#2A4A65;margin-bottom:3px">Version</div>
-          <div style="font-family:var(--font-display);font-size:16px;color:#0EA5E9;letter-spacing:.06em">v2.0.0</div>
-        </div>
-      </div>
-      <div style="display:flex;gap:10px">
-        <button id="metModalProceed" onclick="doLaunchMeteorium()" style="flex:1;padding:12px;background:var(--cobalt);color:white;border:none;border-radius:3px;cursor:pointer;font-family:var(--font-data);font-size:11px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;box-shadow:0 0 18px rgba(14,165,233,.3)">Enter Meteorium →</button>
-        <button id="metModalCancel" onclick="closeMetModal()" style="padding:12px 18px;background:transparent;color:#7BA4C0;border:1px solid rgba(14,165,233,.12);border-radius:3px;cursor:pointer;font-family:var(--font-data);font-size:11px;letter-spacing:.1em;text-transform:uppercase">Cancel</button>
-      </div>
-      <p style="font-family:var(--font-data);font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:#122035;text-align:center;margin-top:10px">© 2026 Prexus Systems · Proprietary Software · All Rights Reserved</p>
-    </div>
-  </div>
-</div>
-
-
-<!-- ═══ SCRIPTS ═══ -->
 <script>
+'use strict';
+
 const API = 'https://prexus-intelligence.onrender.com';
-let currentPage = 'auth';
 let authMode = 'login';
 let sessionUser = null;
-let apiOnline = false;
 
-/* ─── NAVIGATE ─── */
-function navigate(page) {
+/* ── PAGE ROUTING ── */
+function navigate(id) {
   document.querySelectorAll('.page').forEach(p => {
     p.classList.remove('active');
     p.style.display = '';
   });
-  const el = document.getElementById('page-' + page);
-  if (el) { el.classList.add('active'); currentPage = page; }
+  const el = document.getElementById('page-' + id);
+  if (el) el.classList.add('active');
 }
 
-/* ─── COOKIE BANNER ─── */
-function initCookies() {
-  if (!localStorage.getItem('prx_cookies')) {
-    document.getElementById('cookieBanner').style.display = 'flex';
-  }
-  document.getElementById('cookieAccept').onclick = () => {
-    localStorage.setItem('prx_cookies', '1');
-    document.getElementById('cookieBanner').style.display = 'none';
+/* ── NAV CLOCK ── */
+(function initClock() {
+  const el = document.getElementById('nav-clock');
+  if (!el) return;
+  const pad = n => String(n).padStart(2, '0');
+  const tick = () => {
+    const d = new Date();
+    el.textContent = `${pad(d.getUTCHours())}:${pad(d.getUTCMinutes())}:${pad(d.getUTCSeconds())} UTC`;
   };
-  document.getElementById('cookieDecline').onclick = () => {
-    document.getElementById('cookieBanner').style.display = 'none';
-  };
-}
+  tick(); setInterval(tick, 1000);
+})();
 
-/* ─── API HEALTH CHECK ─── */
+/* ── API HEALTH ── */
 async function checkApi() {
+  const txt = document.getElementById('api-status-text');
   try {
     const r = await fetch(API + '/health', { signal: AbortSignal.timeout(5000) });
-    apiOnline = r.ok;
-  } catch(_) { apiOnline = false; }
-  const dot = document.querySelector('#apiStatusDot .status-dot');
-  const txt = document.getElementById('apiStatusText');
-  if (dot && txt) {
-    dot.className = 'status-dot ' + (apiOnline ? 'live' : 'warn');
-    txt.textContent = apiOnline ? 'API ONLINE' : 'SIM MODE';
+    if (txt) txt.textContent = r.ok ? 'API ONLINE' : 'SIM MODE';
+  } catch (_) {
+    if (txt) txt.textContent = 'SIM MODE';
   }
 }
 
-/* ─── AUTH MODE TOGGLE ─── */
-function setAuthMode(mode) {
+/* ── AUTH MODE TOGGLE ── */
+function setMode(mode) {
   authMode = mode;
-  document.getElementById('tabLogin').classList.toggle('active', mode === 'login');
-  document.getElementById('tabRegister').classList.toggle('active', mode === 'register');
-  document.getElementById('authBtn').textContent = mode === 'login' ? 'Sign In' : 'Create Account';
-  const reg = document.getElementById('regOnlyFields');
-  reg.style.display = mode === 'register' ? 'flex' : 'none';
-  const icon = document.getElementById('authIconI');
-  icon.className = mode === 'login' ? 'fa-solid fa-lock auth-icon' : 'fa-solid fa-user-plus auth-icon';
-  document.getElementById('authError').className = 'error-box';
+  document.getElementById('tab-login').classList.toggle('active', mode === 'login');
+  document.getElementById('tab-register').classList.toggle('active', mode === 'register');
+  document.getElementById('auth-btn').textContent = mode === 'login' ? 'Sign In' : 'Create Account';
+  document.getElementById('field-name').style.display = mode === 'register' ? 'block' : 'none';
+  document.getElementById('inp-pw').setAttribute('autocomplete', mode === 'login' ? 'current-password' : 'new-password');
+  const err = document.getElementById('auth-error');
+  err.className = 'auth-error';
 }
 
-/* ─── AUTH SUBMIT ─── */
-async function handleAuthSubmit(e) {
+/* ── AUTH SUBMIT ── */
+async function handleAuth(e) {
   e.preventDefault();
-  const email = document.getElementById('authEmail').value.trim();
-  const password = document.getElementById('authPassword').value;
-  const errEl = document.getElementById('authError');
-  const btn = document.getElementById('authBtn');
-  errEl.className = 'error-box';
+  const email    = document.getElementById('inp-email').value.trim();
+  const password = document.getElementById('inp-pw').value;
+  const errEl    = document.getElementById('auth-error');
+  const btn      = document.getElementById('auth-btn');
+
+  errEl.className = 'auth-error';
   btn.disabled = true;
   btn.textContent = authMode === 'login' ? 'Authenticating…' : 'Creating Account…';
 
   try {
     let userData;
+    const isOnline = document.getElementById('api-status-text')?.textContent === 'API ONLINE';
+
     if (authMode === 'login') {
-      if (apiOnline) {
-        const r = await fetch(API + '/login', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({email, password}), signal: AbortSignal.timeout(10000) });
+      if (isOnline) {
+        const r = await fetch(API + '/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password }),
+          signal: AbortSignal.timeout(10000)
+        });
         const d = await r.json();
-        if (!r.ok) throw new Error(d.error || 'Login failed');
+        if (!r.ok) throw new Error(d.error || 'Authentication failed');
         userData = d;
       } else {
-        // Offline simulation - accept any credentials
-        userData = { token: 'sim_' + Date.now(), user: { email, full_name: email.split('@')[0], id: 'usr_sim' } };
+        // Offline: accept any credentials (sim mode)
+        userData = {
+          token: 'sim_' + Date.now(),
+          user: { email, full_name: email.split('@')[0].replace(/[._]/g,' '), id: 'usr_sim' }
+        };
       }
     } else {
-      const fullName = document.getElementById('authFullName').value.trim() || email.split('@')[0];
-      if (apiOnline) {
-        const r = await fetch(API + '/register', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({email, password, full_name: fullName}), signal: AbortSignal.timeout(10000) });
+      const full_name = (document.getElementById('inp-name').value.trim()) || email.split('@')[0];
+      if (isOnline) {
+        const r = await fetch(API + '/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password, full_name }),
+          signal: AbortSignal.timeout(10000)
+        });
         const d = await r.json();
         if (!r.ok) throw new Error(d.error || 'Registration failed');
         userData = d;
       } else {
-        userData = { token: 'sim_' + Date.now(), user: { email, full_name: fullName, id: 'usr_sim' } };
+        userData = {
+          token: 'sim_' + Date.now(),
+          user: { email, full_name, id: 'usr_sim' }
+        };
       }
     }
+
     localStorage.setItem('prx_token', userData.token);
     localStorage.setItem('prx_user', JSON.stringify(userData.user));
     sessionUser = userData.user;
+    enterModules();
 
-    // Pre-fill org form with user's name
-    if (sessionUser.full_name) {
-      const orgFullName = document.getElementById('orgFullName');
-      if (orgFullName) orgFullName.value = sessionUser.full_name;
-    }
-
-    const orgKey = `prexus_org_${email}`;
-    const org = localStorage.getItem(orgKey);
-    if (org) {
-      document.getElementById('hubOrgName').textContent = JSON.parse(org).orgName;
-      navigate('hub');
-    } else if (authMode === 'login') {
-      // Returning user with no org (edge case) → go to org
-      navigate('org');
-    } else {
-      navigate('org');
-    }
-  } catch(err) {
-    errEl.textContent = '✕ ' + (err.message || 'Authentication failed. Please try again.');
-    errEl.className = 'error-box show';
+  } catch (err) {
+    errEl.textContent = '✕  ' + (err.message || 'Authentication error. Please try again.');
+    errEl.className = 'auth-error show';
   } finally {
     btn.disabled = false;
     btn.textContent = authMode === 'login' ? 'Sign In' : 'Create Account';
   }
 }
 
-/* ─── ORG SUBMIT ─── */
-function handleOrgSubmit(e) {
-  e.preventDefault();
-  const orgName  = document.getElementById('orgName').value.trim();
-  const orgType  = document.getElementById('orgType').value;
-  const country  = document.getElementById('orgCountry').value.trim();
-  const domain   = document.getElementById('orgDomain').value.trim();
-  const fullName = document.getElementById('orgFullName').value.trim();
-  const jobTitle = document.getElementById('orgJobTitle').value.trim();
-  const dept     = document.getElementById('orgDept').value.trim();
-  const role     = document.getElementById('orgRole').value;
-
-  const btn = document.getElementById('orgBtn');
-  btn.disabled = true;
-  btn.textContent = 'Provisioning…';
-
-  const orgData = { orgName, orgType, country, domain, fullName, jobTitle, dept, role, createdAt: new Date().toISOString() };
-  const email = sessionUser?.email || 'default';
-  localStorage.setItem(`prexus_org_${email}`, JSON.stringify(orgData));
-
-  showTerminal(orgName, () => {
-    document.getElementById('hubOrgName').textContent = orgName;
-    btn.disabled = false;
-    btn.textContent = 'Establish Organization Account';
-    navigate('hub');
-  });
+/* ── ENTER MODULES ── */
+function enterModules() {
+  const emailDisplay = document.getElementById('user-email-display');
+  if (emailDisplay && sessionUser) emailDisplay.textContent = sessionUser.email;
+  navigate('modules');
 }
 
-/* ─── TERMINAL ANIMATION ─── */
-function showTerminal(orgName, callback) {
-  const overlay = document.getElementById('termOverlay');
-  overlay.style.display = 'flex';
-  const lines = [
-    `> Initializing organization provisioning…`,
-    `> ORG_NAME="${orgName}"`,
-    `> Generating workspace partition [UUID]…`,
-    `> Applying IPCC AR6 compliance routing…`,
-    `> Configuring zero-trust perimeter…`,
-    `> Seeding initial access controls…`,
-    `> Linking Meteorium module to org…`,
-    `> Asset risk engine: STANDBY`,
-    `> Organization successfully provisioned.`,
-    `> Launching Prexus Hub…`,
-  ];
-  const termLines = document.getElementById('termLines');
-  termLines.innerHTML = '';
-  let i = 0;
-  const iv = setInterval(() => {
-    if (i >= lines.length) {
-      clearInterval(iv);
-      setTimeout(() => { overlay.style.display = 'none'; callback(); }, 600);
-      return;
-    }
-    const line = document.createElement('div');
-    const isSuccess = lines[i].includes('successfully') || lines[i].includes('Launching');
-    line.style.cssText = `font-family:'Martian Mono',monospace;font-size:11px;color:${isSuccess ? '#10B981' : '#7BA4C0'};margin-bottom:4px`;
-    line.textContent = lines[i];
-    termLines.appendChild(line);
-    termLines.parentElement.scrollTop = termLines.parentElement.scrollHeight;
-    i++;
-  }, 280);
-}
-
-/* ─── METEORIUM LAUNCH ─── */
-function launchMeteorium() {
-  document.getElementById('metLaunchModal').style.display = 'flex';
-}
-function closeMetModal() {
-  document.getElementById('metLaunchModal').style.display = 'none';
-}
-function doLaunchMeteorium() {
-  closeMetModal();
-  window.location.href = 'meteorium.html';
-}
-
-/* ─── LOGOUT ─── */
-function logout() {
+/* ── SIGN OUT ── */
+function signOut() {
   localStorage.removeItem('prx_token');
   localStorage.removeItem('prx_user');
   sessionUser = null;
   navigate('auth');
 }
 
-/* ─── INIT ─── */
-document.addEventListener('DOMContentLoaded', async () => {
-  initCookies();
-  checkApi(); // non-blocking
+/* ── INIT ── */
+document.addEventListener('DOMContentLoaded', () => {
+  checkApi();
 
   const token = localStorage.getItem('prx_token');
   const user  = localStorage.getItem('prx_user');
-
   if (token && user) {
-    try { sessionUser = JSON.parse(user); } catch(_) {}
-    if (sessionUser) {
-      const org = localStorage.getItem(`prexus_org_${sessionUser.email}`);
-      if (org) {
-        document.getElementById('hubOrgName').textContent = JSON.parse(org).orgName;
-        navigate('hub');
-      } else {
-        if (sessionUser.full_name) {
-          const fn = document.getElementById('orgFullName');
-          if (fn) fn.value = sessionUser.full_name;
-        }
-        navigate('org');
-      }
-      return;
-    }
+    try { sessionUser = JSON.parse(user); } catch (_) {}
+    if (sessionUser) { enterModules(); return; }
   }
   navigate('auth');
 });
 </script>
 </body>
 </html>
-

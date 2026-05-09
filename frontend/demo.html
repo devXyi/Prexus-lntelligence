@@ -127,12 +127,12 @@ select.inp option{background:#0a0f1c}
 <body>
 
 <nav class="nav">
-  <a href="landing.html" class="nav-back">← Back</a>
+  <a href="/" class="nav-back">← Back</a>
   <div class="nav-logo">
     <div class="nav-wordmark">PREXUS</div>
     <div class="nav-product">Intelligence Platform</div>
   </div>
-  <div class="nav-skip">Already registered? <a href="index.html">Sign In →</a></div>
+  <div class="nav-skip">Already registered? <a href="/frontend/index.html">Sign In →</a></div>
 </nav>
 
 <div class="page">
@@ -243,7 +243,7 @@ select.inp option{background:#0a0f1c}
           <p class="success-body">Your demonstration request has been logged. A Prexus analyst will confirm your session within 24 hours at your official email address.</p>
           <div class="success-ref" id="demo-ref">REF: —</div>
           <br/>
-          <a href="index.html" class="btn-platform">Explore the Platform →</a>
+          <a href="/frontend/index.html" class="btn-platform">Explore the Platform →</a>
         </div>
       </div>
 
@@ -423,7 +423,7 @@ async function submitRegister() {
         errEl.style.color = 'var(--amber)';
         errEl.style.background = 'rgba(245,158,11,.08)';
         errEl.style.borderColor = 'rgba(245,158,11,.25)';
-        setTimeout(() => { window.location.href = 'index.html'; }, 1500);
+        setTimeout(() => { window.location.href = '/frontend/index.html'; }, 1500);
         return;
       }
       throw new Error(data.error || 'Registration failed');
@@ -448,7 +448,7 @@ async function submitRegister() {
       btn.classList.add('success');
 
       // Go to platform — auth.js will detect session and go to org onboarding or hub
-      setTimeout(() => { window.location.href = 'index.html'; }, 900);
+      setTimeout(() => { window.location.href = '/frontend/index.html'; }, 900);
     }
   } catch (err) {
     if (err.name === 'AbortError') {
@@ -470,7 +470,7 @@ try {
   if (tok && usr) {
     // Show "you're already registered" hint
     const skip = document.querySelector('.nav-skip');
-    if (skip) skip.innerHTML = 'Signed in · <a href="index.html">Go to Platform →</a>';
+    if (skip) skip.innerHTML = 'Signed in · <a href="/frontend/index.html">Go to Platform →</a>';
   }
 } catch {}
 </script>

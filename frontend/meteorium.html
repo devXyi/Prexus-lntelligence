@@ -561,7 +561,7 @@ function qs(id){return document.getElementById(id);}
 /* If token expires mid-session, clear and go back to landing */
 function handleExpired(){
   localStorage.removeItem('prx_token');
-  window.location.replace('landing.html');
+  window.location.replace('/');
 }
 
 /* ── State ── */
@@ -1572,7 +1572,7 @@ window.addEventListener('load', function(){
   /* Auth guard — must have token from login, else back to landing */
   var token = localStorage.getItem('prx_token');
   if (!token) {
-    window.location.replace('landing.html');
+    window.location.replace('/');
     return;
   }
 

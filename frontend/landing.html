@@ -735,7 +735,7 @@ footer{padding:44px;border-top:1px solid var(--wire-soft);background:var(--deep)
 
 <!-- ════════════ NAV ════════════ -->
 <nav class="nav" id="nav">
-  <a href="landing.html" class="nav-logo">
+  <a href="/" class="nav-logo">
     <div class="nav-logo-icon">
       <img src="logo.png" alt="Prexus" style="width:32px;height:32px;object-fit:contain;display:block"/>
     </div>
@@ -768,14 +768,14 @@ footer{padding:44px;border-top:1px solid var(--wire-soft);background:var(--deep)
 
 <!-- ════════════ DROPDOWN — all links audited ════════════ -->
 <nav class="menu-dropdown" id="menu-dropdown" aria-hidden="true">
-  <a href="index.html"           class="menu-item">Registration     <span class="arr">→</span></a>
-  <a href="index.html#signin"    class="menu-item">Sign In          <span class="arr">→</span></a>
-  <a href="demo.html"            class="menu-item">Book Demo        <span class="arr">→</span></a>
+  <a href="/frontend/index.html"         class="menu-item">Registration     <span class="arr">→</span></a>
+  <a href="/frontend/index.html#signin"  class="menu-item">Sign In          <span class="arr">→</span></a>
+  <a href="/frontend/demo.html"          class="menu-item">Book Demo        <span class="arr">→</span></a>
   <div class="menu-divider"></div>
   <div class="menu-section-label">Be Prexisian</div>
-  <a href="pricing.html"         class="menu-item sub">Plans &amp; Pricing  <span class="arr">→</span></a>
-  <a href="careers.html"         class="menu-item sub">Careers              <span class="arr">→</span></a>
-  <a href="privacy-policy.html"  class="menu-item sub">Privacy Policy        <span class="arr">→</span></a>
+  <a href="/frontend/pricing.html"        class="menu-item sub">Plans &amp; Pricing  <span class="arr">→</span></a>
+  <a href="/frontend/careers.html"        class="menu-item sub">Careers              <span class="arr">→</span></a>
+  <a href="/frontend/privacy-policy.html" class="menu-item sub">Privacy Policy        <span class="arr">→</span></a>
 </nav>
 
 <!-- ════════════ HERO ════════════ -->
@@ -812,8 +812,8 @@ footer{padding:44px;border-top:1px solid var(--wire-soft);background:var(--deep)
     </p>
 
     <div class="hero-actions">
-      <a href="demo.html"   class="btn-primary">Book a Demo →</a>
-      <a href="index.html"  class="btn-secondary">Request Access</a>
+      <a href="/frontend/demo.html"   class="btn-primary">Book a Demo →</a>
+      <a href="/frontend/index.html"  class="btn-secondary">Request Access</a>
     </div>
 
     <p class="hero-tagline">Climate Intelligence · Health Risk · Strategic Intelligence · Economic Signals</p>
@@ -987,8 +987,8 @@ footer{padding:44px;border-top:1px solid var(--wire-soft);background:var(--deep)
   <h2 class="cta-h2 reveal">Join the<br/>Intelligence Network</h2>
   <p class="cta-body reveal">Prexus is available to verified government departments, research institutions, and regulated enterprises. Register for access or book a guided demonstration.</p>
   <div class="cta-actions reveal">
-    <a href="demo.html"   class="btn-primary"  style="font-size:11px;padding:14px 30px">Book a Demo →</a>
-    <a href="index.html"  class="btn-secondary" style="font-size:11px;padding:13px 22px">Request Access</a>
+    <a href="/frontend/demo.html"   class="btn-primary"  style="font-size:11px;padding:14px 30px">Book a Demo →</a>
+    <a href="/frontend/index.html"  class="btn-secondary" style="font-size:11px;padding:13px 22px">Request Access</a>
   </div>
   <p class="cta-note reveal">TLS 1.3 · AES-256 · SOC 2 Type II · ISO 27001 · Zero-Trust Architecture</p>
 </section>
@@ -1003,10 +1003,10 @@ footer{padding:44px;border-top:1px solid var(--wire-soft);background:var(--deep)
       <a href="#architecture">Architecture</a>
       <a href="#capabilities">Capabilities</a>
       <a href="#modules">Modules</a>
-      <a href="pricing.html">Pricing</a>
-      <a href="careers.html">Careers</a>
-      <a href="demo.html">Book Demo</a>
-      <a href="privacy-policy.html">Privacy Policy</a>
+      <a href="/frontend/pricing.html">Pricing</a>
+      <a href="/frontend/careers.html">Careers</a>
+      <a href="/frontend/demo.html">Book Demo</a>
+      <a href="/frontend/privacy-policy.html">Privacy Policy</a>
     </div>
     <div class="footer-meta">
       <div>© 2026 Prexus Systems</div>
@@ -1017,6 +1017,13 @@ footer{padding:44px;border-top:1px solid var(--wire-soft);background:var(--deep)
 
 <script>
 'use strict';
+
+var existingToken = localStorage.getItem('token') || localStorage.getItem('prx_token');
+if (existingToken) {
+  window.location.replace('/frontend/meteorium.html');
+} else if (window.location.pathname.endsWith('/frontend/landing.html')) {
+  window.history.replaceState({}, '', '/');
+}
 
 /* ── Hamburger menu ── */
 const menuBtn  = document.getElementById('menu-btn');

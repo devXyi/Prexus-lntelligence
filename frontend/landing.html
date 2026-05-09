@@ -1019,9 +1019,10 @@ footer{padding:44px;border-top:1px solid var(--wire-soft);background:var(--deep)
 'use strict';
 
 var existingToken = localStorage.getItem('token') || localStorage.getItem('prx_token');
+var isFrontendLandingPath = /\/frontend\/landing\.html\/?$/.test(window.location.pathname);
 if (existingToken) {
   window.location.replace('/frontend/meteorium.html');
-} else if (window.location.pathname.endsWith('/frontend/landing.html')) {
+} else if (isFrontendLandingPath) {
   window.history.replaceState({}, '', '/');
 }
 

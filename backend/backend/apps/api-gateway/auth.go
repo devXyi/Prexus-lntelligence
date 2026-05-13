@@ -1,5 +1,5 @@
 // backend/apps/api-gateway/auth.go
-// Prexus Intelligence — Hardened Auth Layer (v3.0)
+// Prexus Intelligence — Hardened Auth Layer (v3.1)
 
 package main
 
@@ -23,14 +23,14 @@ const authTimeout = 5 * time.Second
 // ─────────────────────────────────────────────────────────────
 
 type RegisterRequest struct {
-	Email    string `json:"email" binding:"required,email"`
-	Password string `json:"password" binding:"required,min=6"`
+	Email    string `json:"email"     binding:"required,email"`
+	Password string `json:"password"  binding:"required,min=6"`
 	FullName string `json:"full_name"`
 	OrgName  string `json:"org_name"`
 }
 
 type LoginRequest struct {
-	Email    string `json:"email" binding:"required,email"`
+	Email    string `json:"email"    binding:"required,email"`
 	Password string `json:"password" binding:"required"`
 }
 
@@ -70,6 +70,7 @@ func handleRegister(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(c.Request.Context(), authTimeout)
 	defer cancel()
 
+	// Duplicate email check
 	var existingID int64
 	err := DB.QueryRowContext(ctx, "SELECT id FROM users WHERE email=$1", email).Scan(&existingID)
 	if err == nil {
@@ -84,11 +85,14 @@ func handleRegister(c *gin.Context) {
 		return
 	}
 
+	// FIX: include updated_at — column is NOT NULL; omitting it caused constraint failures
+	now := time.Now().UTC()
 	var userID int64
 	err = DB.QueryRowContext(ctx,
-		`INSERT INTO users (email,password_hash,full_name,org_name,role,created_at)
-		 VALUES ($1,$2,$3,$4,'user',$5) RETURNING id`,
-		email, string(hash), req.FullName, req.OrgName, time.Now().UTC(),
+		`INSERT INTO users (email, password_hash, full_name, org_name, role, created_at, updated_at)
+		 VALUES ($1, $2, $3, $4, 'user', $5, $6)
+		 RETURNING id`,
+		email, string(hash), req.FullName, req.OrgName, now, now,
 	).Scan(&userID)
 
 	if err != nil {
@@ -129,14 +133,13 @@ func handleLogin(c *gin.Context) {
 	var passHash, fullName, orgName, role string
 
 	err := DB.QueryRowContext(ctx,
-		`SELECT id,password_hash,COALESCE(full_name,''),COALESCE(org_name,''),role
+		`SELECT id, password_hash, COALESCE(full_name,''), COALESCE(org_name,''), role
 		 FROM users WHERE email=$1`,
 		email,
 	).Scan(&id, &passHash, &fullName, &orgName, &role)
 
-	// 🔒 Timing attack protection
+	// 🔒 Constant-time path — prevents user enumeration via timing
 	dummyHash := "$2a$10$7EqJtq98hPqEX7fNZaFWoO5uX0ZQ5Y9z3rroWAt4EvsC0BpFkOukC"
-
 	if err != nil {
 		_ = bcrypt.CompareHashAndPassword([]byte(dummyHash), []byte(req.Password))
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid credentials"})
@@ -172,12 +175,12 @@ func handleGetMe(c *gin.Context) {
 
 	var fullName, orgName string
 	err := DB.QueryRowContext(ctx,
-		"SELECT COALESCE(full_name,''),COALESCE(org_name,'') FROM users WHERE id=$1",
+		"SELECT COALESCE(full_name,''), COALESCE(org_name,'') FROM users WHERE id=$1",
 		userID,
 	).Scan(&fullName, &orgName)
 
 	if err != nil {
-		log.Printf("getMe error: %v", err)
+		log.Printf("getMe error user=%d: %v", userID, err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "User fetch failed"})
 		return
 	}
@@ -191,6 +194,8 @@ func handleGetMe(c *gin.Context) {
 	})
 }
 
+// FIX: use COALESCE(NULLIF(...)) so sending an empty string never wipes existing data.
+// Previously: UPDATE users SET full_name=$1, org_name=$2 — a blank field would clear the column.
 func handleUpdateMe(c *gin.Context) {
 	userID := c.GetInt64("user_id")
 
@@ -204,16 +209,28 @@ func handleUpdateMe(c *gin.Context) {
 		return
 	}
 
+	if req.FullName == "" && req.OrgName == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "no fields to update"})
+		return
+	}
+
 	ctx, cancel := context.WithTimeout(c.Request.Context(), authTimeout)
 	defer cancel()
 
+	// COALESCE(NULLIF($n, ''), column) means:
+	//   - if the sent value is a non-empty string → use it
+	//   - if the sent value is '' or omitted      → keep the existing DB value
 	_, err := DB.ExecContext(ctx,
-		"UPDATE users SET full_name=$1,org_name=$2,updated_at=$3 WHERE id=$4",
+		`UPDATE users
+		 SET full_name  = COALESCE(NULLIF($1, ''), full_name),
+		     org_name   = COALESCE(NULLIF($2, ''), org_name),
+		     updated_at = $3
+		 WHERE id = $4`,
 		req.FullName, req.OrgName, time.Now().UTC(), userID,
 	)
 
 	if err != nil {
-		log.Printf("updateMe error: %v", err)
+		log.Printf("updateMe error user=%d: %v", userID, err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Update failed"})
 		return
 	}
@@ -277,7 +294,6 @@ func AuthMiddleware() gin.HandlerFunc {
 		c.Set("user_id", claims.UserID)
 		c.Set("email", claims.Email)
 		c.Set("role", claims.Role)
-
 		c.Next()
 	}
 }
